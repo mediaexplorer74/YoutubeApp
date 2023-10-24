@@ -72,11 +72,15 @@ namespace YTApp.UserControls
 
                 var methods = new YoutubeMethods();
 
-                var service = YoutubeMethodsStatic.GetServiceNoAuth();
-                var getReplies = service.Comments.List("snippet");
+                Google.Apis.YouTube.v3.YouTubeService service
+                    = YoutubeMethodsStatic.GetServiceNoAuth();//.GetServiceN();
+
+                Google.Apis.YouTube.v3.CommentsResource.ListRequest getReplies 
+                    = service.Comments.List("snippet");
                 getReplies.ParentId = Source.Id;
-                getReplies.TextFormat = Google.Apis.YouTube.v3.CommentsResource.ListRequest.TextFormatEnum.PlainText;
-                var response = await getReplies.ExecuteAsync();
+                getReplies.TextFormat = 
+                    Google.Apis.YouTube.v3.CommentsResource.ListRequest.TextFormatEnum.PlainText;
+                CommentListResponse response = await getReplies.ExecuteAsync();
 
                 commentReplies.Clear();
 
@@ -110,7 +114,8 @@ namespace YTApp.UserControls
             }
         }
 
-        private async void ReplyBoxSend_Click(Windows.UI.Xaml.Documents.Hyperlink sender, Windows.UI.Xaml.Documents.HyperlinkClickEventArgs args)
+        private async void ReplyBoxSend_Click(Windows.UI.Xaml.Documents.Hyperlink sender, 
+            Windows.UI.Xaml.Documents.HyperlinkClickEventArgs args)
         {
             if (ReplyBox.Text == null || ReplyBox.Text == "")
             {

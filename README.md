@@ -1,13 +1,42 @@
-<p align="center"><img style="max-width:100%;" src="https://raw.githubusercontent.com/Saghen/UWP-Youtube-Twitch-Viewer/master/Images/Manifest/Splashscreen.png"/></p>
-<h2>Pre-Release</h2>
+# YoutubeApp
+My fork of Unofficial Youtube Client (UWP app for Desktop)
+
+## About
 The Unofficial Youtube Client is a youtube application built in UWP using the Google Dotnet API libraries with a goal of improving upon the ad infested and under-featured apps found on the windows store. The project strives to provide a coherent and simplistic UI while providing responsive and battery considerate performance across the board. Due to the limitations of the Google API, work arounds are being found for home page recommendations and viewing history.
 
-Features:
- - Windows Styling Integration
- - Hardware Video Decoding
- - Exceptional Performance (for reasons listed above)
- - Picture in Picture mode
- - Download videos
+## Features (the info frome original readme...)
+- Windows Styling Integration
+- Hardware Video Decoding
+- Exceptional Performance (for reasons listed above)
+- Picture in Picture mode
+- Download videos
 
-Interested in supporting development?
-Send an email to liamcdyer@gmail.com to get started or create a fork of this repository with your own changes.
+## My 2 cents / Status 
+- RnD (5-10 % complete)
+- Min. os win sdk : 15063 -> 14393
+- Draft / Proto
+
+## Credits / References
+- MIT
+- https://github.com/Saghen/  Liam Dyer aka Saghen
+- https://github.com/Saghen/UWP-Youtube-Twitch-Viewer/ Liam Dyer's original Unofficial Youtube Client
+
+## How to try it / fix it
+1. Register your own Google Youtube API items:
+- Api key
+- Client Id
+- Client Secret
+
+2. Modify that items in/at Constants.cs file
+
+3. Run the app and explore good auth , but bad get video deals 
+
+4. Fix the bugs 
+
+
+## ..
+As is. No support. RnD only. DIY
+
+## .
+[m][e] 2023
+

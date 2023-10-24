@@ -5,6 +5,7 @@ using Google.Apis.Util.Store;
 using Google.Apis.YouTube.v3;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -16,13 +17,29 @@ namespace YTApp.Classes
 {
     static class YoutubeMethodsStatic
     {
+        // GetServiceAsync
         static async public Task<YouTubeService> GetServiceAsync()
         {
-            var credential = await GoogleWebAuthorizationBroker.AuthorizeAsync(new ClientSecrets
+            UserCredential credential = default;
+
+            try
             {
-                ClientId = Constants.ClientID,
-                ClientSecret = Constants.ClientSecret
-            }, new[] { Google.Apis.Oauth2.v2.Oauth2Service.Scope.UserinfoProfile, YouTubeService.Scope.YoutubeForceSsl }, "user", CancellationToken.None);
+                credential = await GoogleWebAuthorizationBroker.AuthorizeAsync(
+                    new ClientSecrets
+                    {
+                        ClientId = Constants.ClientID,
+                        ClientSecret = Constants.ClientSecret
+                    },
+                new[]
+                {
+                Google.Apis.Oauth2.v2.Oauth2Service.Scope.UserinfoProfile,
+                YouTubeService.Scope.YoutubeForceSsl },
+                "user", CancellationToken.None);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("[ex]  GetServiceAsync / AuthorizeAsync error: " + ex.Message);
+            }
         
             // Create the service.
             return new YouTubeService(new BaseClientService.Initializer()
@@ -30,8 +47,10 @@ namespace YTApp.Classes
                 HttpClientInitializer = credential,
                 ApplicationName = "Unofficial Youtube Client",
             });
-        }
+        }//GetServiceAsync
 
+
+        // GetServiceNoAuth
         static public YouTubeService GetServiceNoAuth()
         {
             return new YouTubeService(new BaseClientService.Initializer()
@@ -39,15 +58,18 @@ namespace YTApp.Classes
                 ApiKey = Constants.ApiKey,
                 ApplicationName = "Unofficial Youtube Client"
             });
-        }
+        }//GetServiceNoAuth
 
+        // IsUserAuthenticated
         static public async Task<bool> IsUserAuthenticated()
         {
-            GoogleAuthorizationCodeFlow.Initializer initializer = new GoogleAuthorizationCodeFlow.Initializer();
+            GoogleAuthorizationCodeFlow.Initializer initializer 
+                = new GoogleAuthorizationCodeFlow.Initializer();
             var secrets = new ClientSecrets
             {
-                ClientSecret = Constants.ClientSecret,
-                ClientId = Constants.ClientID
+                ClientId = Constants.ClientID,
+                ClientSecret = Constants.ClientSecret
+                
             };
             initializer.ClientSecrets = secrets;
             initializer.DataStore = new PasswordVaultDataStore();
@@ -62,32 +84,43 @@ namespace YTApp.Classes
                 Constants.Token = token;
                 return true;
             }
-        }
+        }//IsUserAuthenticated
 
+
+        // ViewCountShortner
         static public string ViewCountShortner(long viewCount, int decimals = 1)
         {
             if (viewCount > 1000000000)
-                return Convert.ToString(Math.Round(Convert.ToDouble(viewCount) / 1000000000, decimals)) + "B";
+                return Convert.ToString(Math.Round(Convert.ToDouble(viewCount) 
+                    / 1000000000, decimals)) + "B";
             else if (viewCount > 1000000)
-                return Convert.ToString(Math.Round(Convert.ToDouble(viewCount) / 1000000, decimals)) + "M";
+                return Convert.ToString(Math.Round(Convert.ToDouble(viewCount) 
+                    / 1000000, decimals)) + "M";
             else if (viewCount > 1000)
-                return Convert.ToString(Math.Round(Convert.ToDouble(viewCount) / 1000, decimals)) + "K";
+                return Convert.ToString(Math.Round(Convert.ToDouble(viewCount) 
+                    / 1000, decimals)) + "K";
             else
                 return Convert.ToString(viewCount);
-        }
+        }//ViewCountShortner
 
+        // ViewCountShortner
         static public string ViewCountShortner(ulong? viewCount, int decimals = 1)
         {
             if (viewCount > 1000000000)
-                return Convert.ToString(Math.Round(Convert.ToDouble(viewCount) / 1000000000, decimals)) + "B";
+                return Convert.ToString(Math.Round(Convert.ToDouble(viewCount)
+                    / 1000000000, decimals)) + "B";
             else if (viewCount > 1000000)
-                return Convert.ToString(Math.Round(Convert.ToDouble(viewCount) / 1000000, decimals)) + "M";
+                return Convert.ToString(Math.Round(Convert.ToDouble(viewCount)
+                    / 1000000, decimals)) + "M";
             else if (viewCount > 1000)
-                return Convert.ToString(Math.Round(Convert.ToDouble(viewCount) / 1000, decimals)) + "K";
+                return Convert.ToString(Math.Round(Convert.ToDouble(viewCount) 
+                    / 1000, decimals)) + "K";
             else
                 return Convert.ToString(viewCount);
-        }
+        }//ViewCountShortner
 
+
+        // GetVideoQuality
         static public string GetVideoQuality(VideoQuality quality, bool GetMuxed)
         {
             if (GetMuxed)
@@ -108,15 +141,17 @@ namespace YTApp.Classes
             }
 
             return null;
-        }
+        }//GetVideoQuality
 
+
+        // GetVideoQualityList
         static public List<VideoQuality> GetVideoQualityList()
         {
             var qualitiesString = Constants.videoInfo.GetAllVideoQualities().ToList();
             qualitiesString.Sort();
             return qualitiesString;
-        }
+        }//GetVideoQualityList
 
+    }//class end
 
-    }
-}
+}//namespace end

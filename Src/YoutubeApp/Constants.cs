@@ -15,9 +15,15 @@ namespace YTApp.Classes
 {
     static class Constants
     {
-        static public readonly string ClientID = "856342177720-ae8rhd1r35gocq5dc7l3509tp123koe1.apps.googleusercontent.com";
-        static public readonly string ClientSecret = "GA1G-NL20O5JTXtZZbbKrd4u";
-        static public readonly string ApiKey = "AIzaSyAclS0aOrMI8W2uo5Gb2VMcH9OtX2cmgPg";
+        static public readonly string ApiKey =
+          "";
+
+        static public readonly string ClientID =
+           "";
+
+        static public readonly string ClientSecret =
+           "";
+        
         static public Google.Apis.Auth.OAuth2.Responses.TokenResponse Token;
 
         static public MainPage MainPageRef;

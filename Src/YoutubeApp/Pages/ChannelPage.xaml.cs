@@ -276,8 +276,8 @@ namespace YTApp.Pages
         {
             UserCredential credential = await GoogleWebAuthorizationBroker.AuthorizeAsync(new ClientSecrets
             {
-                ClientId = "957928808020-pa0lopl3crh565k6jd4djaj36rm1d9i5.apps.googleusercontent.com",
-                ClientSecret = "oB9U6yWFndnBqLKIRSA0nYGm"
+                ClientId = Constants.ClientID,
+                ClientSecret = Constants.ClientSecret
             }, new[] { YouTubeService.Scope.Youtube }, "user", System.Threading.CancellationToken.None);
 
             // Create the service.
@@ -356,7 +356,7 @@ namespace YTApp.Pages
 
                 var youtubeService = new YouTubeService(new BaseClientService.Initializer()
                 {
-                    ApiKey = "AIzaSyCXOZJH2GUbdqwxZwsjTU93lFvgdnMOVD0",
+                    ApiKey = Constants.ApiKey,
                     ApplicationName = this.GetType().ToString()
                 });
 
@@ -406,7 +406,7 @@ namespace YTApp.Pages
 
                 var youtubeService = new YouTubeService(new BaseClientService.Initializer()
                 {
-                    ApiKey = "AIzaSyCXOZJH2GUbdqwxZwsjTU93lFvgdnMOVD0",
+                    ApiKey = Constants.ApiKey,
                     ApplicationName = this.GetType().ToString()
                 });
 

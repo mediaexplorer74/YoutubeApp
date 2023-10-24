@@ -25,6 +25,7 @@ using Windows.UI.ViewManagement;
 using YTApp.Classes.DataTypes;
 using Windows.Storage;
 using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace YTApp
 {
@@ -35,7 +36,8 @@ namespace YTApp
     {
         private ILogger Log = LogManagerFactory.DefaultLogManager.GetLogger<MainPage>();
 
-        public ObservableCollection<SubscriptionDataType> subscriptionsList = new ObservableCollection<SubscriptionDataType>();
+        public ObservableCollection<SubscriptionDataType> subscriptionsList = 
+            new ObservableCollection<SubscriptionDataType>();
 
         public MainPage()
         {
@@ -43,16 +45,22 @@ namespace YTApp
 
             //Set titlebar colour
             var titleBar = ApplicationView.GetForCurrentView().TitleBar;
-            titleBar.BackgroundColor = ((Windows.UI.Xaml.Media.SolidColorBrush)Application.Current.Resources["AppBackgroundLighter"]).Color;
-            titleBar.ButtonBackgroundColor = ((Windows.UI.Xaml.Media.SolidColorBrush)Application.Current.Resources["AppBackgroundLighter"]).Color;
-            titleBar.InactiveBackgroundColor = ((Windows.UI.Xaml.Media.SolidColorBrush)Application.Current.Resources["AppBackgroundLightest"]).Color;
-            titleBar.ButtonInactiveBackgroundColor = ((Windows.UI.Xaml.Media.SolidColorBrush)Application.Current.Resources["AppBackgroundLightest"]).Color;
+            titleBar.BackgroundColor = 
+                ((Windows.UI.Xaml.Media.SolidColorBrush)Application.Current.Resources["AppBackgroundLighter"]).Color;
+            titleBar.ButtonBackgroundColor = 
+                ((Windows.UI.Xaml.Media.SolidColorBrush)Application.Current.Resources["AppBackgroundLighter"]).Color;
+            titleBar.InactiveBackgroundColor = 
+                ((Windows.UI.Xaml.Media.SolidColorBrush)Application.Current.Resources["AppBackgroundLightest"]).Color;
+            titleBar.ButtonInactiveBackgroundColor =
+                ((Windows.UI.Xaml.Media.SolidColorBrush)Application.Current.Resources["AppBackgroundLightest"]).Color;
 
             //Set a reference to this page for all other pages to use it's functions
             Constants.MainPageRef = this;
 
             //Enable going backwards
-            SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
+            SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = 
+                AppViewBackButtonVisibility.Visible;
+
             SystemNavigationManager.GetForCurrentView().BackRequested += MainPage_BackRequested;
 
             Log.Info("Main page startup has started");
@@ -111,12 +119,14 @@ namespace YTApp
                 StorageFolder roamingFolder = ApplicationData.Current.RoamingFolder;
                 var wow = await roamingFolder.GetItemsAsync();
 
-                var text = await FileIO.ReadTextAsync(await roamingFolder.GetFileAsync("data.json"));
+                var text = await FileIO.ReadTextAsync(
+                    await roamingFolder.GetFileAsync("data.json"));
 
                 if (text == "")
                     return;
 
-                Constants.syncedData = JsonConvert.DeserializeObject<SyncedApplicationDataType>(text);
+                Constants.syncedData = JsonConvert.DeserializeObject<SyncedApplicationDataType>(
+                    text);
             }
             catch { }
         }
@@ -141,7 +151,10 @@ namespace YTApp
             var tempSubscriptions = GetSubscriptions(null, service);
             if (tempSubscriptions == null)
             {
-                Log.Error("Get Subscriptions returned a null object. The method \"LoadSubscriptions\" was cancelled");
+                Log.Error(
+                    "Get Subscriptions returned a null object. " +
+                    "The method \"LoadSubscriptions\" was cancelled");
+
                 return;
             }
 
@@ -199,7 +212,8 @@ namespace YTApp
             }
         }
 
-        private SubscriptionListResponse GetSubscriptions(string NextPageToken, YouTubeService service)
+        private SubscriptionListResponse GetSubscriptions(string NextPageToken, 
+            YouTubeService service)
         {
             var subscriptions = service.Subscriptions.List("snippet, contentDetails");
             try
@@ -230,11 +244,32 @@ namespace YTApp
 
         public async void UpdateLoginDetails()
         {
-            UserCredential credential = await GoogleWebAuthorizationBroker.AuthorizeAsync(new ClientSecrets
+            UserCredential credential = default;
+            try
             {
-                ClientId = "957928808020-pa0lopl3crh565k6jd4djaj36rm1d9i5.apps.googleusercontent.com",
-                ClientSecret = "oB9U6yWFndnBqLKIRSA0nYGm"
-            }, new[] { Oauth2Service.Scope.UserinfoProfile }, "user", CancellationToken.None);
+                credential = await GoogleWebAuthorizationBroker.AuthorizeAsync(
+                    new ClientSecrets
+                {
+                    ClientId = Constants.ClientID,
+                    ClientSecret = Constants.ClientSecret
+                },
+                new[]
+                {
+                Oauth2Service.Scope.UserinfoProfile
+                },
+                "user",
+                CancellationToken.None);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+
+                txtLoginName.Text = "";
+                imgProfileIcon.Fill =
+                    new Windows.UI.Xaml.Media.SolidColorBrush(
+                        Windows.UI.Color.FromArgb(0, 0, 0, 0));
+            }
+
 
             // Create the service.
             var service = new Oauth2Service(new BaseClientService.Initializer()
@@ -257,10 +292,14 @@ namespace YTApp
                 };
                 imgProfileIcon.Fill = profileImg;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Debug.WriteLine(ex.Message);
+
                 txtLoginName.Text = "";
-                imgProfileIcon.Fill = new Windows.UI.Xaml.Media.SolidColorBrush(Windows.UI.Color.FromArgb(0, 0, 0, 0));
+                imgProfileIcon.Fill = 
+                    new Windows.UI.Xaml.Media.SolidColorBrush(
+                        Windows.UI.Color.FromArgb(0, 0, 0, 0));
             }
         }
 
@@ -326,17 +365,24 @@ namespace YTApp
 
         private async void BtnSignOut_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            UserCredential credential = await GoogleWebAuthorizationBroker.AuthorizeAsync(new ClientSecrets
+            UserCredential credential = await GoogleWebAuthorizationBroker.AuthorizeAsync(
+                new ClientSecrets
             {
-                ClientId = "957928808020-pa0lopl3crh565k6jd4djaj36rm1d9i5.apps.googleusercontent.com",
-                ClientSecret = "oB9U6yWFndnBqLKIRSA0nYGm"
-            }, new[] { YouTubeService.Scope.Youtube, Oauth2Service.Scope.UserinfoProfile }, "user", CancellationToken.None);
+                ClientId = Constants.ClientID,                   
+                ClientSecret = Constants.ClientSecret
+            }, new[] 
+            { 
+                YouTubeService.Scope.Youtube, 
+                Oauth2Service.Scope.UserinfoProfile 
+            },
+            "user", CancellationToken.None);
 
             await credential.RevokeTokenAsync(CancellationToken.None);
 
             //Clear Login details
             txtLoginName.Text = "";
-            imgProfileIcon.Fill = new Windows.UI.Xaml.Media.SolidColorBrush(Windows.UI.Color.FromArgb(0, 0, 0, 0));
+            imgProfileIcon.Fill = new Windows.UI.Xaml.Media.SolidColorBrush(
+                Windows.UI.Color.FromArgb(0, 0, 0, 0));
 
             //Clear Subscriptions
             SubscriptionsList.ItemsSource = null;
@@ -374,7 +420,10 @@ namespace YTApp
             var client = new YoutubeClient();
             var videoUrl = Constants.videoInfo.Muxed[0].Url;
 
-            var savePicker = new Windows.Storage.Pickers.FileSavePicker { SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.Downloads };
+            var savePicker = new Windows.Storage.Pickers.FileSavePicker 
+            { 
+                SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.Downloads 
+            };
             savePicker.FileTypeChoices.Add("Video File", new List<string>() { ".mp4" });
 
             Windows.Storage.StorageFile file = await savePicker.PickSaveFileAsync();
@@ -401,9 +450,11 @@ namespace YTApp
 
         private void Progress_ProgressChanged(object sender, DownloadOperation e)
         {
-            DownloadProgress.Value = (e.Progress.BytesReceived / (double)e.Progress.TotalBytesToReceive) * 1000;
+            DownloadProgress.Value = (e.Progress.BytesReceived / 
+                (double)e.Progress.TotalBytesToReceive) * 1000;
 
-            if (e.Progress.BytesReceived == e.Progress.TotalBytesToReceive && e.Progress.TotalBytesToReceive != 0)
+            if (e.Progress.BytesReceived == e.Progress.TotalBytesToReceive
+                && e.Progress.TotalBytesToReceive != 0)
             {
                 DownloadProgress.Visibility = Visibility.Collapsed;
                 ShowNotifcation("Download complete.", 3000);
