@@ -1,0 +1,18 @@
+Issue: @YouTube Quota Exceeded after 5 video uploaded@ (or similar ..)
+
+Expanation: It seems that the error message is indicating that you have exceeded the quota for the YouTube Data API. This means that you have reached the limit of the number of requests you can make with your current API key.
+
+To resolve this issue, you can either wait until the quota resets (usually on a daily basis), or you can apply for a higher quota limit. You can check your current quota usage by visiting the Google Cloud Console and navigating to the YouTube Data API page.
+
+It’s also possible that there is an error in the way you’re setting up your API key. Make sure that you’ve followed all the necessary steps for setting up the key and that it’s associated with the correct project.
+
+Finally, double-check that the ID of the channel you’re trying to access is correct and that you’re using the correct parameters in your API call.
+
+Похоже, что сообщение об ошибке указывает на то, что вы превысили квоту для YouTube Data API. Это означает, что вы достигли предела количества запросов, которые вы можете выполнить с помощью вашего текущего ключа API.
+
+Чтобы устранить эту проблему, вы можете либо дождаться сброса квоты (обычно на ежедневной основе), либо подать заявку на более высокий лимит квоты. Вы можете проверить текущее использование вашей квоты, посетив Google Cloud Console и перейдя на страницу YouTube Data API.
+
+Также возможно, что произошла ошибка в способе настройки вашего API-ключа. Убедитесь, что вы выполнили все необходимые шаги для настройки ключа и что он связан с правильным проектом.
+
+Наконец, дважды проверьте правильность идентификатора канала, к которому вы пытаетесь получить доступ, и то, что вы используете правильные параметры в своем вызове API.
+

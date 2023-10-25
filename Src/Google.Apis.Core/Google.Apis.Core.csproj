@@ -1,0 +1,201 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{E5692B5C-C746-45BC-9B77-063C0366D142}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Google.Apis.Core</RootNamespace>
+    <AssemblyName>Google.Apis.Core</AssemblyName>
+    <DefaultLanguage>ru-RU</DefaultLanguage>
+    <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
+    <TargetPlatformVersion Condition=" '$(TargetPlatformVersion)' == '' ">10.0.19041.0</TargetPlatformVersion>
+    <TargetPlatformMinVersion>10.0.14393.0</TargetPlatformMinVersion>
+    <MinimumVisualStudioVersion>14</MinimumVisualStudioVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{A5A43C5B-DE2A-4C0C-9213-0A381AF9435A};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>full</DebugType>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <PlatformTarget>x86</PlatformTarget>
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <Optimize>true</Optimize>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM'">
+    <PlatformTarget>ARM</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\ARM\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>full</DebugType>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|ARM'">
+    <PlatformTarget>ARM</PlatformTarget>
+    <OutputPath>bin\ARM\Release\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <Optimize>true</Optimize>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM64'">
+    <PlatformTarget>ARM64</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\ARM64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>full</DebugType>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|ARM64'">
+    <PlatformTarget>ARM64</PlatformTarget>
+    <OutputPath>bin\ARM64\Release\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <Optimize>true</Optimize>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <PlatformTarget>x64</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>full</DebugType>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <PlatformTarget>x64</PlatformTarget>
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <Optimize>true</Optimize>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup>
+    <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Apis\Discovery\DiscoveryVersion.cs" />
+    <Compile Include="Apis\Discovery\Features.cs" />
+    <Compile Include="Apis\Discovery\IParameter.cs" />
+    <Compile Include="Apis\Discovery\Parameter.cs" />
+    <Compile Include="Apis\Http\BackOffHandler.cs" />
+    <Compile Include="Apis\Http\ConfigurableHttpClient.cs" />
+    <Compile Include="Apis\Http\ConfigurableMessageHandler.cs" />
+    <Compile Include="Apis\Http\CreateHttpClientArgs.cs" />
+    <Compile Include="Apis\Http\ExponentialBackOffInitializer.cs" />
+    <Compile Include="Apis\Http\ExponentialBackOffPolicy.cs" />
+    <Compile Include="Apis\Http\HandleExceptionArgs.cs" />
+    <Compile Include="Apis\Http\HandleUnsuccessfulResponseArgs.cs" />
+    <Compile Include="Apis\Http\HttpClientFactory.cs" />
+    <Compile Include="Apis\Http\HttpConsts.cs" />
+    <Compile Include="Apis\Http\HttpExtenstions.cs" />
+    <Compile Include="Apis\Http\IConfigurableHttpClientInitializer.cs" />
+    <Compile Include="Apis\Http\IHttpClientFactory.cs" />
+    <Compile Include="Apis\Http\IHttpExceptionHandler.cs" />
+    <Compile Include="Apis\Http\IHttpExecuteInterceptor.cs" />
+    <Compile Include="Apis\Http\IHttpUnsuccessfulResponseHandler.cs" />
+    <Compile Include="Apis\Http\MaxUrlLengthInterceptor.cs" />
+    <Compile Include="Apis\ISerializer.cs" />
+    <Compile Include="Apis\Json\ExplicitNullConverter.cs" />
+    <Compile Include="Apis\Json\IJsonSerializer.cs" />
+    <Compile Include="Apis\Json\JsonExplicitNull.cs" />
+    <Compile Include="Apis\Json\JsonExplicitNullAttribute.cs" />
+    <Compile Include="Apis\Json\NewtonsoftJsonContractResolver.cs" />
+    <Compile Include="Apis\Json\NewtonsoftJsonSerializer.cs" />
+    <Compile Include="Apis\Json\RFC3339DateTimeConverter.cs" />
+    <Compile Include="Apis\Logging\BaseLogger.cs" />
+    <Compile Include="Apis\Logging\ConsoleLogger.cs" />
+    <Compile Include="Apis\Logging\ILogger.cs" />
+    <Compile Include="Apis\Logging\LogLevel.cs" />
+    <Compile Include="Apis\Logging\MemoryLogger.cs" />
+    <Compile Include="Apis\Logging\NullLogger.cs" />
+    <Compile Include="Apis\Requests\Parameters\ParameterCollection.cs" />
+    <Compile Include="Apis\Requests\Parameters\ParameterUtils.cs" />
+    <Compile Include="Apis\Requests\Parameters\ParameterValidator.cs" />
+    <Compile Include="Apis\Requests\RequestBuilder.cs" />
+    <Compile Include="Apis\Requests\RequestError.cs" />
+    <Compile Include="Apis\Requests\SingleError.cs" />
+    <Compile Include="Apis\Testing\VisibleForTestOnly.cs" />
+    <Compile Include="Apis\Util\ExponentialBackOff.cs" />
+    <Compile Include="Apis\Util\IBackOff.cs" />
+    <Compile Include="Apis\Util\IClock.cs" />
+    <Compile Include="Apis\Util\Repeatable`1.cs" />
+    <Compile Include="Apis\Util\RequestParameterAttribute.cs" />
+    <Compile Include="Apis\Util\RequestParameterType.cs" />
+    <Compile Include="Apis\Util\StandardResponse`1.cs" />
+    <Compile Include="Apis\Util\Store\IDataStore.cs" />
+    <Compile Include="Apis\Util\StringValueAttribute.cs" />
+    <Compile Include="Apis\Util\SystemClock.cs" />
+    <Compile Include="Apis\Util\UriPatcher.cs" />
+    <Compile Include="Apis\Util\Utilities.cs" />
+    <Compile Include="ApplicationContext.cs" />
+    <Compile Include="GoogleApiException.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Properties\Google.Apis.Core.rd.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
+      <Version>6.2.14</Version>
+    </PackageReference>
+    <PackageReference Include="Newtonsoft.Json">
+      <Version>13.0.3</Version>
+    </PackageReference>
+  </ItemGroup>
+  <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
+    <VisualStudioVersion>14.0</VisualStudioVersion>
+  </PropertyGroup>
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\WindowsXaml\v$(VisualStudioVersion)\Microsoft.Windows.UI.Xaml.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

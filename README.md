@@ -16,6 +16,9 @@ The Unofficial Youtube Client is a youtube application built in UWP using the Go
 - Min. os win sdk : 15063 -> 14393
 - Draft / Proto
 
+## Big "crazy bug" what still exists till/from 2017 year
+- Google auth failed ONLY ON Windows 10 Mobile OS. Not on desktop Windows 10. So strange. IMHO, this is echo of Google-MS "mobile wars". Proof: https://github.com/googleapis/google-api-dotnet-client/issues/986  Opened this "Broken login page" issue on Apr 27, 2017 
+
 ## Credits / References
 - MIT
 - https://github.com/Saghen/  Liam Dyer aka Saghen

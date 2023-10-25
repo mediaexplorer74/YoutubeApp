@@ -72,7 +72,10 @@ namespace YTApp.Classes
                 
             };
             initializer.ClientSecrets = secrets;
+
+            //RnD
             initializer.DataStore = new PasswordVaultDataStore();
+
             var test = new AuthorizationCodeFlow(initializer);
             var token = await test.LoadTokenAsync("user", CancellationToken.None);
             if (token == null)

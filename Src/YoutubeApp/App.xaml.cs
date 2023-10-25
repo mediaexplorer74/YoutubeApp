@@ -117,9 +117,13 @@ namespace YTApp
                     // parameter
 
                     if (await Classes.YoutubeMethodsStatic.IsUserAuthenticated())
+                    {
                         rootFrame.Navigate(typeof(MainPage), e.Arguments);
+                    }
                     else
+                    {
                         rootFrame.Navigate(typeof(Pages.WelcomePage), e.Arguments);
+                    }
 
                 }
                 // Ensure the current window is active

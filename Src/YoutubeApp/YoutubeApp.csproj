@@ -8,7 +8,7 @@
     <OutputType>AppContainerExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>YTApp</RootNamespace>
-    <AssemblyName>Youtube App</AssemblyName>
+    <AssemblyName>YoutubeApp</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
     <TargetPlatformVersion Condition=" '$(TargetPlatformVersion)' == '' ">10.0.19041.0</TargetPlatformVersion>
@@ -17,14 +17,19 @@
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{A5A43C5B-DE2A-4C0C-9213-0A381AF9435A};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WindowsXamlEnableOverview>true</WindowsXamlEnableOverview>
-    <PackageCertificateKeyFile>Youtube App_StoreKey.pfx</PackageCertificateKeyFile>
-    <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
+    <PackageCertificateKeyFile>YoutubeApp_TemporaryKey.pfx</PackageCertificateKeyFile>
+    <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
     <AppxBundle>Always</AppxBundle>
-    <AppxBundlePlatforms>x64</AppxBundlePlatforms>
-    <AppxPackageDir>C:\Users\liamc\Programming\UWP-Youtube-Client-Builds\</AppxPackageDir>
-    <AppxSymbolPackageEnabled>True</AppxSymbolPackageEnabled>
-    <PackageCertificateThumbprint>8B17C0337E47C34A98EC5779CC4709C7C94CA7EB</PackageCertificateThumbprint>
+    <AppxBundlePlatforms>arm</AppxBundlePlatforms>
+    <AppxSymbolPackageEnabled>False</AppxSymbolPackageEnabled>
+    <PackageCertificateThumbprint>
+    </PackageCertificateThumbprint>
     <HockeyAppResourceId>b7521c5cde744a08831b27d83de35f13</HockeyAppResourceId>
+    <AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
+    <GenerateAppInstallerFile>False</GenerateAppInstallerFile>
+    <AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
+    <GenerateTestArtifacts>True</GenerateTestArtifacts>
+    <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -232,13 +237,13 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="Connected Services\HockeyApp\ConnectedService.json" />
-    <None Include="Package.StoreAssociation.xml" />
     <Content Include="Properties\Default.rd.xml" />
     <Content Include="Assets\LockScreenLogo.scale-200.png" />
     <Content Include="Assets\Square150x150Logo.scale-200.png" />
     <Content Include="Assets\Square44x44Logo.scale-200.png" />
     <Content Include="Assets\Square44x44Logo.targetsize-24_altform-unplated.png" />
     <Content Include="Assets\Wide310x150Logo.scale-200.png" />
+    <None Include="YoutubeApp_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -328,24 +333,6 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Google.Apis">
-      <Version>1.30.0-beta02</Version>
-    </PackageReference>
-    <PackageReference Include="Google.Apis.Auth">
-      <Version>1.30.0-beta02</Version>
-    </PackageReference>
-    <PackageReference Include="Google.Apis.Core">
-      <Version>1.30.0-beta02</Version>
-    </PackageReference>
-    <PackageReference Include="Google.Apis.Drive.v3">
-      <Version>1.30.0.1044</Version>
-    </PackageReference>
-    <PackageReference Include="Google.Apis.Oauth2.v2">
-      <Version>1.29.2.994</Version>
-    </PackageReference>
-    <PackageReference Include="Google.Apis.YouTube.v3">
-      <Version>1.29.2.1006</Version>
-    </PackageReference>
     <PackageReference Include="HockeySDK.UWP">
       <Version>4.1.6</Version>
     </PackageReference>
@@ -369,11 +356,29 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Youtube App_StoreKey.pfx" />
-    <None Include="YoutubeAppKey.snk" />
+    <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <ItemGroup>
-    <WCFMetadata Include="Connected Services\" />
+    <ProjectReference Include="..\Google.Apis.Auth\Google.Apis.Auth.csproj">
+      <Project>{f18a5e42-6f4d-4169-9310-8590fce0d942}</Project>
+      <Name>Google.Apis.Auth</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Google.Apis.Core\Google.Apis.Core.csproj">
+      <Project>{e5692b5c-c746-45bc-9b77-063c0366d142}</Project>
+      <Name>Google.Apis.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Google.Apis.Oauth2.v2\Google.Apis.Oauth2.v2.csproj">
+      <Project>{e8632d6a-1935-4f1f-a37c-b7bc8889e089}</Project>
+      <Name>Google.Apis.Oauth2.v2</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Google.Apis.YouTube.v3\Google.Apis.YouTube.v3.csproj">
+      <Project>{76e2327d-8e1c-4f35-867b-1c4e09ab3bea}</Project>
+      <Name>Google.Apis.YouTube.v3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Google.Apis\Google.Apis.csproj">
+      <Project>{7eda0377-99bc-4971-af9f-f83782500d1f}</Project>
+      <Name>Google.Apis</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
@@ -382,7 +387,8 @@
     <SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>YoutubeAppKey.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\WindowsXaml\v$(VisualStudioVersion)\Microsoft.Windows.UI.Xaml.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

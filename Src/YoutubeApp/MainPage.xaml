@@ -25,29 +25,83 @@
             <RowDefinition/>
         </Grid.RowDefinitions>
 
-        <Grid x:FieldModifier="public" x:Name="Toolbar" Background="{StaticResource AppBackgroundLighter}" Height="56">
+        <Grid x:FieldModifier="public" 
+              x:Name="Toolbar" 
+              Background="{StaticResource AppBackgroundLighter}" 
+              Height="56">
+            
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
-                <Button x:Name="HamburgerButton" FontFamily="Segoe MDL2 Assets" Content="&#xE700;" FontSize="18" Margin="20,0" Background="Transparent" Click="HamburgerButton_Click" Style="{StaticResource TransparentButtonStyle}"/>
-                <TextBox x:Name="SearchBox" Width="500px" VerticalAlignment="Center" PlaceholderText="Search" KeyDown="SearchBox_KeyDown" BorderThickness="1" Style="{StaticResource TextBoxCleanStyle}" Background="{StaticResource TextBoxBackground}" BorderBrush="{StaticResource BorderColor}" x:FieldModifier="public"/>
-                <Button x:Name="SearchButton" Background="{StaticResource ButtonBackground}" Padding="20,0" Height="32" FontFamily="Segoe MDL2 Assets" Content="&#xE094;" Click="Search_Click" Style="{StaticResource TransparentButtonStyle}"/>
+                <Button x:Name="HamburgerButton" 
+                        FontFamily="Segoe MDL2 Assets" 
+                        Content="&#xE700;" 
+                        FontSize="18" Margin="20,0" 
+                        Background="Transparent" 
+                        Click="HamburgerButton_Click" 
+                        Style="{StaticResource TransparentButtonStyle}"/>
+                
+                <TextBox x:Name="SearchBox" 
+                         Width="500px" 
+                         VerticalAlignment="Center" 
+                         PlaceholderText="Search" 
+                         KeyDown="SearchBox_KeyDown" 
+                         BorderThickness="1" 
+                         Style="{StaticResource TextBoxCleanStyle}"
+                         Background="{StaticResource TextBoxBackground}"
+                         BorderBrush="{StaticResource BorderColor}"
+                         x:FieldModifier="public"/>
+                
+                <Button x:Name="SearchButton" 
+                        Background="{StaticResource ButtonBackground}" 
+                        Padding="20,0"
+                        Height="32" 
+                        FontFamily="
+                        Segoe MDL2 Assets" 
+                        Content="&#xE094;" 
+                        Click="Search_Click" 
+                        Style="{StaticResource TransparentButtonStyle}"/>
             </StackPanel>
-            <StackPanel x:Name="stkpnlLoginInfo" Orientation="Horizontal" HorizontalAlignment="Right" Padding="10,0">
-                <TextBlock x:Name="txtLoginName" VerticalAlignment="Center" Padding="10,0"/>
-                <Ellipse x:Name="imgProfileIcon" Width="35" Height="35" VerticalAlignment="Center"/>
-                <Button x:Name="btnLoginFlyout" Content="&#xE712;" FontFamily="Segoe MDL2 Assets" FontSize="20" Margin="10,0" Style="{StaticResource TransparentButtonStyle}" Tapped="BtnLoginFlyout_Tapped">
+            <StackPanel x:Name="stkpnlLoginInfo" 
+                        Orientation="Horizontal" 
+                        HorizontalAlignment="Right" 
+                        Padding="10,0">
+                <TextBlock x:Name="txtLoginName" 
+                           VerticalAlignment="Center"
+                           Padding="10,0"/>
+                <Ellipse x:Name="imgProfileIcon"
+                         Width="35" Height="35"
+                         VerticalAlignment="Center"/>
+                <Button x:Name="btnLoginFlyout" 
+                        Content="&#xE712;" 
+                        FontFamily="Segoe MDL2 Assets" 
+                        FontSize="20" 
+                        Margin="10,0" 
+                        Style="{StaticResource TransparentButtonStyle}"
+                        Tapped="BtnLoginFlyout_Tapped">
+                    
                     <FlyoutBase.AttachedFlyout>
                         <MenuFlyout>
-                            <MenuFlyoutItem x:Name="btnMyChannel" Tapped="BtnMyChannel_Tapped" Text="My Channel" Height="50">
+                            <MenuFlyoutItem x:Name="btnMyChannel" 
+                                            Tapped="BtnMyChannel_Tapped" 
+                                            Text="My Channel" 
+                                            Height="50">
                                 <MenuFlyoutItem.Icon>
                                     <FontIcon Glyph="&#xE716;"/>
                                 </MenuFlyoutItem.Icon>
                             </MenuFlyoutItem>
-                            <MenuFlyoutItem x:Name="btnSettings" Text="Settings" Height="50" Click="btnSettings_Click">
+                            
+                            <MenuFlyoutItem x:Name="btnSettings" 
+                                            Text="Settings" 
+                                            Height="50" 
+                                            Click="btnSettings_Click">
                                 <MenuFlyoutItem.Icon>
                                     <FontIcon Glyph="&#xE713;"/>
                                 </MenuFlyoutItem.Icon>
                             </MenuFlyoutItem>
-                            <MenuFlyoutItem x:Name="btnSignOut" Tapped="BtnSignOut_Tapped" Text="Sign Out" Height="50">
+                            
+                            <MenuFlyoutItem x:Name="btnSignOut" 
+                                            Click="BtnSignOut_Tapped" 
+                                            Text="Sign Out"
+                                            Height="50">
                                 <MenuFlyoutItem.Icon>
                                     <FontIcon Glyph="&#xE830;"/>
                                 </MenuFlyoutItem.Icon>

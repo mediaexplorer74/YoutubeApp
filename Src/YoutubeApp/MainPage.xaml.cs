@@ -3,7 +3,7 @@ using Google.Apis.Oauth2.v2;
 using Google.Apis.Services;
 using Google.Apis.YouTube.v3;
 using Google.Apis.YouTube.v3.Data;
-using Google.Apis.Drive.v3;
+//using Google.Apis.Drive.v3;
 using MetroLog;
 using Newtonsoft.Json;
 using System;
@@ -91,6 +91,7 @@ namespace YTApp
         {
             Log.Info("Loading subscriptions");
             LoadSubscriptions();
+
             contentFrame.Navigate(typeof(HomePage));
             UpdateLoginDetails();
 
@@ -133,9 +134,10 @@ namespace YTApp
 
         #endregion Startup
 
+
         #region Menu
 
-        #region Subscriptions
+        // region Subscriptions ------------------------------------------------
 
         public async void LoadSubscriptions()
         {
@@ -175,7 +177,8 @@ namespace YTApp
                 }
                 catch (Exception ex)
                 {
-                    Log.Error(string.Format("Subscription failed to load. Object:", JsonConvert.SerializeObject(subscription)));
+                    Log.Error(string.Format("Subscription failed to load. Object:", 
+                        JsonConvert.SerializeObject(subscription)));
                     Log.Error(ex.Message);
                 }
             }
@@ -203,7 +206,8 @@ namespace YTApp
                         }
                         catch (Exception ex)
                         {
-                            Log.Error(string.Format("Subscription failed to load. Object:", JsonConvert.SerializeObject(subscription)));
+                            Log.Error(string.Format("Subscription failed to load. Object:", 
+                                JsonConvert.SerializeObject(subscription)));
                             Log.Error(ex.Message);
                         }
                     }
@@ -240,11 +244,13 @@ namespace YTApp
             contentFrame.Navigate(typeof(ChannelPage));
         }
 
-        #endregion Subscriptions
+        // endregion Subscriptions -------------------------------------------
+
 
         public async void UpdateLoginDetails()
         {
             UserCredential credential = default;
+
             try
             {
                 credential = await GoogleWebAuthorizationBroker.AuthorizeAsync(
@@ -329,6 +335,7 @@ namespace YTApp
 
         #endregion Menu
 
+
         #region Search
 
         private void Search_Click(object sender, RoutedEventArgs e)
@@ -350,6 +357,7 @@ namespace YTApp
 
         #endregion Search
 
+
         #region Play Video
 
         public void StartVideo(string Id)
@@ -361,23 +369,42 @@ namespace YTApp
 
         #endregion Play Video
 
+
         #region User Info Region
 
-        private async void BtnSignOut_Tapped(object sender, TappedRoutedEventArgs e)
+        private async void BtnSignOut_Tapped(object sender, RoutedEventArgs e)
         {
-            UserCredential credential = await GoogleWebAuthorizationBroker.AuthorizeAsync(
-                new ClientSecrets
-            {
-                ClientId = Constants.ClientID,                   
-                ClientSecret = Constants.ClientSecret
-            }, new[] 
-            { 
-                YouTubeService.Scope.Youtube, 
-                Oauth2Service.Scope.UserinfoProfile 
-            },
-            "user", CancellationToken.None);
+            UserCredential credential = default;
 
-            await credential.RevokeTokenAsync(CancellationToken.None);
+            try
+            {
+                // phase 1
+                credential = await GoogleWebAuthorizationBroker.AuthorizeAsync(
+                    new ClientSecrets
+                    {
+                        ClientId = Constants.ClientID,
+                        ClientSecret = Constants.ClientSecret
+                    }, new[]
+                {
+                YouTubeService.Scope.Youtube,
+                Oauth2Service.Scope.UserinfoProfile
+                },
+                "user", CancellationToken.None);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("[ex] SignOut handling (phase 1 )error: " + ex.Message);
+            }
+
+            try
+            {
+                // phase 2 
+                await credential.RevokeTokenAsync(CancellationToken.None);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("[ex] SignOut handling (phase 2 ) error: " + ex.Message);
+            }
 
             //Clear Login details
             txtLoginName.Text = "";
@@ -411,7 +438,10 @@ namespace YTApp
         {
             contentFrame.Navigate(typeof(SettingsPage));
         }
+
         #endregion User Info Region
+
+
 
         #region Download
 
@@ -462,6 +492,7 @@ namespace YTApp
         }
 
         #endregion Download
+
 
         #region Notifications
 

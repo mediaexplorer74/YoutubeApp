@@ -9,6 +9,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -274,11 +275,29 @@ namespace YTApp.Pages
 
         private async void SubscribeButton_Click(object sender, RoutedEventArgs e)
         {
-            UserCredential credential = await GoogleWebAuthorizationBroker.AuthorizeAsync(new ClientSecrets
+            UserCredential credential = default;
+
+            try
             {
-                ClientId = Constants.ClientID,
-                ClientSecret = Constants.ClientSecret
-            }, new[] { YouTubeService.Scope.Youtube }, "user", System.Threading.CancellationToken.None);
+                credential = await GoogleWebAuthorizationBroker.AuthorizeAsync
+                ( 
+                    new ClientSecrets
+                    {
+                        ClientId = Constants.ClientID,
+                        ClientSecret = Constants.ClientSecret
+                    }, 
+                    new[] 
+                    { 
+                        YouTubeService.Scope.Youtube 
+                    }, 
+                    "user", 
+                    System.Threading.CancellationToken.None 
+                );
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("[ex] SubscribeButton handling error: " + ex.Message);
+            }
 
             // Create the service.
             var service = new YouTubeService(new BaseClientService.Initializer()

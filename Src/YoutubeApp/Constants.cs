@@ -1,5 +1,5 @@
-﻿using Google.Apis.Drive.v3;
-using Google.Apis.Drive.v3.Data;
+﻿//using Google.Apis.Drive.v3;
+//using Google.Apis.Drive.v3.Data;
 using Google.Apis.YouTube.v3;
 using Google.Apis.YouTube.v3.Data;
 using Newtonsoft.Json;
@@ -16,13 +16,13 @@ namespace YTApp.Classes
     static class Constants
     {
         static public readonly string ApiKey =
-          "";
-
+           "";
+       
         static public readonly string ClientID =
            "";
-
+       
         static public readonly string ClientSecret =
-           "";
+            "";
         
         static public Google.Apis.Auth.OAuth2.Responses.TokenResponse Token;
 

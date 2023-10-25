@@ -1,0 +1,355 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{76E2327D-8E1C-4F35-867B-1C4E09AB3BEA}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Google.Apis.YouTube.v3</RootNamespace>
+    <AssemblyName>Google.Apis.YouTube.v3</AssemblyName>
+    <DefaultLanguage>ru-RU</DefaultLanguage>
+    <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
+    <TargetPlatformVersion Condition=" '$(TargetPlatformVersion)' == '' ">10.0.19041.0</TargetPlatformVersion>
+    <TargetPlatformMinVersion>10.0.14393.0</TargetPlatformMinVersion>
+    <MinimumVisualStudioVersion>14</MinimumVisualStudioVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{A5A43C5B-DE2A-4C0C-9213-0A381AF9435A};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>full</DebugType>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <PlatformTarget>x86</PlatformTarget>
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <Optimize>true</Optimize>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM'">
+    <PlatformTarget>ARM</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\ARM\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>full</DebugType>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|ARM'">
+    <PlatformTarget>ARM</PlatformTarget>
+    <OutputPath>bin\ARM\Release\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <Optimize>true</Optimize>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM64'">
+    <PlatformTarget>ARM64</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\ARM64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>full</DebugType>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|ARM64'">
+    <PlatformTarget>ARM64</PlatformTarget>
+    <OutputPath>bin\ARM64\Release\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <Optimize>true</Optimize>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <PlatformTarget>x64</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>full</DebugType>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <PlatformTarget>x64</PlatformTarget>
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <Optimize>true</Optimize>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup>
+    <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="ActivitiesResource.cs" />
+    <Compile Include="CaptionsResource.cs" />
+    <Compile Include="ChannelBannersResource.cs" />
+    <Compile Include="ChannelSectionsResource.cs" />
+    <Compile Include="ChannelsResource.cs" />
+    <Compile Include="CommentsResource.cs" />
+    <Compile Include="CommentThreadsResource.cs" />
+    <Compile Include="Data\AccessPolicy.cs" />
+    <Compile Include="Data\Activity.cs" />
+    <Compile Include="Data\ActivityContentDetails.cs" />
+    <Compile Include="Data\ActivityContentDetailsBulletin.cs" />
+    <Compile Include="Data\ActivityContentDetailsChannelItem.cs" />
+    <Compile Include="Data\ActivityContentDetailsComment.cs" />
+    <Compile Include="Data\ActivityContentDetailsFavorite.cs" />
+    <Compile Include="Data\ActivityContentDetailsLike.cs" />
+    <Compile Include="Data\ActivityContentDetailsPlaylistItem.cs" />
+    <Compile Include="Data\ActivityContentDetailsPromotedItem.cs" />
+    <Compile Include="Data\ActivityContentDetailsRecommendation.cs" />
+    <Compile Include="Data\ActivityContentDetailsSocial.cs" />
+    <Compile Include="Data\ActivityContentDetailsSubscription.cs" />
+    <Compile Include="Data\ActivityContentDetailsUpload.cs" />
+    <Compile Include="Data\ActivityListResponse.cs" />
+    <Compile Include="Data\ActivitySnippet.cs" />
+    <Compile Include="Data\Caption.cs" />
+    <Compile Include="Data\CaptionListResponse.cs" />
+    <Compile Include="Data\CaptionSnippet.cs" />
+    <Compile Include="Data\CdnSettings.cs" />
+    <Compile Include="Data\Channel.cs" />
+    <Compile Include="Data\ChannelAuditDetails.cs" />
+    <Compile Include="Data\ChannelBannerResource.cs" />
+    <Compile Include="Data\ChannelBrandingSettings.cs" />
+    <Compile Include="Data\ChannelContentDetails.cs" />
+    <Compile Include="Data\ChannelContentOwnerDetails.cs" />
+    <Compile Include="Data\ChannelConversionPing.cs" />
+    <Compile Include="Data\ChannelConversionPings.cs" />
+    <Compile Include="Data\ChannelListResponse.cs" />
+    <Compile Include="Data\ChannelLocalization.cs" />
+    <Compile Include="Data\ChannelProfileDetails.cs" />
+    <Compile Include="Data\ChannelSection.cs" />
+    <Compile Include="Data\ChannelSectionContentDetails.cs" />
+    <Compile Include="Data\ChannelSectionListResponse.cs" />
+    <Compile Include="Data\ChannelSectionLocalization.cs" />
+    <Compile Include="Data\ChannelSectionSnippet.cs" />
+    <Compile Include="Data\ChannelSectionTargeting.cs" />
+    <Compile Include="Data\ChannelSettings.cs" />
+    <Compile Include="Data\ChannelSnippet.cs" />
+    <Compile Include="Data\ChannelStatistics.cs" />
+    <Compile Include="Data\ChannelStatus.cs" />
+    <Compile Include="Data\ChannelTopicDetails.cs" />
+    <Compile Include="Data\Comment.cs" />
+    <Compile Include="Data\CommentListResponse.cs" />
+    <Compile Include="Data\CommentSnippet.cs" />
+    <Compile Include="Data\CommentThread.cs" />
+    <Compile Include="Data\CommentThreadListResponse.cs" />
+    <Compile Include="Data\CommentThreadReplies.cs" />
+    <Compile Include="Data\CommentThreadSnippet.cs" />
+    <Compile Include="Data\ContentRating.cs" />
+    <Compile Include="Data\FanFundingEvent.cs" />
+    <Compile Include="Data\FanFundingEventListResponse.cs" />
+    <Compile Include="Data\FanFundingEventSnippet.cs" />
+    <Compile Include="Data\GeoPoint.cs" />
+    <Compile Include="Data\GuideCategory.cs" />
+    <Compile Include="Data\GuideCategoryListResponse.cs" />
+    <Compile Include="Data\GuideCategorySnippet.cs" />
+    <Compile Include="Data\I18nLanguage.cs" />
+    <Compile Include="Data\I18nLanguageListResponse.cs" />
+    <Compile Include="Data\I18nLanguageSnippet.cs" />
+    <Compile Include="Data\I18nRegion.cs" />
+    <Compile Include="Data\I18nRegionListResponse.cs" />
+    <Compile Include="Data\I18nRegionSnippet.cs" />
+    <Compile Include="Data\ImageSettings.cs" />
+    <Compile Include="Data\IngestionInfo.cs" />
+    <Compile Include="Data\InvideoBranding.cs" />
+    <Compile Include="Data\InvideoPosition.cs" />
+    <Compile Include="Data\InvideoPromotion.cs" />
+    <Compile Include="Data\InvideoTiming.cs" />
+    <Compile Include="Data\LanguageTag.cs" />
+    <Compile Include="Data\LiveBroadcast.cs" />
+    <Compile Include="Data\LiveBroadcastContentDetails.cs" />
+    <Compile Include="Data\LiveBroadcastListResponse.cs" />
+    <Compile Include="Data\LiveBroadcastSnippet.cs" />
+    <Compile Include="Data\LiveBroadcastStatistics.cs" />
+    <Compile Include="Data\LiveBroadcastStatus.cs" />
+    <Compile Include="Data\LiveChatBan.cs" />
+    <Compile Include="Data\LiveChatBanSnippet.cs" />
+    <Compile Include="Data\LiveChatFanFundingEventDetails.cs" />
+    <Compile Include="Data\LiveChatMessage.cs" />
+    <Compile Include="Data\LiveChatMessageAuthorDetails.cs" />
+    <Compile Include="Data\LiveChatMessageDeletedDetails.cs" />
+    <Compile Include="Data\LiveChatMessageListResponse.cs" />
+    <Compile Include="Data\LiveChatMessageRetractedDetails.cs" />
+    <Compile Include="Data\LiveChatMessageSnippet.cs" />
+    <Compile Include="Data\LiveChatModerator.cs" />
+    <Compile Include="Data\LiveChatModeratorListResponse.cs" />
+    <Compile Include="Data\LiveChatModeratorSnippet.cs" />
+    <Compile Include="Data\LiveChatPollClosedDetails.cs" />
+    <Compile Include="Data\LiveChatPollEditedDetails.cs" />
+    <Compile Include="Data\LiveChatPollItem.cs" />
+    <Compile Include="Data\LiveChatPollOpenedDetails.cs" />
+    <Compile Include="Data\LiveChatPollVotedDetails.cs" />
+    <Compile Include="Data\LiveChatSuperChatDetails.cs" />
+    <Compile Include="Data\LiveChatTextMessageDetails.cs" />
+    <Compile Include="Data\LiveChatUserBannedMessageDetails.cs" />
+    <Compile Include="Data\LiveStream.cs" />
+    <Compile Include="Data\LiveStreamConfigurationIssue.cs" />
+    <Compile Include="Data\LiveStreamContentDetails.cs" />
+    <Compile Include="Data\LiveStreamHealthStatus.cs" />
+    <Compile Include="Data\LiveStreamListResponse.cs" />
+    <Compile Include="Data\LiveStreamSnippet.cs" />
+    <Compile Include="Data\LiveStreamStatus.cs" />
+    <Compile Include="Data\LocalizedProperty.cs" />
+    <Compile Include="Data\LocalizedString.cs" />
+    <Compile Include="Data\MonitorStreamInfo.cs" />
+    <Compile Include="Data\PageInfo.cs" />
+    <Compile Include="Data\Playlist.cs" />
+    <Compile Include="Data\PlaylistContentDetails.cs" />
+    <Compile Include="Data\PlaylistItem.cs" />
+    <Compile Include="Data\PlaylistItemContentDetails.cs" />
+    <Compile Include="Data\PlaylistItemListResponse.cs" />
+    <Compile Include="Data\PlaylistItemSnippet.cs" />
+    <Compile Include="Data\PlaylistItemStatus.cs" />
+    <Compile Include="Data\PlaylistListResponse.cs" />
+    <Compile Include="Data\PlaylistLocalization.cs" />
+    <Compile Include="Data\PlaylistPlayer.cs" />
+    <Compile Include="Data\PlaylistSnippet.cs" />
+    <Compile Include="Data\PlaylistStatus.cs" />
+    <Compile Include="Data\PromotedItem.cs" />
+    <Compile Include="Data\PromotedItemId.cs" />
+    <Compile Include="Data\PropertyValue.cs" />
+    <Compile Include="Data\ResourceId.cs" />
+    <Compile Include="Data\SearchListResponse.cs" />
+    <Compile Include="Data\SearchResult.cs" />
+    <Compile Include="Data\SearchResultSnippet.cs" />
+    <Compile Include="Data\Sponsor.cs" />
+    <Compile Include="Data\SponsorListResponse.cs" />
+    <Compile Include="Data\SponsorSnippet.cs" />
+    <Compile Include="Data\Subscription.cs" />
+    <Compile Include="Data\SubscriptionContentDetails.cs" />
+    <Compile Include="Data\SubscriptionListResponse.cs" />
+    <Compile Include="Data\SubscriptionSnippet.cs" />
+    <Compile Include="Data\SubscriptionSubscriberSnippet.cs" />
+    <Compile Include="Data\SuperChatEvent.cs" />
+    <Compile Include="Data\SuperChatEventListResponse.cs" />
+    <Compile Include="Data\SuperChatEventSnippet.cs" />
+    <Compile Include="Data\Thumbnail.cs" />
+    <Compile Include="Data\ThumbnailDetails.cs" />
+    <Compile Include="Data\ThumbnailSetResponse.cs" />
+    <Compile Include="Data\TokenPagination.cs" />
+    <Compile Include="Data\Video.cs" />
+    <Compile Include="Data\VideoAbuseReport.cs" />
+    <Compile Include="Data\VideoAbuseReportReason.cs" />
+    <Compile Include="Data\VideoAbuseReportReasonListResponse.cs" />
+    <Compile Include="Data\VideoAbuseReportReasonSnippet.cs" />
+    <Compile Include="Data\VideoAbuseReportSecondaryReason.cs" />
+    <Compile Include="Data\VideoAgeGating.cs" />
+    <Compile Include="Data\VideoCategory.cs" />
+    <Compile Include="Data\VideoCategoryListResponse.cs" />
+    <Compile Include="Data\VideoCategorySnippet.cs" />
+    <Compile Include="Data\VideoContentDetails.cs" />
+    <Compile Include="Data\VideoContentDetailsRegionRestriction.cs" />
+    <Compile Include="Data\VideoFileDetails.cs" />
+    <Compile Include="Data\VideoFileDetailsAudioStream.cs" />
+    <Compile Include="Data\VideoFileDetailsVideoStream.cs" />
+    <Compile Include="Data\VideoGetRatingResponse.cs" />
+    <Compile Include="Data\VideoListResponse.cs" />
+    <Compile Include="Data\VideoLiveStreamingDetails.cs" />
+    <Compile Include="Data\VideoLocalization.cs" />
+    <Compile Include="Data\VideoMonetizationDetails.cs" />
+    <Compile Include="Data\VideoPlayer.cs" />
+    <Compile Include="Data\VideoProcessingDetails.cs" />
+    <Compile Include="Data\VideoProcessingDetailsProcessingProgress.cs" />
+    <Compile Include="Data\VideoProjectDetails.cs" />
+    <Compile Include="Data\VideoRating.cs" />
+    <Compile Include="Data\VideoRecordingDetails.cs" />
+    <Compile Include="Data\VideoSnippet.cs" />
+    <Compile Include="Data\VideoStatistics.cs" />
+    <Compile Include="Data\VideoStatus.cs" />
+    <Compile Include="Data\VideoSuggestions.cs" />
+    <Compile Include="Data\VideoSuggestionsTagSuggestion.cs" />
+    <Compile Include="Data\VideoTopicDetails.cs" />
+    <Compile Include="Data\WatchSettings.cs" />
+    <Compile Include="FanFundingEventsResource.cs" />
+    <Compile Include="GuideCategoriesResource.cs" />
+    <Compile Include="I18nLanguagesResource.cs" />
+    <Compile Include="I18nRegionsResource.cs" />
+    <Compile Include="LiveBroadcastsResource.cs" />
+    <Compile Include="LiveChatBansResource.cs" />
+    <Compile Include="LiveChatMessagesResource.cs" />
+    <Compile Include="LiveChatModeratorsResource.cs" />
+    <Compile Include="LiveStreamsResource.cs" />
+    <Compile Include="PlaylistItemsResource.cs" />
+    <Compile Include="PlaylistsResource.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SearchResource.cs" />
+    <Compile Include="SponsorsResource.cs" />
+    <Compile Include="SubscriptionsResource.cs" />
+    <Compile Include="SuperChatEventsResource.cs" />
+    <Compile Include="ThumbnailsResource.cs" />
+    <Compile Include="VideoAbuseReportReasonsResource.cs" />
+    <Compile Include="VideoCategoriesResource.cs" />
+    <Compile Include="VideosResource.cs" />
+    <Compile Include="WatermarksResource.cs" />
+    <Compile Include="YouTubeBaseServiceRequest.cs" />
+    <Compile Include="YouTubeService.cs" />
+    <EmbeddedResource Include="Properties\Google.Apis.YouTube.v3.rd.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
+      <Version>6.2.14</Version>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Google.Apis.Core\Google.Apis.Core.csproj">
+      <Project>{e5692b5c-c746-45bc-9b77-063c0366d142}</Project>
+      <Name>Google.Apis.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Google.Apis\Google.Apis.csproj">
+      <Project>{7eda0377-99bc-4971-af9f-f83782500d1f}</Project>
+      <Name>Google.Apis</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
+    <VisualStudioVersion>14.0</VisualStudioVersion>
+  </PropertyGroup>
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\WindowsXaml\v$(VisualStudioVersion)\Microsoft.Windows.UI.Xaml.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
