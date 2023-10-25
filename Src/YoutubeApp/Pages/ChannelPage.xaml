@@ -38,7 +38,12 @@
                             <TextBlock x:Name="VideoCount" Foreground="{StaticResource AppTextSecondary}"/>
                         </StackPanel>
                     </StackPanel>
-                    <Button x:Name="SubscribeButton" Background="#f22" BorderThickness="0" Content="Subscribe" Width="150" Height="50" HorizontalAlignment="Right" Style="{StaticResource RoundButtonStyle}" Click="SubscribeButton_Click"/>
+                    <Button x:Name="SubscribeButton" Background="#f22" 
+                            BorderThickness="0" Content="Subscribe" Width="150" 
+                            Height="52" 
+                            HorizontalAlignment="Right" 
+                            Style="{StaticResource RoundButtonStyle}" 
+                            Click="SubscribeButton_Click"/>
                 </Grid>
                 <Pivot x:Name="rootPivot" Margin="70,10,30,10">
                     <PivotItem x:Name="HomePivot" Header="Home">
@@ -82,15 +87,25 @@
                                                 </lclctrls:GridViewWithXProperty>
                                             </controls:HeaderedContentControl>
 
-                                            <Button x:Name="btnMoveLeft" Background="{StaticResource ButtonBackground}" Content="&#xE76B;" Style="{StaticResource CircularButtonStyle}" FontFamily="Segoe MDL2 Assets" Width="50" Height="50" HorizontalAlignment="Left" Margin="10,0" Click="PlaylistMoveLeft_Click"></Button>
-                                            <Button x:Name="btnMoveRight" Background="{StaticResource ButtonBackground}" Content="&#xE76C;" Style="{StaticResource CircularButtonStyle}" FontFamily="Segoe MDL2 Assets" Width="50" Height="50" HorizontalAlignment="Right" Margin="10,0" Click="PlaylistMoveRight_Click"></Button>
+                                            <Button x:Name="btnMoveLeft" Background="{StaticResource ButtonBackground}" Content="&#xE76B;" Style="{StaticResource CircularButtonStyle}"
+                                                    FontFamily="Segoe MDL2 Assets" Width="52"
+                                                    Height="52" HorizontalAlignment="Left"
+                                                    Margin="10,0" Click="PlaylistMoveLeft_Click"></Button>
+                                            <Button x:Name="btnMoveRight"
+                                                    Background="{StaticResource ButtonBackground}" Content="&#xE76C;" Style="{StaticResource CircularButtonStyle}"
+                                                    FontFamily="Segoe MDL2 Assets"
+                                                    Width="52" Height="52" 
+                                                    HorizontalAlignment="Right"
+                                                    Margin="10,0" 
+                                                    Click="PlaylistMoveRight_Click"></Button>
                                         </Grid>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
                             <Grid x:Name="featuredChannelsCtrlContainer">
                                 <controls:HeaderedContentControl  Header="Featured Channels" SizeChanged="FeaturedChannels_SizeChanged">
-                                    <lclctrls:GridViewWithXProperty x:Name="featuredChannelsCtrl" ItemsSource="{x:Bind featuredChannels, Mode=OneWay}" ItemClick="FeaturedChannels_ItemClick" XValue="0" SelectionMode="None" IsItemClickEnabled="True" >
+                                    <lclctrls:GridViewWithXProperty x:Name="featuredChannelsCtrl" ItemsSource="{x:Bind featuredChannels, Mode=OneWay}"
+                                                                    ItemClick="FeaturedChannels_ItemClick" XValue="0" SelectionMode="None" IsItemClickEnabled="True" >
                                         <lclctrls:GridViewWithXProperty.ItemsPanel>
                                             <ItemsPanelTemplate>
                                                 <StackPanel x:Name="VideoItems" Orientation="Horizontal" >
@@ -121,8 +136,18 @@
                                     </lclctrls:GridViewWithXProperty>
                                 </controls:HeaderedContentControl>
 
-                                <Button x:Name="btnMoveLeft" Background="{StaticResource ButtonBackground}" Content="&#xE76B;" Style="{StaticResource CircularButtonStyle}" FontFamily="Segoe MDL2 Assets" Width="50" Height="50" HorizontalAlignment="Left" Margin="10,0" Click="FeaturedChannelsMoveLeft_Click"></Button>
-                                <Button x:Name="btnMoveRight" Background="{StaticResource ButtonBackground}" Content="&#xE76C;" Style="{StaticResource CircularButtonStyle}" FontFamily="Segoe MDL2 Assets" Width="50" Height="50" HorizontalAlignment="Right" Margin="10,0" Click="FeaturedChannelsMoveRight_Click"></Button>
+                                <Button x:Name="btnMoveLeft" Background="{StaticResource ButtonBackground}" Content="&#xE76B;" 
+                                        Style="{StaticResource CircularButtonStyle}" 
+                                        FontFamily="Segoe MDL2 Assets" 
+                                        Width="52" Height="52" 
+                                        HorizontalAlignment="Left" Margin="10,0" 
+                                        Click="FeaturedChannelsMoveLeft_Click"></Button>
+                                <Button x:Name="btnMoveRight" 
+                                        Background="{StaticResource ButtonBackground}"
+                                        Content="&#xE76C;" Style="{StaticResource CircularButtonStyle}" 
+                                        FontFamily="Segoe MDL2 Assets" 
+                                        Width="52" Height="52" 
+                                        HorizontalAlignment="Right" Margin="10,0" Click="FeaturedChannelsMoveRight_Click"></Button>
                             </Grid>
                         </StackPanel>
                     </PivotItem>

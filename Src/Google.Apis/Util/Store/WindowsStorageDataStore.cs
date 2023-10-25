@@ -6,6 +6,7 @@
 
 using Google.Apis.Json;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,62 +16,125 @@ namespace Google.Apis.Util.Store
 {
   public class WindowsStorageDataStore : IDataStore
   {
-    public WindowsStorageDataStore(StorageFolder folder) => this.Folder = folder;
+    public WindowsStorageDataStore(StorageFolder folder)
+    {
+        this.Folder = folder;
+    }
 
     public StorageFolder Folder { get; }
 
     private async Task EnsureFolderExists()
     {
       StorageFolder parent = await this.Folder.GetParentAsync();
+
       if (parent == null)
+      {
         throw new InvalidOperationException("Storage directory does not exist.");
+      }
+
       if (await parent.TryGetItemAsync(this.Folder.Name) != null)
+      {
         return;
-      StorageFolder folderAsync = await parent.CreateFolderAsync(this.Folder.Name, (CreationCollisionOption) 2);
+      }
+      StorageFolder folderAsync = await parent.CreateFolderAsync(
+          this.Folder.Name, (CreationCollisionOption) 2);
     }
 
-    private static string GenerateStoredKey(string key, Type t) => string.Format("{0}-{1}", (object) t.FullName, (object) key);
+        private static string GenerateStoredKey(string key, Type t)
+        {
+            return string.Format("{0}-{1}", (object)t.FullName, (object)key);
+        }
 
     public async Task ClearAsync()
     {
       try
       {
-        await this.Folder.DeleteAsync();
+         Debug.WriteLine("[!] DeleteAsync: tried to process!!!");
+                //await this.Folder.DeleteAsync();
       }
-      catch
+      catch (Exception ex)
       {
+        Debug.WriteLine("[ex] DeleteAsync bug: " + ex.Message);
       }
     }
 
     public async Task DeleteAsync<T>(string key)
     {
-      IStorageItem itemAsync = await this.Folder.TryGetItemAsync(WindowsStorageDataStore.GenerateStoredKey(key, typeof (T)));
+      IStorageItem itemAsync = 
+        await this.Folder.TryGetItemAsync(
+            WindowsStorageDataStore.GenerateStoredKey(key, typeof (T)));
+
       if (itemAsync == null)
+      {
         return;
+      }
       await itemAsync.DeleteAsync();
     }
 
     public async Task<T> GetAsync<T>(string key)
     {
       key.ThrowIfNullOrEmpty(nameof (key));
-      IStorageItem itemAsync = await this.Folder.TryGetItemAsync(WindowsStorageDataStore.GenerateStoredKey(key, typeof (T)));
+
+            IStorageItem itemAsync = default;
+
+      try
+      {
+        itemAsync = await this.Folder.TryGetItemAsync(
+            WindowsStorageDataStore.GenerateStoredKey(key, typeof(T)));
+      }
+      catch (Exception ex)
+      {
+        Debug.WriteLine("[ex] TryGetItemAsync bug: " + ex.Message);
+      }
+
       if (itemAsync == null)
         return default (T);
-      using (Stream stream = await WindowsRuntimeStorageExtensions.OpenStreamForReadAsync((IStorageFile) itemAsync))
+
+      using (Stream stream = await WindowsRuntimeStorageExtensions.OpenStreamForReadAsync(
+          (IStorageFile) itemAsync))
       {
         MemoryStream ms = new MemoryStream();
+        
         await stream.CopyToAsync((Stream) ms);
-        return NewtonsoftJsonSerializer.Instance.Deserialize<T>(Encoding.UTF8.GetString(ms.ToArray()));
+        
+        return NewtonsoftJsonSerializer.Instance.Deserialize<T>(
+            Encoding.UTF8.GetString(ms.ToArray()));
       }
     }
 
     public async Task StoreAsync<T>(string key, T value)
     {
       key.ThrowIfNullOrEmpty(nameof (key));
+
       await this.EnsureFolderExists();
-      byte[] serialized = Encoding.UTF8.GetBytes(NewtonsoftJsonSerializer.Instance.Serialize((object) (T) value));
-      using (Stream stream = await WindowsRuntimeStorageExtensions.OpenStreamForWriteAsync((IStorageFolder) this.Folder, WindowsStorageDataStore.GenerateStoredKey(key, typeof (T)), (CreationCollisionOption) 1))
-        await stream.WriteAsync(serialized, 0, serialized.Length);
-    }
+
+            byte[] serialized = default;
+
+            try
+            {
+                serialized = Encoding.UTF8.GetBytes(
+                    NewtonsoftJsonSerializer.Instance.Serialize((object)(T)value));
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("[ex] Encoding.UTF8.GetBytes bug: " + ex.Message);
+            }
+
+            try
+            {
+                using (Stream stream = 
+                    await WindowsRuntimeStorageExtensions.OpenStreamForWriteAsync(
+                    (IStorageFolder)this.Folder, 
+                    WindowsStorageDataStore.GenerateStoredKey(key, typeof(T)),
+                    (CreationCollisionOption)1))
+                {
+                    await stream.WriteAsync(serialized, 0, serialized.Length);
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("[ex] StoreAsync bug: " + ex.Message);
+            }
+       }
   }
 }

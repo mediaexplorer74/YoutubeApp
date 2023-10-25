@@ -25,7 +25,8 @@ namespace Google.Apis.Http
     [VisibleForTestOnly]
     public const int MaxAllowedNumTries = 20;
     private static readonly string ApiVersion = Utilities.GetLibraryVersion();
-    private static readonly string UserAgentSuffix = "google-api-dotnet-client/" + ConfigurableMessageHandler.ApiVersion + " (gzip)";
+    private static readonly string UserAgentSuffix = "google-api-dotnet-client/" 
+            + ConfigurableMessageHandler.ApiVersion + " (gzip)";
     private readonly object unsuccessfulResponseHandlersLock = new object();
     private readonly object exceptionHandlersLock = new object();
     private readonly object executeInterceptorsLock = new object();
@@ -91,13 +92,15 @@ namespace Google.Apis.Http
     public int NumTries
     {
       get => this.numTries;
-      set => this.numTries = value <= 20 && value >= 1 ? value : throw new ArgumentOutOfRangeException(nameof (NumTries));
+      set => this.numTries = value <= 20 && value >= 1 ? value 
+                : throw new ArgumentOutOfRangeException(nameof (NumTries));
     }
 
     public int NumRedirects
     {
       get => this.numRedirects;
-      set => this.numRedirects = value <= 20 && value >= 1 ? value : throw new ArgumentOutOfRangeException(nameof (NumRedirects));
+      set => this.numRedirects = value <= 20 && value >= 1 ? value
+                : throw new ArgumentOutOfRangeException(nameof (NumRedirects));
     }
 
     public bool FollowRedirect { get; set; }
@@ -169,7 +172,9 @@ namespace Google.Apis.Http
       int triesRemaining = this.NumTries;
       int redirectRemaining = this.NumRedirects;
       Exception lastException = (Exception) null;
-      request.Headers.Add("User-Agent", (this.ApplicationName == null ? "" : this.ApplicationName + " ") + ConfigurableMessageHandler.UserAgentSuffix);
+      request.Headers.Add("User-Agent", (this.ApplicationName == null ? "" : this.ApplicationName + " ") 
+          + ConfigurableMessageHandler.UserAgentSuffix);
+
       HttpResponseMessage response = (HttpResponseMessage) null;
       do
       {

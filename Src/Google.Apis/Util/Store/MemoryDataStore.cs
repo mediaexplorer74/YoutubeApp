@@ -14,9 +14,12 @@ namespace Google.Apis.Util.Store
   {
     private static readonly Task s_completedTask = (Task) Task.FromResult<int>(0);
 
-    internal static string GenerateStoredKey(string key, Type t) => string.Format("{0}-{1}", (object) t.FullName, (object) key);
+        internal static string GenerateStoredKey(string key, Type t)
+        {
+            return string.Format("{0}-{1}", (object)t.FullName, (object)key);
+        }
 
-    public Dictionary<string, object> Items { get; } = new Dictionary<string, object>();
+        public Dictionary<string, object> Items { get; } = new Dictionary<string, object>();
 
     public Task ClearAsync()
     {
@@ -33,7 +36,8 @@ namespace Google.Apis.Util.Store
     public Task<T> GetAsync<T>(string key)
     {
       object result;
-      return this.Items.TryGetValue(MemoryDataStore.GenerateStoredKey(key, typeof (T)), out result) ? Task.FromResult<T>((T) result) : Task.FromResult<T>(default (T));
+      return this.Items.TryGetValue(MemoryDataStore.GenerateStoredKey(key, typeof (T)), out result) 
+                ? Task.FromResult<T>((T) result) : Task.FromResult<T>(default (T));
     }
 
     public Task StoreAsync<T>(string key, T value)

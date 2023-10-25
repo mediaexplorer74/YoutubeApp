@@ -1,6 +1,4 @@
-﻿//using Google.Apis.Drive.v3;
-//using Google.Apis.Drive.v3.Data;
-using Google.Apis.YouTube.v3;
+﻿using Google.Apis.YouTube.v3;
 using Google.Apis.YouTube.v3.Data;
 using Newtonsoft.Json;
 using System;
@@ -15,6 +13,9 @@ namespace YTApp.Classes
 {
     static class Constants
     {
+        static public readonly string ApplicationName =
+            "Winbeta Videos"; // Temp. name, only for testing deals
+
         static public readonly string ApiKey =
            "";
        

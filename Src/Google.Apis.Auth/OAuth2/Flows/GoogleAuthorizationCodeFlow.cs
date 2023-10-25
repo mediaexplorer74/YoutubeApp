@@ -39,12 +39,19 @@ namespace Google.Apis.Auth.OAuth2.Flows
 
     public override AuthorizationCodeRequestUrl CreateAuthorizationCodeRequest(string redirectUri)
     {
-      GoogleAuthorizationCodeRequestUrl authorizationCodeRequest = new GoogleAuthorizationCodeRequestUrl(new Uri(this.AuthorizationServerUrl));
+      GoogleAuthorizationCodeRequestUrl authorizationCodeRequest = 
+                new GoogleAuthorizationCodeRequestUrl(new Uri(this.AuthorizationServerUrl));
+
       authorizationCodeRequest.ClientId = this.ClientSecrets.ClientId;
+
       authorizationCodeRequest.Scope = string.Join(" ", this.Scopes);
       authorizationCodeRequest.RedirectUri = redirectUri;
-      authorizationCodeRequest.IncludeGrantedScopes = this.IncludeGrantedScopes.HasValue ? this.IncludeGrantedScopes.Value.ToString().ToLower() : (string) null;
+      authorizationCodeRequest.IncludeGrantedScopes = this.IncludeGrantedScopes.HasValue 
+                ? this.IncludeGrantedScopes.Value.ToString().ToLower() 
+                : (string) null;
+
       authorizationCodeRequest.UserDefinedQueryParams = this.UserDefinedQueryParams;
+
       return (AuthorizationCodeRequestUrl) authorizationCodeRequest;
     }
 
@@ -79,6 +86,7 @@ namespace Google.Apis.Auth.OAuth2.Flows
       public Initializer()
         : this("https://accounts.google.com/o/oauth2/v2/auth", "https://www.googleapis.com/oauth2/v4/token", "https://accounts.google.com/o/oauth2/revoke")
       {
+         
       }
 
       protected Initializer(

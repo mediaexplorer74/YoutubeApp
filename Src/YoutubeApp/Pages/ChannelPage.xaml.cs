@@ -303,7 +303,7 @@ namespace YTApp.Pages
             var service = new YouTubeService(new BaseClientService.Initializer()
             {
                 HttpClientInitializer = credential,
-                ApplicationName = "Youtube Viewer",
+                ApplicationName = Constants.ApplicationName,//"Youtube Viewer",
             });
 
             if (isSubscribed == true)
@@ -376,7 +376,7 @@ namespace YTApp.Pages
                 var youtubeService = new YouTubeService(new BaseClientService.Initializer()
                 {
                     ApiKey = Constants.ApiKey,
-                    ApplicationName = this.GetType().ToString()
+                    ApplicationName = Constants.ApplicationName,//this.GetType().ToString()
                 });
 
                 var searchListRequest = youtubeService.Search.List("snippet");
@@ -426,7 +426,7 @@ namespace YTApp.Pages
                 var youtubeService = new YouTubeService(new BaseClientService.Initializer()
                 {
                     ApiKey = Constants.ApiKey,
-                    ApplicationName = this.GetType().ToString()
+                    ApplicationName = Constants.ApplicationName,//this.GetType().ToString()
                 });
 
                 var searchListRequest = youtubeService.Search.List("snippet");
@@ -434,7 +434,7 @@ namespace YTApp.Pages
                 searchListRequest.Type = "video";
                 searchListRequest.Order = SearchResource.ListRequest.OrderEnum.Date;
                 searchListRequest.PageToken = nextPageToken;
-                searchListRequest.MaxResults = 50;
+                searchListRequest.MaxResults = 2;//50;
 
                 // Call the search.list method to retrieve results matching the specified query term.
                 var searchListResponse = await searchListRequest.ExecuteAsync();

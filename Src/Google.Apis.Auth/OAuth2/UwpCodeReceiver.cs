@@ -31,10 +31,22 @@ namespace Google.Apis.Auth.OAuth2
       }
 
       Uri uri = new Uri("https://accounts.google.com/o/oauth2/approval");
-      
-      WebAuthenticationResult authenticationResult 
-                = await WebAuthenticationBroker.AuthenticateAsync((WebAuthenticationOptions) 2, 
-                url.Build(), uri);
+
+            WebAuthenticationResult authenticationResult = default;
+
+            try
+            {
+                //RnD
+                authenticationResult = await WebAuthenticationBroker.AuthenticateAsync(
+                    WebAuthenticationOptions.UseTitle,
+                    //(WebAuthenticationOptions)2,
+                    url.Build(), 
+                    uri);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("[ex] WebAuthenticationBroker.AuthenticateAsync bug: " + ex.Message);
+            }
 
       WebAuthenticationStatus responseStatus = authenticationResult.ResponseStatus;
 

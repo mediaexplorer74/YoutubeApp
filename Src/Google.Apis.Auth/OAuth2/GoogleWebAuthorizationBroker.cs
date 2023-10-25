@@ -10,14 +10,24 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using Windows.Storage;
 
 namespace Google.Apis.Auth.OAuth2
 {
   public class GoogleWebAuthorizationBroker
   {
-    private static ICodeReceiver GetDefaultCodeReceiver() => (ICodeReceiver) new UwpCodeReceiver();
+    private static ICodeReceiver GetDefaultCodeReceiver()
+    {
+        return (ICodeReceiver)new UwpCodeReceiver();
+    }
 
-    private static IDataStore GetDefaultDataStore() => (IDataStore) new PasswordVaultDataStore();
+    private static IDataStore GetDefaultDataStore()
+    {
+        return (IDataStore)
+            //new MemoryDataStore();
+            //new WindowsStorageDataStore(KnownFolders.VideosLibrary);
+            new PasswordVaultDataStore();
+    }
 
     public static async Task<UserCredential> AuthorizeAsync(
       ClientSecrets clientSecrets,
@@ -27,9 +37,14 @@ namespace Google.Apis.Auth.OAuth2
       IDataStore dataStore = null,
       ICodeReceiver codeReceiver = null)
     {
-      GoogleAuthorizationCodeFlow.Initializer initializer = new GoogleAuthorizationCodeFlow.Initializer();
+      GoogleAuthorizationCodeFlow.Initializer initializer
+                = new GoogleAuthorizationCodeFlow.Initializer();
+
       initializer.ClientSecrets = clientSecrets;
-      return await GoogleWebAuthorizationBroker.AuthorizeAsync(initializer, scopes, user, taskCancellationToken, dataStore, codeReceiver).ConfigureAwait(false);
+
+      return await GoogleWebAuthorizationBroker.AuthorizeAsync(
+          initializer, scopes, user, taskCancellationToken, dataStore, codeReceiver)
+                .ConfigureAwait(false);
     }
 
     public static async Task<UserCredential> AuthorizeAsync(
@@ -40,9 +55,14 @@ namespace Google.Apis.Auth.OAuth2
       IDataStore dataStore = null,
       ICodeReceiver codeReceiver = null)
     {
-      GoogleAuthorizationCodeFlow.Initializer initializer = new GoogleAuthorizationCodeFlow.Initializer();
+      GoogleAuthorizationCodeFlow.Initializer initializer = 
+                new GoogleAuthorizationCodeFlow.Initializer();
+
       initializer.ClientSecretsStream = clientSecretsStream;
-      return await GoogleWebAuthorizationBroker.AuthorizeAsync(initializer, scopes, user, taskCancellationToken, dataStore, codeReceiver).ConfigureAwait(false);
+
+      return await GoogleWebAuthorizationBroker.AuthorizeAsync(
+          initializer, scopes, user, taskCancellationToken, dataStore, codeReceiver)
+                .ConfigureAwait(false);
     }
 
     public static async Task ReauthorizeAsync(
@@ -51,7 +71,10 @@ namespace Google.Apis.Auth.OAuth2
       ICodeReceiver codeReceiver = null)
     {
       codeReceiver = codeReceiver ?? GoogleWebAuthorizationBroker.GetDefaultCodeReceiver();
-      userCredential.Token = (await new AuthorizationCodeInstalledApp(userCredential.Flow, codeReceiver).AuthorizeAsync(userCredential.UserId, taskCancellationToken).ConfigureAwait(false)).Token;
+      userCredential.Token = 
+                (await new AuthorizationCodeInstalledApp(userCredential.Flow, codeReceiver)
+                .AuthorizeAsync(userCredential.UserId, taskCancellationToken)
+                .ConfigureAwait(false)).Token;
     }
 
     public static async Task<UserCredential> AuthorizeAsync(
@@ -63,11 +86,15 @@ namespace Google.Apis.Auth.OAuth2
       ICodeReceiver codeReceiver = null)
     {
       initializer.Scopes = scopes;
+
       initializer.DataStore = dataStore ?? GoogleWebAuthorizationBroker.GetDefaultDataStore();
+      
       GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow(initializer);
       codeReceiver = codeReceiver ?? GoogleWebAuthorizationBroker.GetDefaultCodeReceiver();
       ICodeReceiver codeReceiver1 = codeReceiver;
-      return await new AuthorizationCodeInstalledApp((IAuthorizationCodeFlow) flow, codeReceiver1).AuthorizeAsync(user, taskCancellationToken).ConfigureAwait(false);
+
+      return await new AuthorizationCodeInstalledApp((IAuthorizationCodeFlow) flow, codeReceiver1)
+                .AuthorizeAsync(user, taskCancellationToken).ConfigureAwait(false);
     }
   }
 }

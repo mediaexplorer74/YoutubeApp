@@ -36,7 +36,12 @@ namespace Google.Apis.Auth.OAuth2
       if (this.ShouldRequestAuthorizationCode(token))
       {
         string redirectUri = this.CodeReceiver.RedirectUri;
-        AuthorizationCodeResponseUrl authorizationCode = await this.CodeReceiver.ReceiveCodeAsync(this.Flow.CreateAuthorizationCodeRequest(redirectUri), taskCancellationToken).ConfigureAwait(false);
+
+        Requests.AuthorizationCodeRequestUrl floww = this.Flow.CreateAuthorizationCodeRequest(redirectUri);
+
+        AuthorizationCodeResponseUrl authorizationCode = 
+             await this.CodeReceiver.ReceiveCodeAsync(floww, taskCancellationToken).ConfigureAwait(false);
+
         if (string.IsNullOrEmpty(authorizationCode.Code))
         {
           TokenErrorResponse error = new TokenErrorResponse(authorizationCode);

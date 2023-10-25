@@ -41,11 +41,23 @@ namespace Google.Apis.Oauth2.v2
 
     public override string BatchPath => "batch/oauth2/v2";
 
-    public virtual Oauth2Service.GetCertForOpenIdConnectRequest GetCertForOpenIdConnect() => new Oauth2Service.GetCertForOpenIdConnectRequest((IClientService) this);
+    public virtual Oauth2Service.GetCertForOpenIdConnectRequest GetCertForOpenIdConnect()
+    {
+        return new Oauth2Service.GetCertForOpenIdConnectRequest((IClientService)this);
+    }
 
-    public virtual Oauth2Service.TokeninfoRequest Tokeninfo() => new Oauth2Service.TokeninfoRequest((IClientService) this);
+    public virtual Oauth2Service.TokeninfoRequest Tokeninfo()
+    {
+        return new Oauth2Service.TokeninfoRequest((IClientService)this);
+    }
 
-    public virtual UserinfoResource Userinfo => this.userinfo;
+    public virtual UserinfoResource Userinfo
+    {
+        get
+        {
+            return this.userinfo;
+        }
+    }
 
     public class Scope
     {

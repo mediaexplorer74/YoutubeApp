@@ -13,6 +13,7 @@ using Google.Apis.Util;
 using Google.Apis.Util.Store;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -78,7 +79,30 @@ namespace Google.Apis.Auth.OAuth2.Flows
       CancellationToken taskCancellationToken)
     {
       taskCancellationToken.ThrowIfCancellationRequested();
-      return this.DataStore == null ? (TokenResponse) null : await this.DataStore.GetAsync<TokenResponse>(userId).ConfigureAwait(false);
+
+      //RnD
+      //return this.DataStore == null
+      //          ? (TokenResponse) null 
+      //          : await this.DataStore.GetAsync<TokenResponse>(userId).ConfigureAwait(false);
+      if (this.DataStore == null)
+      {
+         return (TokenResponse)null;
+      }
+      else
+      {
+        TokenResponse res = default;
+
+        try
+        {
+            res = await this.DataStore.GetAsync<TokenResponse>(userId).ConfigureAwait(false);
+        }
+        catch (Exception ex)
+        {
+             Debug.WriteLine("[ex] DataStore.GetAsync bug: " + ex.Message);
+        }
+
+        return res;
+      }
     }
 
     public async Task DeleteTokenAsync(string userId, CancellationToken taskCancellationToken)

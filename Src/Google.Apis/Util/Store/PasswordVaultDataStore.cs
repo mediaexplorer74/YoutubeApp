@@ -6,6 +6,7 @@
 
 using Google.Apis.Json;
 using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.Security.Credentials;
@@ -17,17 +18,25 @@ namespace Google.Apis.Util.Store
     private const string ResourcePrefix = "google-datastore";
     private readonly PasswordVault vault = new PasswordVault();
 
-    private string MakeResource<T>() => string.Format("{0}-{1}", (object) "google-datastore", (object) typeof (T));
+    private string MakeResource<T>()
+    {
+        return string.Format("{0}-{1}", (object)"google-datastore", (object)typeof(T));
+    }
 
     public Task ClearAsync()
     {
       try
       {
-        foreach (PasswordCredential passwordCredential in this.vault.RetrieveAll().Where<PasswordCredential>((Func<PasswordCredential, bool>) (x => x.Resource.StartsWith("google-datastore"))))
-          this.vault.Remove(passwordCredential);
+        foreach (PasswordCredential passwordCredential in this.vault.RetrieveAll()
+                    .Where<PasswordCredential>((Func<PasswordCredential, bool>)
+                    (x => x.Resource.StartsWith("google-datastore"))))
+        {
+            this.vault.Remove(passwordCredential);
+        }
       }
-      catch
+      catch (Exception ex)
       {
+        Debug.WriteLine("[ex] ClearAsync bug: " + ex.Message);
       }
       return Task.CompletedTask;
     }
@@ -38,9 +47,11 @@ namespace Google.Apis.Util.Store
       {
         this.vault.Remove(this.vault.Retrieve(this.MakeResource<T>(), key));
       }
-      catch
+      catch (Exception ex)
       {
+        Debug.WriteLine("[ex] DeleteAsync bug: " + ex.Message);
       }
+
       return Task.CompletedTask;
     }
 
@@ -49,11 +60,14 @@ namespace Google.Apis.Util.Store
       try
       {
         PasswordCredential passwordCredential = this.vault.Retrieve(this.MakeResource<T>(), key);
+
         passwordCredential.RetrievePassword();
+
         return Task.FromResult<T>(NewtonsoftJsonSerializer.Instance.Deserialize<T>(passwordCredential.Password));
       }
-      catch
+      catch (Exception ex)
       {
+        Debug.WriteLine("[ex] GetAsync bug: " + ex.Message);
         return Task.FromResult<T>(default (T));
       }
     }
@@ -61,8 +75,19 @@ namespace Google.Apis.Util.Store
     public Task StoreAsync<T>(string key, T value)
     {
       string str = NewtonsoftJsonSerializer.Instance.Serialize((object) value);
-      this.vault.Add(new PasswordCredential(this.MakeResource<T>(), key, str));
+
+      try
+      {
+        this.vault.Add(new PasswordCredential(this.MakeResource<T>(), key, str));
+      }
+      catch (Exception ex)
+      {
+        Debug.WriteLine("[ex] GetAsync bug: " + ex.Message);
+        //RnD
+        //return Task.FromResult<T>(default(T));
+      }
+
       return Task.CompletedTask;
-    }
-  }
+      }//StoreAsync<T>
+   }
 }

@@ -188,7 +188,7 @@ namespace YTApp
                 nextPageToken = tempSubscriptions.NextPageToken;
                 while (nextPageToken != null)
                 {
-                    var tempSubs = GetSubscriptions(nextPageToken, service);
+                    SubscriptionListResponse tempSubs = GetSubscriptions(nextPageToken, service);
                     foreach (Subscription sub in tempSubs.Items)
                     {
                         SubscriptionDataType subscription = new SubscriptionDataType();
@@ -197,7 +197,8 @@ namespace YTApp
                             subscription = new SubscriptionDataType
                             {
                                 Id = sub.Snippet.ResourceId.ChannelId,
-                                Thumbnail = new BitmapImage(new Uri(sub.Snippet.Thumbnails.Medium.Url)),
+                                Thumbnail = new BitmapImage(
+                                    new Uri(sub.Snippet.Thumbnails.Medium.Url)),
                                 Title = sub.Snippet.Title,
                                 NewVideosCount = Convert.ToString(sub.ContentDetails.NewItemCount),
                                 SubscriptionID = sub.Id
@@ -224,7 +225,7 @@ namespace YTApp
             {
                 subscriptions.PageToken = NextPageToken;
                 subscriptions.Mine = true;
-                subscriptions.MaxResults = 50;
+                subscriptions.MaxResults = 2;//50;
                 subscriptions.Order = SubscriptionsResource.ListRequest.OrderEnum.Alphabetical;
 
                 return subscriptions.Execute();
@@ -281,7 +282,7 @@ namespace YTApp
             var service = new Oauth2Service(new BaseClientService.Initializer()
             {
                 HttpClientInitializer = credential,
-                ApplicationName = "Youtube Viewer",
+                ApplicationName = Constants.ApplicationName,//"Youtube Viewer",
             });
 
             var GetLoginInfo = service.Userinfo.Get();

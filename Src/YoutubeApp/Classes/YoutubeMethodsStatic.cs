@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Windows.Storage;
 using Windows.UI.Xaml;
 using YoutubeExplode.Models.MediaStreams;
 
@@ -17,6 +18,8 @@ namespace YTApp.Classes
 {
     static class YoutubeMethodsStatic
     {
+        private static IDataStore DDataStore;
+
         // GetServiceAsync
         static async public Task<YouTubeService> GetServiceAsync()
         {
@@ -32,9 +35,13 @@ namespace YTApp.Classes
                     },
                 new[]
                 {
-                Google.Apis.Oauth2.v2.Oauth2Service.Scope.UserinfoProfile,
-                YouTubeService.Scope.YoutubeForceSsl },
-                "user", CancellationToken.None);
+                    Google.Apis.Oauth2.v2.Oauth2Service.Scope.UserinfoProfile,
+                    YouTubeService.Scope.YoutubeForceSsl
+                    //YouTubeService.Scope.Youtube
+                },
+                "user", 
+                CancellationToken.None,
+                DDataStore);
             }
             catch (Exception ex)
             {
@@ -45,7 +52,7 @@ namespace YTApp.Classes
             return new YouTubeService(new BaseClientService.Initializer()
             {
                 HttpClientInitializer = credential,
-                ApplicationName = "Unofficial Youtube Client",
+                ApplicationName = Constants.ApplicationName,//"Unofficial Youtube Client",
             });
         }//GetServiceAsync
 
@@ -56,7 +63,7 @@ namespace YTApp.Classes
             return new YouTubeService(new BaseClientService.Initializer()
             {
                 ApiKey = Constants.ApiKey,
-                ApplicationName = "Unofficial Youtube Client"
+                ApplicationName = Constants.ApplicationName,//"Unofficial Youtube Client"
             });
         }//GetServiceNoAuth
 
@@ -73,8 +80,15 @@ namespace YTApp.Classes
             };
             initializer.ClientSecrets = secrets;
 
+
+
             //RnD
-            initializer.DataStore = new PasswordVaultDataStore();
+            initializer.DataStore =
+                //new MemoryDataStore();
+                //new WindowsStorageDataStore(KnownFolders.VideosLibrary);
+                new PasswordVaultDataStore();
+
+            DDataStore = initializer.DataStore;
 
             var test = new AuthorizationCodeFlow(initializer);
             var token = await test.LoadTokenAsync("user", CancellationToken.None);

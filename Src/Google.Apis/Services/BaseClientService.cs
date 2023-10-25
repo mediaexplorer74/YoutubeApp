@@ -21,7 +21,9 @@ namespace Google.Apis.Services
 {
   public abstract class BaseClientService : IClientService, IDisposable
   {
-    private static readonly ILogger Logger = ApplicationContext.Logger.ForType<BaseClientService>();
+    private static readonly ILogger Logger = 
+            ApplicationContext.Logger.ForType<BaseClientService>();
+
     [VisibleForTestOnly]
     public const uint DefaultMaxUrlLength = 2048;
 
@@ -31,36 +33,62 @@ namespace Google.Apis.Services
       this.GZipEnabled = initializer.GZipEnabled;
       this.Serializer = initializer.Serializer;
       this.ApiKey = initializer.ApiKey;
+
       this.ApplicationName = initializer.ApplicationName;
+
       if (this.ApplicationName == null)
-        BaseClientService.Logger.Warning("Application name is not set. Please set Initializer.ApplicationName property");
+      {
+            BaseClientService.Logger.Warning("Application name is not set. " +
+                "Please set Initializer.ApplicationName property");
+      }
+
       this.HttpClientInitializer = initializer.HttpClientInitializer;
       this.HttpClient = this.CreateHttpClient(initializer);
     }
 
-    private bool HasFeature(Google.Apis.Discovery.Features feature) => this.Features.Contains(Utilities.GetEnumStringValue((Enum) feature));
+    private bool HasFeature(Google.Apis.Discovery.Features feature)
+    {
+        return this.Features.Contains(Utilities.GetEnumStringValue((Enum)feature));
+    }
 
     private ConfigurableHttpClient CreateHttpClient(BaseClientService.Initializer initializer)
     {
-      IHttpClientFactory httpClientFactory = initializer.HttpClientFactory ?? (IHttpClientFactory) new HttpClientFactory();
+      IHttpClientFactory httpClientFactory = initializer.HttpClientFactory 
+                ?? (IHttpClientFactory) new HttpClientFactory();
+
       CreateHttpClientArgs args = new CreateHttpClientArgs()
       {
         GZipEnabled = this.GZipEnabled,
         ApplicationName = this.ApplicationName
       };
-      if (this.HttpClientInitializer != null)
-        args.Initializers.Add(this.HttpClientInitializer);
-      if (initializer.DefaultExponentialBackOffPolicy != ExponentialBackOffPolicy.None)
-        args.Initializers.Add((IConfigurableHttpClientInitializer) new ExponentialBackOffInitializer(initializer.DefaultExponentialBackOffPolicy, new Func<BackOffHandler>(this.CreateBackOffHandler)));
+       
+        if (this.HttpClientInitializer != null)
+          args.Initializers.Add(this.HttpClientInitializer);
+
+        if (initializer.DefaultExponentialBackOffPolicy != ExponentialBackOffPolicy.None)
+        {
+            args.Initializers.Add(
+                (IConfigurableHttpClientInitializer)new ExponentialBackOffInitializer(
+                    initializer.DefaultExponentialBackOffPolicy,
+                    new Func<BackOffHandler>(this.CreateBackOffHandler)));
+        }
+
       ConfigurableHttpClient httpClient = httpClientFactory.CreateHttpClient(args);
+
       if (initializer.MaxUrlLength > 0U)
-        httpClient.MessageHandler.AddExecuteInterceptor((IHttpExecuteInterceptor) new MaxUrlLengthInterceptor(initializer.MaxUrlLength));
+        httpClient.MessageHandler.AddExecuteInterceptor(
+            (IHttpExecuteInterceptor) new MaxUrlLengthInterceptor(
+                initializer.MaxUrlLength));
+
       return httpClient;
     }
 
-    protected virtual BackOffHandler CreateBackOffHandler() => new BackOffHandler((IBackOff) new ExponentialBackOff());
+        protected virtual BackOffHandler CreateBackOffHandler()
+        {
+            return new BackOffHandler((IBackOff)new ExponentialBackOff());
+        }
 
-    public ConfigurableHttpClient HttpClient { get; private set; }
+        public ConfigurableHttpClient HttpClient { get; private set; }
 
     public IConfigurableHttpClientInitializer HttpClientInitializer { get; private set; }
 
@@ -70,11 +98,17 @@ namespace Google.Apis.Services
 
     public string ApplicationName { get; private set; }
 
-    public void SetRequestSerailizedContent(HttpRequestMessage request, object body) => request.SetRequestSerailizedContent((IClientService) this, body, this.GZipEnabled);
+    public void SetRequestSerailizedContent(HttpRequestMessage request, object body)
+    {
+        request.SetRequestSerailizedContent((IClientService)this, body, this.GZipEnabled);
+    }
 
     public ISerializer Serializer { get; private set; }
 
-    public virtual string SerializeObject(object obj) => this.Serializer.Serialize(obj);
+    public virtual string SerializeObject(object obj)
+    {
+        return this.Serializer.Serialize(obj);
+    }
 
     public virtual async Task<T> DeserializeResponse<T>(HttpResponseMessage response)
     {
@@ -95,14 +129,19 @@ namespace Google.Apis.Services
         }
         catch (JsonReaderException ex)
         {
-          throw new GoogleApiException(this.Name, "Failed to parse response from server as json [" + input + "]", (Exception) ex);
+          throw new GoogleApiException(this.Name, 
+              "Failed to parse response from server as json [" + input + "]", (Exception) ex);
         }
         if (standardResponse.Error != null)
-          throw new GoogleApiException(this.Name, "Server error - " + (object) standardResponse.Error)
+          throw new GoogleApiException(this.Name, 
+              "Server error - " + (object) standardResponse.Error)
           {
             Error = standardResponse.Error
           };
-        return (object) standardResponse.Data != null ? standardResponse.Data : throw new GoogleApiException(this.Name, "The response could not be deserialized.");
+        return (object) standardResponse.Data != null 
+                    ? standardResponse.Data 
+                    : throw new GoogleApiException(this.Name, 
+                    "The response could not be deserialized.");
       }
       
       T obj2 = default(T); 
@@ -112,11 +151,15 @@ namespace Google.Apis.Services
       }
       catch (JsonReaderException ex)
       {
-        throw new GoogleApiException(this.Name, "Failed to parse response from server as json [" + input + "]", (Exception) ex);
+        throw new GoogleApiException(this.Name,
+            "Failed to parse response from server as json [" + input + "]", 
+            (Exception) ex);
       }
       string tag = response.Headers.ETag != null ? response.Headers.ETag.Tag : (string) null;
+     
       if ((object) obj2 is IDirectResponseSchema && tag != null)
         ((object) obj2 as IDirectResponseSchema).ETag = tag;
+      
       return obj2;
     }
 
@@ -125,13 +168,16 @@ namespace Google.Apis.Services
       StandardResponse<object> errorResponse = (StandardResponse<object>) null;
       try
       {
-        errorResponse = this.Serializer.Deserialize<StandardResponse<object>>(await response.Content.ReadAsStringAsync().ConfigureAwait(false));
+        errorResponse = this.Serializer.Deserialize<StandardResponse<object>>(
+            await response.Content.ReadAsStringAsync().ConfigureAwait(false));
+
         if (errorResponse.Error == null)
           throw new GoogleApiException(this.Name, "error response is null");
       }
       catch (Exception ex)
       {
-        throw new GoogleApiException(this.Name, "An Error occurred, but the error response could not be deserialized", ex);
+        throw new GoogleApiException(this.Name, 
+            "An Error occurred, but the error response could not be deserialized", ex);
       }
       return errorResponse.Error;
     }
@@ -185,8 +231,12 @@ namespace Google.Apis.Services
 
       internal void Validate()
       {
-        if (this.ApplicationName != null && this.ApplicationName.Any<char>((Func<char, bool>) (c => "\"(),:;<=>?@[\\]{}".Contains<char>(c))))
-          throw new ArgumentException("Invalid Application name", "ApplicationName");
+        if (this.ApplicationName != null
+            && this.ApplicationName.Any<char>(
+            (Func<char, bool>)(c => "\"(),:;<=>?@[\\]{}".Contains<char>(c))))
+        {
+            throw new ArgumentException("Invalid Application name", "ApplicationName");
+        }
       }
     }
   }

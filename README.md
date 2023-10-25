@@ -4,6 +4,9 @@ My fork of Unofficial Youtube Client (UWP app for Desktop)
 ## About
 The Unofficial Youtube Client is a youtube application built in UWP using the Google Dotnet API libraries with a goal of improving upon the ad infested and under-featured apps found on the windows store. The project strives to provide a coherent and simplistic UI while providing responsive and battery considerate performance across the board. Due to the limitations of the Google API, work arounds are being found for home page recommendations and viewing history.
 
+## Screenshot(s)
+![](Images/shot01.png)
+
 ## Features (the info frome original readme...)
 - Windows Styling Integration
 - Hardware Video Decoding
@@ -17,7 +20,7 @@ The Unofficial Youtube Client is a youtube application built in UWP using the Go
 - Draft / Proto
 
 ## Big "crazy bug" what still exists till/from 2017 year
-- Google auth failed ONLY ON Windows 10 Mobile OS. Not on desktop Windows 10. So strange. IMHO, this is echo of Google-MS "mobile wars". Proof: https://github.com/googleapis/google-api-dotnet-client/issues/986  Opened this "Broken login page" issue on Apr 27, 2017 
+- Google auth failed ONLY ON Windows 10 Mobile OS. Not on desktop Windows 10. So strange. IMHO, this is echo of Google-MS "mobile wars". 
 
 ## Credits / References
 - MIT
@@ -25,7 +28,7 @@ The Unofficial Youtube Client is a youtube application built in UWP using the Go
 - https://github.com/Saghen/UWP-Youtube-Twitch-Viewer/ Liam Dyer's original Unofficial Youtube Client
 
 ## How to try it / fix it
-1. Register your own Google Youtube API items:
+1. Use Google Cloud to register your own Google Youtube API v3 items:
 - Api key
 - Client Id
 - Client Secret
