@@ -1,6 +1,7 @@
 ﻿using Google.Apis.YouTube.v3.Data;
 using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
 using YTApp.Classes;
@@ -55,37 +56,55 @@ namespace YTApp.Pages
 
             var searchListRequest = youtubeService.Search.List("snippet");
             searchListRequest.Q = Constants.MainPageRef.SearchBox.Text;
-            searchListRequest.MaxResults = 25;
+            searchListRequest.MaxResults = 2;// 25;
 
             SearchListResponse searchListResponse = new SearchListResponse();
 
             // Call the search.list method to retrieve results matching the specified query term.
-            searchListResponse = await searchListRequest.ExecuteAsync();
 
-            nextPageToken = searchListResponse.NextPageToken;
+            try
+            {
+                searchListResponse = await searchListRequest.ExecuteAsync();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("[ex] SearchPage - searchListRequest - Message: " + ex.Message);
+            }
+
+            if (searchListResponse != null)
+            {
+                nextPageToken = searchListResponse.NextPageToken;
+            }
 
             ObservableCollection<YoutubeItemDataType> tempList = new ObservableCollection<YoutubeItemDataType>();
 
             var methods = new YoutubeMethods();
 
-            foreach (var searchResult in searchListResponse.Items)
-            {
-                if (searchResult.Id.Kind == "youtube#video")
+            if (searchListResponse.Items != null)
+            { 
+                foreach (var searchResult in searchListResponse.Items)
                 {
-                    var data = methods.VideoToYoutubeItem(searchResult);
-                    tempList.Add(data);
-                }
-                else if (searchResult.Id.Kind == "youtube#channel")
-                {
-                    var data = methods.ChannelToYoutubeChannel(searchResult, youtubeService);
-                    SearchResultsList.Add(data);
+                    if (searchResult.Id.Kind == "youtube#video")
+                    {
+                        var data = methods.VideoToYoutubeItem(searchResult);
+                        tempList.Add(data);
+                    }
+                    else if (searchResult.Id.Kind == "youtube#channel")
+                    {
+                        var data = methods.ChannelToYoutubeChannel(searchResult, youtubeService);
+                        SearchResultsList.Add(data);
+                    }
                 }
             }
 
             methods.FillInViews(tempList, youtubeService);
 
             foreach (var item in tempList)
+            {
                 SearchResultsList.Add(item);
+            }
+
+            //Debug.WriteLine("[i] tempList=" + tempList);
         }
 
         private async void SearchAddMore()

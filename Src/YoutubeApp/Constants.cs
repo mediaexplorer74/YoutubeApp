@@ -14,7 +14,7 @@ namespace YTApp.Classes
     static class Constants
     {
         static public readonly string ApplicationName =
-            "Winbeta Videos"; // Temp. name, only for testing deals
+            "YT Client 1"; // Temp. name, only for testing deals
 
         static public readonly string ApiKey =
            "";

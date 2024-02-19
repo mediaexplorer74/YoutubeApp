@@ -1,4 +1,6 @@
 ﻿using Google.Apis.YouTube.v3;
+using System;
+using System.Diagnostics;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
 using YTApp.Classes;
@@ -33,12 +35,27 @@ namespace YTApp.Pages
 
             var recommendations = service.Videos.List("snippet, contentDetails");
             recommendations.Chart = VideosResource.ListRequest.ChartEnum.MostPopular;
-            recommendations.MaxResults = 25;
-            var result = await recommendations.ExecuteAsync();
+            
+            recommendations.MaxResults = 2;//25;
 
-            foreach(var video in result.Items)
+            Google.Apis.YouTube.v3.Data.VideoListResponse result = default;
+
+            try
             {
-                videosList.Add(methods.VideoToYoutubeItem(video));
+                result = await recommendations.ExecuteAsync();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("[ex] recommendations.ExecuteAsync ex.: " + ex.Message);
+            }
+
+
+            if (result != null)
+            {
+                foreach (var video in result.Items)
+                {
+                    videosList.Add(methods.VideoToYoutubeItem(video));
+                }
             }
 
             methods.FillInViews(videosList, service);

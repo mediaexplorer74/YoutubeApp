@@ -39,6 +39,7 @@ namespace YTApp
         public ObservableCollection<SubscriptionDataType> subscriptionsList = 
             new ObservableCollection<SubscriptionDataType>();
 
+        // MainPage
         public MainPage()
         {
             InitializeComponent();
@@ -63,9 +64,12 @@ namespace YTApp
 
             SystemNavigationManager.GetForCurrentView().BackRequested += MainPage_BackRequested;
 
+            Debug.WriteLine("[i] Main page startup has started");
             Log.Info("Main page startup has started");
+
             Startup();
-        }
+
+        }//MainPage
 
         #region Main Events
 
@@ -85,14 +89,19 @@ namespace YTApp
 
         #endregion Main Events
 
+
         #region Startup
 
+        // Startup
         private void Startup()
         {
+            Debug.WriteLine("[i] Loading subscriptions");
             Log.Info("Loading subscriptions");
+            
             LoadSubscriptions();
 
             contentFrame.Navigate(typeof(HomePage));
+
             UpdateLoginDetails();
 
             //Plays Youtube link in clipboard
@@ -126,8 +135,8 @@ namespace YTApp
                 if (text == "")
                     return;
 
-                Constants.syncedData = JsonConvert.DeserializeObject<SyncedApplicationDataType>(
-                    text);
+                Constants.syncedData = 
+                    JsonConvert.DeserializeObject<SyncedApplicationDataType>(text);
             }
             catch { }
         }
@@ -135,22 +144,24 @@ namespace YTApp
         #endregion Startup
 
 
+
         #region Menu
 
         // region Subscriptions ------------------------------------------------
 
+        // LoadSubscriptions
         public async void LoadSubscriptions()
         {
             //Reset the subscriptions
             subscriptionsList.Clear();
 
             //Get the service
-            var service = await YoutubeMethodsStatic.GetServiceAsync();
+            YouTubeService service = await YoutubeMethodsStatic.GetServiceAsync();
 
             string nextPageToken;
 
             //Get the subscriptions
-            var tempSubscriptions = GetSubscriptions(null, service);
+            SubscriptionListResponse tempSubscriptions = GetSubscriptions(null, service);
             if (tempSubscriptions == null)
             {
                 Log.Error(
@@ -173,6 +184,7 @@ namespace YTApp
                         NewVideosCount = Convert.ToString(sub.ContentDetails.NewItemCount),
                         SubscriptionID = sub.Id
                     };
+
                     subscriptionsList.Add(subscription);
                 }
                 catch (Exception ex)
@@ -180,43 +192,61 @@ namespace YTApp
                     Log.Error(string.Format("Subscription failed to load. Object:", 
                         JsonConvert.SerializeObject(subscription)));
                     Log.Error(ex.Message);
+
+                    Debug.WriteLine("[ex] Subscription failed to load. Message: " + ex.Message);
                 }
             }
 
             if (tempSubscriptions.NextPageToken != null)
             {
                 nextPageToken = tempSubscriptions.NextPageToken;
+
                 while (nextPageToken != null)
                 {
                     SubscriptionListResponse tempSubs = GetSubscriptions(nextPageToken, service);
-                    foreach (Subscription sub in tempSubs.Items)
-                    {
-                        SubscriptionDataType subscription = new SubscriptionDataType();
-                        try
-                        {
-                            subscription = new SubscriptionDataType
-                            {
-                                Id = sub.Snippet.ResourceId.ChannelId,
-                                Thumbnail = new BitmapImage(
-                                    new Uri(sub.Snippet.Thumbnails.Medium.Url)),
-                                Title = sub.Snippet.Title,
-                                NewVideosCount = Convert.ToString(sub.ContentDetails.NewItemCount),
-                                SubscriptionID = sub.Id
-                            };
-                            subscriptionsList.Add(subscription);
-                        }
-                        catch (Exception ex)
-                        {
-                            Log.Error(string.Format("Subscription failed to load. Object:", 
-                                JsonConvert.SerializeObject(subscription)));
-                            Log.Error(ex.Message);
-                        }
-                    }
-                    nextPageToken = tempSubs.NextPageToken;
-                }
-            }
-        }
 
+                    //RnD
+                    if (tempSubs != null)
+                    {
+                        foreach (Subscription sub in tempSubs.Items)
+                        {
+                            SubscriptionDataType subscription = new SubscriptionDataType();
+                            try
+                            {
+                                subscription = new SubscriptionDataType
+                                {
+                                    Id = sub.Snippet.ResourceId.ChannelId,
+                                    Thumbnail = new BitmapImage(
+                                        new Uri(sub.Snippet.Thumbnails.Medium.Url)),
+                                    Title = sub.Snippet.Title,
+                                    NewVideosCount = Convert.ToString(sub.ContentDetails.NewItemCount),
+                                    SubscriptionID = sub.Id
+                                };
+                                subscriptionsList.Add(subscription);
+                            }
+                            catch (Exception ex)
+                            {
+                                Log.Error(string.Format("Subscription failed to load. Object:",
+                                    JsonConvert.SerializeObject(subscription)));
+                                Log.Error(ex.Message);
+                            }
+                        }
+                        nextPageToken = tempSubs.NextPageToken;
+                    }//if...
+                    else
+                    {
+                        //RnD
+                        nextPageToken = null;
+                    }
+
+                }//while...
+
+            }//if...
+
+        }//LoadSubscriptions
+
+
+        // GetSubscriptions
         private SubscriptionListResponse GetSubscriptions(string NextPageToken, 
             YouTubeService service)
         {
@@ -269,7 +299,8 @@ namespace YTApp
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex.Message);
+                Debug.WriteLine("[ex] UpdateLoginDetails - GoogleWebAuthorizationBroker.AuthorizeAsync ex.: " 
+                    + ex.Message);
 
                 txtLoginName.Text = "";
                 imgProfileIcon.Fill =
@@ -394,7 +425,7 @@ namespace YTApp
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("[ex] SignOut handling (phase 1 )error: " + ex.Message);
+                Debug.WriteLine("[ex] SignOut handling (phase 1) error: " + ex.Message);
             }
 
             try
@@ -404,7 +435,7 @@ namespace YTApp
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("[ex] SignOut handling (phase 2 ) error: " + ex.Message);
+                Debug.WriteLine("[ex] SignOut handling (phase 2) error: " + ex.Message);
             }
 
             //Clear Login details
