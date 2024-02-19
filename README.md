@@ -1,4 +1,4 @@
-# YoutubeApp
+# YoutubeApp v1.0.2
 My fork of Unofficial Youtube Client (UWP app for Desktop)
 
 ## About
@@ -28,7 +28,7 @@ The Unofficial Youtube Client is a youtube application built in UWP using the Go
 - https://github.com/Saghen/UWP-Youtube-Twitch-Viewer/ Liam Dyer's original Unofficial Youtube Client
 
 ## How to try it / fix it
-1. Use Google Cloud to register your own Google Youtube API v3 items:
+1. Use [Google developers console](https://console.developers.google.com/) to register your own Google Youtube API v3 items:
 - Api key
 - Client Id
 - Client Secret
