@@ -1,4 +1,4 @@
-# YoutubeApp v1.0.2
+# YoutubeApp v1.0.3
 My fork of Unofficial Youtube Client (UWP app for Desktop)
 
 ## About

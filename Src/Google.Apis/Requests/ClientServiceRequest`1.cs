@@ -12,6 +12,7 @@ using Google.Apis.Testing;
 using Google.Apis.Util;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Net.Http;
 using System.Threading;
@@ -23,7 +24,9 @@ namespace Google.Apis.Requests
     IClientServiceRequest<TResponse>,
     IClientServiceRequest
   {
-    private static readonly ILogger Logger = ApplicationContext.Logger.ForType<ClientServiceRequest<TResponse>>();
+    private static readonly ILogger Logger 
+            = ApplicationContext.Logger.ForType<ClientServiceRequest<TResponse>>();
+    
     private readonly IClientService service;
 
     public ETagAction ETagAction { get; set; }
@@ -38,11 +41,20 @@ namespace Google.Apis.Requests
 
     public IDictionary<string, IParameter> RequestParameters { get; private set; }
 
-    public IClientService Service => this.service;
+        public IClientService Service
+        {
+            get
+            {
+                return this.service;
+            }
+        }
 
     protected ClientServiceRequest(IClientService service) => this.service = service;
 
-    protected virtual void InitParameters() => this.RequestParameters = (IDictionary<string, IParameter>) new Dictionary<string, IParameter>();
+    protected virtual void InitParameters()
+    {
+        this.RequestParameters = (IDictionary<string, IParameter>)new Dictionary<string, IParameter>();
+    }
 
     public TResponse Execute()
     {
@@ -53,11 +65,18 @@ namespace Google.Apis.Requests
       }
       catch (AggregateException ex)
       {
-        throw ex.InnerException;
+                //throw ex.InnerException;
+
+                Debug.WriteLine("[ex] ClientServiceRequest - ex.: " + ex.Message);
+
+                return default;
       }
       catch (Exception ex)
       {
-        throw ex;
+                //throw ex;
+                Debug.WriteLine("[ex] ClientServiceRequest - ex.: " + ex.Message);
+
+                return default;
       }
     }
 
@@ -77,7 +96,10 @@ namespace Google.Apis.Requests
       }
     }
 
-    public async Task<TResponse> ExecuteAsync() => await this.ExecuteAsync(CancellationToken.None).ConfigureAwait(false);
+    public async Task<TResponse> ExecuteAsync()
+    {
+        return await this.ExecuteAsync(CancellationToken.None).ConfigureAwait(false);
+    }
 
     public async Task<TResponse> ExecuteAsync(CancellationToken cancellationToken)
     {
@@ -90,9 +112,12 @@ namespace Google.Apis.Requests
       return response1;
     }
 
-    public async Task<Stream> ExecuteAsStreamAsync() => await this.ExecuteAsStreamAsync(CancellationToken.None).ConfigureAwait(false);
+        public async Task<Stream> ExecuteAsStreamAsync()
+        {
+            return await this.ExecuteAsStreamAsync(CancellationToken.None).ConfigureAwait(false);
+        }
 
-    public async Task<Stream> ExecuteAsStreamAsync(CancellationToken cancellationToken)
+        public async Task<Stream> ExecuteAsStreamAsync(CancellationToken cancellationToken)
     {
       HttpResponseMessage httpResponseMessage = await this.ExecuteUnparsedAsync(cancellationToken).ConfigureAwait(false);
       cancellationToken.ThrowIfCancellationRequested();
@@ -123,7 +148,14 @@ namespace Google.Apis.Requests
     {
       HttpRequestMessage request = this.CreateBuilder().CreateRequest();
       object body = this.GetBody();
-      request.SetRequestSerailizedContent(this.service, body, overrideGZipEnabled.HasValue ? overrideGZipEnabled.Value : this.service.GZipEnabled);
+      
+      request.SetRequestSerailizedContent
+      (
+          this.service, body, overrideGZipEnabled.HasValue 
+          ? overrideGZipEnabled.Value 
+          : this.service.GZipEnabled
+      );
+
       this.AddETag(request);
       Action<HttpRequestMessage> modifyRequest = this.ModifyRequest;
       if (modifyRequest != null)
@@ -146,16 +178,25 @@ namespace Google.Apis.Requests
       return requestBuilder;
     }
 
-    protected string GenerateRequestUri() => this.CreateBuilder().BuildUri().ToString();
+    protected string GenerateRequestUri()
+    {
+        return this.CreateBuilder().BuildUri().ToString();
+    }
 
-    protected virtual object GetBody() => (object) null;
+    protected virtual object GetBody()
+    {
+        return (object)null;
+    }
 
     private void AddETag(HttpRequestMessage request)
     {
       if (!(this.GetBody() is IDirectResponseSchema body) || string.IsNullOrEmpty(body.ETag))
         return;
       string etag = body.ETag;
-      switch (this.ETagAction == ETagAction.Default ? ClientServiceRequest<TResponse>.GetDefaultETagAction(this.HttpMethod) : this.ETagAction)
+
+      switch ( this.ETagAction == ETagAction.Default 
+                ? ClientServiceRequest<TResponse>.GetDefaultETagAction(this.HttpMethod) 
+                : this.ETagAction )
       {
         case ETagAction.IfMatch:
           request.Headers.TryAddWithoutValidation("If-Match", etag);
@@ -208,13 +249,16 @@ namespace Google.Apis.Requests
             }
             continue;
           default:
-            throw new GoogleApiException(this.service.Name, string.Format("Unsupported parameter type \"{0}\" for \"{1}\"", (object) parameter.ParameterType, (object) parameter.Name));
+            throw new GoogleApiException(this.service.Name, string.Format(
+                "Unsupported parameter type \"{0}\" for \"{1}\"", (object) parameter.ParameterType,
+                (object) parameter.Name));
         }
       }
       foreach (IParameter parameter in (IEnumerable<IParameter>) this.RequestParameters.Values)
       {
         if (parameter.IsRequired && !inputParameters.ContainsKey(parameter.Name))
-          throw new GoogleApiException(this.service.Name, string.Format("Parameter \"{0}\" is missing", (object) parameter.Name));
+          throw new GoogleApiException(this.service.Name, string.Format("Parameter \"{0}\" is missing", 
+              (object) parameter.Name));
       }
     }
   }

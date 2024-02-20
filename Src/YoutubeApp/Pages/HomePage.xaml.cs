@@ -12,6 +12,7 @@ using YTApp.Classes.DataTypes;
 using MetroLog;
 using Newtonsoft.Json;
 using Windows.UI.Xaml.Media.Animation;
+using System.Diagnostics;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -60,13 +61,14 @@ namespace YTApp.Pages
             Log.Info("Updating the videos on the home page");
 
             PlaylistDataType YTItemsListTemp = new PlaylistDataType() { Title = "Today" };
-            PlaylistDataType YTItemsListTempYesterday = new PlaylistDataType() { Title = "Yesterday" };
-            PlaylistDataType YTItemsListTempTwoDays = new PlaylistDataType() { Title = "Two Days Ago" };
-            PlaylistDataType YTItemsListTempThreeDays = new PlaylistDataType() { Title = "Three Days Ago" };
-            PlaylistDataType YTItemsListTempFourDays = new PlaylistDataType() { Title = "Four Days Ago" };
-            PlaylistDataType YTItemsListTempFiveDays = new PlaylistDataType() { Title = "Five Days Ago" };
+            //PlaylistDataType YTItemsListTempYesterday = new PlaylistDataType() { Title = "Yesterday" };
+            //PlaylistDataType YTItemsListTempTwoDays = new PlaylistDataType() { Title = "Two Days Ago" };
+            //PlaylistDataType YTItemsListTempThreeDays = new PlaylistDataType() { Title = "Three Days Ago" };
+            //PlaylistDataType YTItemsListTempFourDays = new PlaylistDataType() { Title = "Four Days Ago" };
+            //PlaylistDataType YTItemsListTempFiveDays = new PlaylistDataType() { Title = "Five Days Ago" };
 
-            System.Collections.Concurrent.BlockingCollection<Google.Apis.YouTube.v3.Data.SearchResult> searchResponseList = new System.Collections.Concurrent.BlockingCollection<Google.Apis.YouTube.v3.Data.SearchResult>();
+            System.Collections.Concurrent.BlockingCollection<Google.Apis.YouTube.v3.Data.SearchResult> 
+                searchResponseList = new System.Collections.Concurrent.BlockingCollection<Google.Apis.YouTube.v3.Data.SearchResult>();
 
             var service = await YoutubeMethodsStatic.GetServiceAsync();
 
@@ -79,7 +81,7 @@ namespace YTApp.Pages
                         var tempService = service.Search.List("snippet");
                         tempService.ChannelId = subscription.Id;
                         tempService.Order = SearchResource.ListRequest.OrderEnum.Date;
-                        tempService.MaxResults = 8;
+                        tempService.MaxResults = 2;//8;
                         var response = tempService.Execute();
                         foreach (var video in response.Items)
                         {
@@ -114,7 +116,7 @@ namespace YTApp.Pages
                             {
                                 YTItemsListTemp.Items.Add(ytubeItem);
                             }
-                            else if (video.Snippet.PublishedAt > now.AddHours(-48))
+                            /*else if (video.Snippet.PublishedAt > now.AddHours(-48))
                             {
                                 YTItemsListTempYesterday.Items.Add(ytubeItem);
                             }
@@ -134,23 +136,29 @@ namespace YTApp.Pages
                             {
                                 YTItemsListTempFiveDays.Items.Add(ytubeItem);
                             }
+                            */
                         }
                     }
                     catch (Exception ex)
                     {
-                        Log.Error(String.Format("A video failed to load into the home page. Json: {0}", JsonConvert.SerializeObject(video)));
+                        Debug.WriteLine(String.Format("[!] A video failed to load into the home page. Json: {0}",
+                            JsonConvert.SerializeObject(video)));
+                        Debug.WriteLine(ex.Message);
+                        Log.Error(String.Format("A video failed to load into the home page. Json: {0}", 
+                            JsonConvert.SerializeObject(video)));
                         Log.Error(ex.Message);
                     }
                 }
             }
 
             YTItems.Add(YTItemsListTemp);
-            YTItems.Add(YTItemsListTempYesterday);
-            YTItems.Add(YTItemsListTempTwoDays);
-            YTItems.Add(YTItemsListTempThreeDays);
-            YTItems.Add(YTItemsListTempFourDays);
-            YTItems.Add(YTItemsListTempFiveDays);
+            //YTItems.Add(YTItemsListTempYesterday);
+            //YTItems.Add(YTItemsListTempTwoDays);
+            //YTItems.Add(YTItemsListTempThreeDays);
+            //YTItems.Add(YTItemsListTempFourDays);
+            //YTItems.Add(YTItemsListTempFiveDays);
             #endregion
+
 
             LoadingRing.IsActive = false;
 
