@@ -275,8 +275,11 @@ namespace Google.Apis.Http
               {
                 if (redirectRemaining-- == 0)
                   triesRemaining = 0;
+
                 if (loggable && (this.LogEvents & ConfigurableMessageHandler.LogEventType.ResponseAbnormal) != ConfigurableMessageHandler.LogEventType.None)
-                  this.InstanceLogger.Debug("Response[{0}] Redirect response was handled successfully. Redirect to {1}", (object) loggingRequestId, (object) response.Headers.Location);
+                  this.InstanceLogger.Debug("Response[{0}] Redirect response was handled successfully. Redirect to {1}", 
+                      (object) loggingRequestId, 
+                      (object) response.Headers.Location);
               }
               else
               {
@@ -304,10 +307,13 @@ namespace Google.Apis.Http
     private bool HandleRedirect(HttpResponseMessage message)
     {
       Uri location = message.Headers.Location;
+
       if (!message.IsRedirectStatusCode() || location == (Uri) null)
         return false;
+
       HttpRequestMessage requestMessage = message.RequestMessage;
-      requestMessage.RequestUri = new Uri(requestMessage.RequestUri, location);
+            requestMessage.RequestUri = new Uri(requestMessage.RequestUri,"");//, location);
+      
       if (message.StatusCode == HttpStatusCode.SeeOther)
         requestMessage.Method = HttpMethod.Get;
       requestMessage.Headers.Remove("Authorization");

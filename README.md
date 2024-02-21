@@ -15,8 +15,8 @@ The Unofficial Youtube Client is a youtube application built in UWP using the Go
 - Download videos
 
 ## My 2 cents / Status 
-- RnD (5-10 % complete)
-- Min. os win sdk : 15063 -> 14393
+- RnD (15 % complete)
+- Min. os win sdk : 15063 -> 14393 -> 15063
 - Draft / Proto
 
 ## Big "crazy bug" what still exists till/from 2017 year

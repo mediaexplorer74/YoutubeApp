@@ -14,7 +14,11 @@ namespace YTApp.Classes
     public class MediaPlayerController
     {
         public MediaElement videoPlayer;
-        public MediaPlayer audioPlayer = new MediaPlayer() { AutoPlay = false, AudioCategory = MediaPlayerAudioCategory.Media };
+        public MediaPlayer audioPlayer = new MediaPlayer() 
+        { 
+            AutoPlay = false, 
+            AudioCategory = MediaPlayerAudioCategory.Media 
+        };
 
         bool videoPlayerOpened = false;
         bool audioPlayerOpened = false;

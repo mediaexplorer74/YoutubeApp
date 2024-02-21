@@ -104,7 +104,7 @@ namespace YTApp.Pages
             if (channel.BrandingSettings != null)
             {
                 //Banner Image
-                SplashImage.Source = new BitmapImage(new Uri(channel.BrandingSettings.Image.BannerImageUrl));
+                SplashImage.Source = new BitmapImage(new Uri(channel.BrandingSettings.Image.BannerExternalUrl));//.BannerImageUrl));
 
                 //About Page
                 if (channel.BrandingSettings.Channel.Description != null)
@@ -203,6 +203,11 @@ namespace YTApp.Pages
                     ObservableCollection<YoutubeItemDataType> tempPlaylistVideos = new ObservableCollection<YoutubeItemDataType>();
                     tempPlaylistVideos.Clear();
                     var GetPlaylistVideos = service.PlaylistItems.List("snippet,status");
+
+                    //RnD
+                    if (playlist.ContentDetails == null)
+                        return;
+
                     if (playlist.ContentDetails == null || playlist.ContentDetails.Playlists[0] == null || playlist.Snippet.Type != "singlePlaylist")
                         return;
                     GetPlaylistVideos.PlaylistId = playlist.ContentDetails.Playlists[0];
@@ -250,11 +255,14 @@ namespace YTApp.Pages
                 var methods = new YoutubeMethods();
 
                 string FeaturedChannelIds = "";
-                foreach (var Id in channel.BrandingSettings.Channel.FeaturedChannelsUrls)
-                    FeaturedChannelIds += Id + ",";
+
+                //RnD
+                //foreach (var Id in channel.BrandingSettings.Channel.FeaturedChannelsUrls)
+                //    FeaturedChannelIds += Id + ",";
+                FeaturedChannelIds = channel.Id + ",";
 
                 var getChannels = service.Channels.List("snippet,statistics");
-                getChannels.Id = FeaturedChannelIds.Remove(FeaturedChannelIds.Length - 1, 1);
+                getChannels.Id = FeaturedChannelIds.Remove(FeaturedChannelIds.Length - 1, 1); //del last "," 
                 var featuredChannelsResponse = getChannels.Execute();
 
                 foreach (var featuredChannel in featuredChannelsResponse.Items)
@@ -308,7 +316,8 @@ namespace YTApp.Pages
 
             if (isSubscribed == true)
             {
-                SubscribeButton.Content = "Subscribe " + YoutubeMethodsStatic.ViewCountShortner(channel.Statistics.SubscriberCount);
+                SubscribeButton.Content = "Subscribe " 
+                    + YoutubeMethodsStatic.ViewCountShortner(channel.Statistics.SubscriberCount);
 
                 var getSubscription = service.Subscriptions.List("snippet");
                 getSubscription.Mine = true;
@@ -329,13 +338,15 @@ namespace YTApp.Pages
                     catch
                     {
                         //Fires if subscription could not be removed for whatever reason.
-                        SubscribeButton.Content = "Subscribed " + YoutubeMethodsStatic.ViewCountShortner(channel.Statistics.SubscriberCount + 1);
+                        SubscribeButton.Content = "Subscribed " 
+                            + YoutubeMethodsStatic.ViewCountShortner(channel.Statistics.SubscriberCount + 1);
                     }
                 }
                 catch
                 {
                     //Fires if subscription doesn't exist.
-                    SubscribeButton.Content = "Subscribe " + YoutubeMethodsStatic.ViewCountShortner(channel.Statistics.SubscriberCount);
+                    SubscribeButton.Content = "Subscribe " 
+                        + YoutubeMethodsStatic.ViewCountShortner(channel.Statistics.SubscriberCount);
                     isSubscribed = false;
                 }
             }
@@ -343,7 +354,11 @@ namespace YTApp.Pages
             {
                 Subscription subscription = new Subscription();
                 SubscriptionSnippet snippet = new SubscriptionSnippet();
-                ResourceId resourceId = new ResourceId { ChannelId = Constants.activeChannelID, Kind = "youtube#channel" };
+                ResourceId resourceId = new ResourceId 
+                { 
+                    ChannelId = Constants.activeChannelID, 
+                    Kind = "youtube#channel" 
+                };
 
                 snippet.ResourceId = resourceId;
                 subscription.Snippet = snippet;
@@ -351,7 +366,9 @@ namespace YTApp.Pages
                 var subscribe = service.Subscriptions.Insert(subscription, "snippet");
                 subscribe.Execute();
 
-                SubscribeButton.Content = "Subscribed " + YoutubeMethodsStatic.ViewCountShortner(channel.Statistics.SubscriberCount + 1);
+                SubscribeButton.Content = "Subscribed " 
+                    + 
+                    YoutubeMethodsStatic.ViewCountShortner(channel.Statistics.SubscriberCount + 1);
 
                 isSubscribed = true;
             }
@@ -373,7 +390,7 @@ namespace YTApp.Pages
 
                 YoutubeMethods methods = new YoutubeMethods();
 
-                var youtubeService = new YouTubeService(new BaseClientService.Initializer()
+                YouTubeService youtubeService = new YouTubeService(new BaseClientService.Initializer()
                 {
                     ApiKey = Constants.ApiKey,
                     ApplicationName = Constants.ApplicationName,//this.GetType().ToString()
@@ -423,7 +440,7 @@ namespace YTApp.Pages
 
                 YoutubeMethods methods = new YoutubeMethods();
 
-                var youtubeService = new YouTubeService(new BaseClientService.Initializer()
+                YouTubeService youtubeService = new YouTubeService(new BaseClientService.Initializer()
                 {
                     ApiKey = Constants.ApiKey,
                     ApplicationName = Constants.ApplicationName,//this.GetType().ToString()

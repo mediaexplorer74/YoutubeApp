@@ -1,8 +1,4 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: Google.Apis.Services.BaseClientService
-// Assembly: Google.Apis, Version=1.30.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab
-// MVID: 6C44ABAE-71BD-4009-BDB7-D7E324A25671
-// Assembly location: C:\Users\Admin\Desktop\re\YoutubeApp\Google.Apis.dll
+﻿// Google.Apis.Services.BaseClientService
 
 using Google.Apis.Http;
 using Google.Apis.Json;
@@ -113,11 +109,13 @@ namespace Google.Apis.Services
     public virtual async Task<T> DeserializeResponse<T>(HttpResponseMessage response)
     {
       T obj1 = default(T);
-      var input = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+      string input = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
       if (object.Equals((object)typeof(T), (object)typeof(string)))
       {
-         return obj1;//(Task<T>)input;
+         //return obj1;//(Task<T>)input;
+         obj1 = this.Serializer.Deserialize<T>(input);
+         return obj1;
       }
 
       if (this.HasFeature(Google.Apis.Discovery.Features.LegacyDataResponse))
@@ -235,7 +233,7 @@ namespace Google.Apis.Services
             && this.ApplicationName.Any<char>(
             (Func<char, bool>)(c => "\"(),:;<=>?@[\\]{}".Contains<char>(c))))
         {
-            throw new ArgumentException("Invalid Application name", "ApplicationName");
+            //throw new ArgumentException("Invalid Application name", "ApplicationName");
         }
       }
     }

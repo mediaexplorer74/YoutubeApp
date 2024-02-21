@@ -1,8 +1,4 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: Google.Apis.Requests.BatchRequest
-// Assembly: Google.Apis, Version=1.30.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab
-// MVID: 6C44ABAE-71BD-4009-BDB7-D7E324A25671
-// Assembly location: C:\Users\Admin\Desktop\re\YoutubeApp\Google.Apis.dll
+﻿// Google.Apis.Requests.BatchRequest
 
 using Google.Apis.Http;
 using Google.Apis.Services;
@@ -26,14 +22,19 @@ namespace Google.Apis.Requests
   {
     private const string DefaultBatchUrl = "https://www.googleapis.com/batch";
     private const int QueueLimit = 1000;
-    private readonly IList<BatchRequest.InnerRequest> allRequests = (IList<BatchRequest.InnerRequest>) new List<BatchRequest.InnerRequest>();
+
+    private readonly IList<BatchRequest.InnerRequest> allRequests 
+            = (IList<BatchRequest.InnerRequest>) new List<BatchRequest.InnerRequest>();
+
     private readonly string batchUrl;
     private readonly IClientService service;
 
     internal string BatchUrl => this.batchUrl;
 
     public BatchRequest(IClientService service)
-      : this(service, (service is BaseClientService baseClientService ? baseClientService.BatchUri : (string) null) ?? "https://www.googleapis.com/batch")
+      : this(service, (service is BaseClientService baseClientService 
+            ? baseClientService.BatchUri 
+            : (string) null) ?? "https://www.googleapis.com/batch")
     {
     }
 
@@ -52,6 +53,7 @@ namespace Google.Apis.Requests
     {
       if (this.Count > 1000)
         throw new InvalidOperationException("A batch request cannot contain more than 1000 single requests");
+
       IList<BatchRequest.InnerRequest> allRequests = this.allRequests;
       BatchRequest.InnerRequest<TResponse> innerRequest = new BatchRequest.InnerRequest<TResponse>();
       innerRequest.ClientRequest = request;
@@ -66,11 +68,21 @@ namespace Google.Apis.Requests
     {
       if (this.Count < 1)
         return;
+
       ConfigurableHttpClient httpClient = this.service.HttpClient;
-      HttpContent content1 = await BatchRequest.CreateOuterRequestContent(this.allRequests.Select<BatchRequest.InnerRequest, IClientServiceRequest>((Func<BatchRequest.InnerRequest, IClientServiceRequest>) (r => r.ClientRequest))).ConfigureAwait(false);
-      HttpResponseMessage result = await httpClient.PostAsync(new Uri(this.batchUrl), content1, cancellationToken).ConfigureAwait(false);
+
+      HttpContent content1 = await BatchRequest.CreateOuterRequestContent(
+          this.allRequests.Select<BatchRequest.InnerRequest, IClientServiceRequest>(
+              (Func<BatchRequest.InnerRequest, IClientServiceRequest>) (r => r.ClientRequest)))
+                .ConfigureAwait(false);
+
+      HttpResponseMessage result = await httpClient.PostAsync(new Uri(this.batchUrl), 
+          content1, cancellationToken).ConfigureAwait(false);
+      
       result.EnsureSuccessStatusCode();
-      ConfiguredTaskAwaitable<string> configuredTaskAwaitable = result.Content.ReadAsStringAsync().ConfigureAwait(false);
+
+      ConfiguredTaskAwaitable<string> configuredTaskAwaitable 
+                = result.Content.ReadAsStringAsync().ConfigureAwait(false);
       string fullContent = await configuredTaskAwaitable;
       string str = result.Content.Headers.GetValues("Content-Type").First<string>();
       string boundary = str.Substring(str.IndexOf("boundary=") + "boundary=".Length);

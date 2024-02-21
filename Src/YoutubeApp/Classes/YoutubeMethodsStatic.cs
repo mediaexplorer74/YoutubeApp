@@ -51,6 +51,7 @@ namespace YTApp.Classes
             // Create the service.
             return new YouTubeService(new BaseClientService.Initializer()
             {
+                ApiKey = Constants.ApiKey, //RnD
                 HttpClientInitializer = credential,
                 ApplicationName = Constants.ApplicationName,//"Unofficial Youtube Client",
             });
@@ -72,7 +73,8 @@ namespace YTApp.Classes
         {
             GoogleAuthorizationCodeFlow.Initializer initializer 
                 = new GoogleAuthorizationCodeFlow.Initializer();
-            var secrets = new ClientSecrets
+
+            ClientSecrets secrets = new ClientSecrets
             {
                 ClientId = Constants.ClientID,
                 ClientSecret = Constants.ClientSecret

@@ -118,7 +118,11 @@ namespace YTApp
                 var videoID = YoutubeClient.ParseVideoId(clipboardText);
                 StartVideo(videoID);
             }
-            catch { Log.Error("Exception thrown while loading video from clipboard"); }
+            catch 
+            {
+                Debug.WriteLine("Exception thrown while loading video from clipboard");
+                Log.Error("Exception thrown while loading video from clipboard"); 
+            }
         }
 
         private async void UpdateSyncData()
@@ -201,7 +205,8 @@ namespace YTApp
             {
                 nextPageToken = tempSubscriptions.NextPageToken;
 
-                while (nextPageToken != null)
+                //while
+                if(nextPageToken != null)
                 {
                     SubscriptionListResponse tempSubs = GetSubscriptions(nextPageToken, service);
 
@@ -226,6 +231,9 @@ namespace YTApp
                             }
                             catch (Exception ex)
                             {
+                                Debug.WriteLine("[ex] " + string.Format("Subscription failed to load. Object:",
+                                    JsonConvert.SerializeObject(subscription)));
+                                Debug.WriteLine("[ex] " + ex.Message);
                                 Log.Error(string.Format("Subscription failed to load. Object:",
                                     JsonConvert.SerializeObject(subscription)));
                                 Log.Error(ex.Message);
@@ -239,7 +247,7 @@ namespace YTApp
                         nextPageToken = null;
                     }
 
-                }//while...
+                }//if   //while...
 
             }//if...
 
@@ -250,7 +258,7 @@ namespace YTApp
         private SubscriptionListResponse GetSubscriptions(string NextPageToken, 
             YouTubeService service)
         {
-            var subscriptions = service.Subscriptions.List("snippet, contentDetails");
+            SubscriptionsResource.ListRequest subscriptions = service.Subscriptions.List("snippet, contentDetails");
             try
             {
                 subscriptions.PageToken = NextPageToken;
@@ -479,34 +487,44 @@ namespace YTApp
 
         public async void DownloadVideo()
         {
-            var client = new YoutubeClient();
-            var videoUrl = Constants.videoInfo.Muxed[0].Url;
+            YoutubeClient client = new YoutubeClient();
 
-            var savePicker = new Windows.Storage.Pickers.FileSavePicker 
-            { 
-                SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.Downloads 
-            };
-            savePicker.FileTypeChoices.Add("Video File", new List<string>() { ".mp4" });
-
-            Windows.Storage.StorageFile file = await savePicker.PickSaveFileAsync();
-            if (file != null)
+            if (Constants.videoInfo != null)
             {
-                // Prevent updates to the remote version of the file until
-                // we finish making changes and call CompleteUpdatesAsync.
-                Windows.Storage.CachedFileManager.DeferUpdates(file);
-                // write to file
-                BackgroundDownloader downloader = new BackgroundDownloader();
-                DownloadOperation download = downloader.CreateDownload(new Uri(videoUrl), file);
+                string videoUrl = Constants.videoInfo.Muxed[0].Url;
 
-                DownloadProgress.Visibility = Visibility.Visible;
+                Windows.Storage.Pickers.FileSavePicker savePicker = new Windows.Storage.Pickers.FileSavePicker
+                {
+                    SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.Downloads
+                };
+                savePicker.FileTypeChoices.Add("Video File", new List<string>() { ".mp4" });
 
-                Progress<DownloadOperation> progress = new Progress<DownloadOperation>();
-                progress.ProgressChanged += Progress_ProgressChanged;
-                await download.StartAsync().AsTask(CancellationToken.None, progress);
+                Windows.Storage.StorageFile file = await savePicker.PickSaveFileAsync();
+                if (file != null)
+                {
+                    // Prevent updates to the remote version of the file until
+                    // we finish making changes and call CompleteUpdatesAsync.
+                    Windows.Storage.CachedFileManager.DeferUpdates(file);
+                    // write to file
+                    BackgroundDownloader downloader = new BackgroundDownloader();
+                    DownloadOperation download = downloader.CreateDownload(new Uri(videoUrl), file);
+
+                    DownloadProgress.Visibility = Visibility.Visible;
+
+                    Progress<DownloadOperation> progress = new Progress<DownloadOperation>();
+                    progress.ProgressChanged += Progress_ProgressChanged;
+                    await download.StartAsync().AsTask(CancellationToken.None, progress);
+                }
+                else
+                {
+                    Debug.WriteLine("[i] Download operation was cancelled.");
+                    Log.Info("Download operation was cancelled.");
+                }
             }
             else
             {
-                Log.Info("Download operation was cancelled.");
+                Debug.WriteLine("[i] videoInfo empty!");
+                Log.Info("[i] videoInfo empty!");
             }
         }
 

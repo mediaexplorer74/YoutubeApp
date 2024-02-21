@@ -3,6 +3,7 @@ using Google.Apis.YouTube.v3.Data;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.DataTransfer;
@@ -35,13 +36,15 @@ namespace YTApp.Pages
     /// </summary>
     public sealed partial class VideoPage : Page
     {
-        Windows.Storage.ApplicationDataContainer localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
+        Windows.Storage.ApplicationDataContainer localSettings 
+            = Windows.Storage.ApplicationData.Current.LocalSettings;
 
         Channel channel;
 
         PlaylistDataType relatedVideos = new PlaylistDataType();
 
-        ObservableCollection<CommentContainerDataType> commentCollection = new ObservableCollection<CommentContainerDataType>();
+        ObservableCollection<CommentContainerDataType> commentCollection 
+            = new ObservableCollection<CommentContainerDataType>();
 
         public VideoPage()
         {
@@ -54,13 +57,20 @@ namespace YTApp.Pages
             viewer.controller.videoPlayer.MediaEnded += VideoPlayer_MediaEnded;
 
             //Set autoplay value
-            try { SwitchAutoplay.IsOn = (bool)localSettings.Values["Autoplay"]; } catch { }
+            try { 
+                SwitchAutoplay.IsOn = (bool)localSettings.Values["Autoplay"]; 
+            } 
+            catch (Exception ex)
+            {
+                Debug.WriteLine("[ex] SwitchAutoplay ex.: " + ex.Message);
+            }
 
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            ConnectedAnimation imageAnimation = ConnectedAnimationService.GetForCurrentView().GetAnimation("videoThumb");
+            ConnectedAnimation imageAnimation = 
+                ConnectedAnimationService.GetForCurrentView().GetAnimation("videoThumb");
 
             if (imageAnimation != null)
             {
@@ -152,22 +162,33 @@ namespace YTApp.Pages
 
         public async void UpdateRelatedVideos(YouTubeService service)
         {
-            System.Collections.ObjectModel.ObservableCollection<YoutubeItemDataType> relatedVideosList = new System.Collections.ObjectModel.ObservableCollection<YoutubeItemDataType>();
+            System.Collections.ObjectModel.ObservableCollection<YoutubeItemDataType> relatedVideosList 
+                = new System.Collections.ObjectModel.ObservableCollection<YoutubeItemDataType>();
+
             await Task.Run(() =>
             {
-                var getRelatedVideos = service.Search.List("snippet");
-                getRelatedVideos.RelatedToVideoId = Constants.activeVideoID;
+                SearchResource.ListRequest getRelatedVideos = service.Search.List("snippet");
+                
+                //getRelatedVideos.RelatedToVideoId = Constants.activeVideoID;
+                getRelatedVideos.Q = Constants.activeVideoID;
+
                 getRelatedVideos.MaxResults = 15;
                 getRelatedVideos.Type = "video";
-                var relatedVideosResponse = getRelatedVideos.Execute();
+                SearchListResponse relatedVideosResponse = getRelatedVideos.Execute();
 
                 var methods = new YoutubeMethods();
-                foreach (SearchResult video in relatedVideosResponse.Items)
+
+                if (relatedVideosResponse != null)
                 {
-                    relatedVideosList.Add(methods.VideoToYoutubeItem(video));
+                    foreach (SearchResult video in relatedVideosResponse.Items)
+                    {
+                        relatedVideosList.Add(methods.VideoToYoutubeItem(video));
+                    }
                 }
+
                 methods.FillInViews(relatedVideosList, service);
             });
+
             relatedVideos.Items = relatedVideosList;
         }
 
@@ -401,7 +422,17 @@ namespace YTApp.Pages
             Constants.MainPageRef.Toolbar.Visibility = Visibility.Collapsed;
 
             pipViewer.Visibility = Visibility.Visible;
-            pipViewer.Source = new Uri(Constants.videoInfo.Muxed[0].Url);
+
+            if (Constants.videoInfo != null)
+            {
+                pipViewer.Source = new Uri(Constants.videoInfo.Muxed[0].Url);
+            }
+            else
+            {
+                pipViewer.Source = new Uri(string.Empty);
+            }
+
+
             pipViewer.MediaOpened += PipViewer_MediaOpened;
         }
 

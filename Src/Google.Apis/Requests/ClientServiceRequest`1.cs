@@ -1,8 +1,4 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: Google.Apis.Requests.ClientServiceRequest`1
-// Assembly: Google.Apis, Version=1.30.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab
-// MVID: 6C44ABAE-71BD-4009-BDB7-D7E324A25671
-// Assembly location: C:\Users\Admin\Desktop\re\YoutubeApp\Google.Apis.dll
+﻿// Google.Apis.Requests.ClientServiceRequest`1
 
 using Google.Apis.Discovery;
 using Google.Apis.Logging;
@@ -171,8 +167,10 @@ namespace Google.Apis.Requests
         Path = this.RestPath,
         Method = this.HttpMethod
       };
+
       if (this.service.ApiKey != null)
         requestBuilder.AddParameter(RequestParameterType.Query, "key", this.service.ApiKey);
+
       IDictionary<string, object> parameterDictionary = ParameterUtils.CreateParameterDictionary((object) this);
       this.AddParameters(requestBuilder, ParameterCollection.FromDictionary(parameterDictionary));
       return requestBuilder;

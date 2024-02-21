@@ -10,14 +10,15 @@ namespace Google.Apis.Requests
   {
     public string Domain { get; set; }
 
-    public string Reason { get; set; }
+        public string Reason { get; set; }
 
-    public string Message { get; set; }
+        public string Message { get; set; }
 
-    public string LocationType { get; set; }
+        public string LocationType { get; set; }
 
-    public string Location { get; set; }
+        public string Location { get; set; }
 
-    public override string ToString() => string.Format("Message[{0}] Location[{1} - {2}] Reason[{3}] Domain[{4}]", (object) this.Message, (object) this.Location, (object) this.LocationType, (object) this.Reason, (object) this.Domain);
+        public override string ToString() => string.Format("Message[{0}] Location[{1} - {2}] Reason[{3}] Domain[{4}]", 
+            (object)this.Message, (object)this.Location, (object)this.LocationType, (object)this.Reason, (object)this.Domain);
   }
 }
