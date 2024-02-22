@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Google.Apis.Auth", "Google.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Google.Apis.Core", "Google.Apis.Core\Google.Apis.Core.csproj", "{E5692B5C-C746-45BC-9B77-063C0366D142}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YoutubeExplode", "YoutubeExplode\YoutubeExplode.csproj", "{9744E4C8-1DB3-4697-BAAA-A8E813217FBC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -155,6 +157,26 @@ Global
 		{E5692B5C-C746-45BC-9B77-063C0366D142}.Release|x64.Build.0 = Release|x64
 		{E5692B5C-C746-45BC-9B77-063C0366D142}.Release|x86.ActiveCfg = Release|x86
 		{E5692B5C-C746-45BC-9B77-063C0366D142}.Release|x86.Build.0 = Release|x86
+		{9744E4C8-1DB3-4697-BAAA-A8E813217FBC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9744E4C8-1DB3-4697-BAAA-A8E813217FBC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9744E4C8-1DB3-4697-BAAA-A8E813217FBC}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{9744E4C8-1DB3-4697-BAAA-A8E813217FBC}.Debug|ARM.Build.0 = Debug|Any CPU
+		{9744E4C8-1DB3-4697-BAAA-A8E813217FBC}.Debug|ARM64.ActiveCfg = Debug|Any CPU
+		{9744E4C8-1DB3-4697-BAAA-A8E813217FBC}.Debug|ARM64.Build.0 = Debug|Any CPU
+		{9744E4C8-1DB3-4697-BAAA-A8E813217FBC}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{9744E4C8-1DB3-4697-BAAA-A8E813217FBC}.Debug|x64.Build.0 = Debug|Any CPU
+		{9744E4C8-1DB3-4697-BAAA-A8E813217FBC}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{9744E4C8-1DB3-4697-BAAA-A8E813217FBC}.Debug|x86.Build.0 = Debug|Any CPU
+		{9744E4C8-1DB3-4697-BAAA-A8E813217FBC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9744E4C8-1DB3-4697-BAAA-A8E813217FBC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9744E4C8-1DB3-4697-BAAA-A8E813217FBC}.Release|ARM.ActiveCfg = Release|Any CPU
+		{9744E4C8-1DB3-4697-BAAA-A8E813217FBC}.Release|ARM.Build.0 = Release|Any CPU
+		{9744E4C8-1DB3-4697-BAAA-A8E813217FBC}.Release|ARM64.ActiveCfg = Release|Any CPU
+		{9744E4C8-1DB3-4697-BAAA-A8E813217FBC}.Release|ARM64.Build.0 = Release|Any CPU
+		{9744E4C8-1DB3-4697-BAAA-A8E813217FBC}.Release|x64.ActiveCfg = Release|Any CPU
+		{9744E4C8-1DB3-4697-BAAA-A8E813217FBC}.Release|x64.Build.0 = Release|Any CPU
+		{9744E4C8-1DB3-4697-BAAA-A8E813217FBC}.Release|x86.ActiveCfg = Release|Any CPU
+		{9744E4C8-1DB3-4697-BAAA-A8E813217FBC}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

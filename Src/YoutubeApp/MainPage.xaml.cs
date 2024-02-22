@@ -104,8 +104,8 @@ namespace YTApp
 
             UpdateLoginDetails();
 
-            //Plays Youtube link in clipboard
-            PlayClipboardYLink();
+            //Plays Youtube link in clipboard (RnD)
+            //PlayClipboardYLink();
 
             UpdateSyncData();
         }
@@ -263,7 +263,7 @@ namespace YTApp
             {
                 subscriptions.PageToken = NextPageToken;
                 subscriptions.Mine = true;
-                subscriptions.MaxResults = 2;//50;
+                subscriptions.MaxResults = 1;//50;
                 subscriptions.Order = SubscriptionsResource.ListRequest.OrderEnum.Alphabetical;
 
                 return subscriptions.Execute();
@@ -330,7 +330,7 @@ namespace YTApp
             {
                 var LoginInfo = await GetLoginInfo.ExecuteAsync();
 
-                txtLoginName.Text = LoginInfo.Name;
+                txtLoginName.Text = " ";//LoginInfo.Name;
 
                 var profileImg = new Windows.UI.Xaml.Media.ImageBrush
                 {

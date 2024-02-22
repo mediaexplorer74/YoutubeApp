@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.Foundation;
@@ -28,7 +29,8 @@ namespace YTApp.UserControls
 
         public event EventHandler EnteringPiP;
 
-        private static readonly DependencyProperty SourceProperty = DependencyProperty.Register("Source", typeof(string), typeof(VideoViewer), null);
+        private static readonly DependencyProperty SourceProperty 
+            = DependencyProperty.Register("Source", typeof(string), typeof(VideoViewer), null);
 
         private MediaStreamInfoSet videoStreams;
 
@@ -48,8 +50,15 @@ namespace YTApp.UserControls
 
         public string Source
         {
-            get { return (string)GetValue(SourceProperty); }
-            set { SetValue(SourceProperty, value); LoadVideo(); }
+            get 
+            { 
+                return (string)GetValue(SourceProperty); 
+            }
+            set 
+            { 
+                SetValue(SourceProperty, value); 
+                LoadVideo(); 
+            }
         }
 
         public VideoViewer()
@@ -78,15 +87,30 @@ namespace YTApp.UserControls
         {
             if (controller.videoPlayer.CurrentState == MediaElementState.Playing)
             {
-                await Dispatcher.RunAsync(CoreDispatcherPriority.High, () => { ButtonPlay.Icon = new SymbolIcon() { Symbol = Symbol.Pause }; LoadingRing.IsActive = false; });
+                await Dispatcher.RunAsync(CoreDispatcherPriority.High, () => 
+                { 
+                    ButtonPlay.Icon = new SymbolIcon() 
+                    { 
+                        Symbol = Symbol.Pause 
+                    }; 
+                    LoadingRing.IsActive = false; 
+                });
             }
             else if (controller.videoPlayer.CurrentState == MediaElementState.Buffering)
             {
-                await Dispatcher.RunAsync(CoreDispatcherPriority.High, () => { LoadingRing.IsActive = true; });
+                await Dispatcher.RunAsync(CoreDispatcherPriority.High, () => 
+                { LoadingRing.IsActive = true; });
             }
             else if (controller.videoPlayer.CurrentState == MediaElementState.Paused)
             {
-                await Dispatcher.RunAsync(CoreDispatcherPriority.High, () => { ButtonPlay.Icon = new SymbolIcon() { Symbol = Symbol.Play }; LoadingRing.IsActive = false; });
+                await Dispatcher.RunAsync(CoreDispatcherPriority.High, () => 
+                { 
+                    ButtonPlay.Icon = new SymbolIcon() 
+                    { 
+                        Symbol = Symbol.Play }; 
+                        LoadingRing.IsActive = false; 
+                    }
+                );
             }
         }
 
@@ -94,10 +118,15 @@ namespace YTApp.UserControls
 
         private void ButtonPlay_Click(object sender, RoutedEventArgs e)
         {
-            if (controller.videoPlayer.CurrentState == MediaElementState.Playing || controller.videoPlayer.CurrentState == MediaElementState.Buffering)
+            if (controller.videoPlayer.CurrentState == MediaElementState.Playing
+                || controller.videoPlayer.CurrentState == MediaElementState.Buffering)
+            {
                 controller.Pause();
+            }
             else
+            {
                 controller.Start();
+            }
         }
 
         #region Picture in Picture
@@ -133,7 +162,10 @@ namespace YTApp.UserControls
         private void ButtonCopy_Tapped(object sender, TappedRoutedEventArgs e)
         {
             var link = new Windows.ApplicationModel.DataTransfer.DataPackage();
-            link.SetText("https://youtu.be/" + Constants.activeVideoID + "?t=" + Convert.ToInt32(controller.audioPlayer.PlaybackSession.Position.TotalSeconds) + "s");
+
+            link.SetText("https://youtu.be/" + Constants.activeVideoID + "?t=" 
+                + Convert.ToInt32(controller.audioPlayer.PlaybackSession.Position.TotalSeconds) + "s");
+            
             Windows.ApplicationModel.DataTransfer.Clipboard.SetContent(link);
             Constants.MainPageRef.ShowNotifcation("Link copied to clipboard.");
         }
@@ -190,12 +222,18 @@ namespace YTApp.UserControls
         {
             try
             {
-                if (Window.Current.CoreWindow.GetKeyState(Windows.System.VirtualKey.LeftButton).HasFlag(CoreVirtualKeyStates.Down))
+                if (Window.Current.CoreWindow.GetKeyState(Windows.System
+                    .VirtualKey.LeftButton).HasFlag(CoreVirtualKeyStates.Down))
                     return;
+
                 await Dispatcher.RunAsync(CoreDispatcherPriority.High, () =>
                 {
-                    if(controller.audioPlayer.PlaybackSession.NaturalDuration.TotalSeconds > 0)
-                        viewerProgress.Value = (controller.audioPlayer.PlaybackSession.Position.TotalSeconds / controller.audioPlayer.PlaybackSession.NaturalDuration.TotalSeconds) * 10000;
+                    if (controller.audioPlayer.PlaybackSession.NaturalDuration.TotalSeconds > 0)
+                    {
+                        viewerProgress.Value =
+                        (controller.audioPlayer.PlaybackSession.Position.TotalSeconds
+                        / controller.audioPlayer.PlaybackSession.NaturalDuration.TotalSeconds) * 10000;
+                    }
                 });
             }
             catch { }
@@ -204,7 +242,9 @@ namespace YTApp.UserControls
         private void viewerProgress_SliderOnComplete(object sender, PointerRoutedEventArgs e)
         {
             //Set new position to the one that was just selected
-            controller.SetPosition(new TimeSpan(0, 0, 0, Convert.ToInt32((viewerProgress.Value / 10000) * controller.audioPlayer.PlaybackSession.NaturalDuration.TotalSeconds)));
+            controller.SetPosition(new TimeSpan(0, 0, 0, 
+                Convert.ToInt32((viewerProgress.Value / 10000) 
+                * controller.audioPlayer.PlaybackSession.NaturalDuration.TotalSeconds)));
         }
 
         #endregion Slider
@@ -213,7 +253,8 @@ namespace YTApp.UserControls
 
         private void QualityList_ItemClick(object sender, ItemClickEventArgs e)
         {
-            controller.videoPlayer.Source = new Uri(YoutubeMethodsStatic.GetVideoQuality((VideoQuality)e.ClickedItem, false));
+            controller.videoPlayer.Source = new Uri(
+                YoutubeMethodsStatic.GetVideoQuality((VideoQuality)e.ClickedItem, false));
             ButtonSettings.Flyout.Hide();
         }
 
@@ -292,16 +333,29 @@ namespace YTApp.UserControls
 
         private async Task<bool> GetVideoData()
         {
-            var client = new YoutubeClient();
+            YoutubeClient client = new YoutubeClient();
             string id = Source;
 
             //Convert it to a regular ID if it is a youtube link
-            try { id = YoutubeClient.ParseVideoId(Source); }
-            catch { }
+            try 
+            { 
+                id = YoutubeClient.ParseVideoId(Source); 
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("[ex] VideoViewer - ParseVideoId error: " + ex.Message);
+            }
 
             //Get the video
-            try { videoStreams = await client.GetVideoMediaStreamInfosAsync(id); }
-            catch { return false; }
+            try 
+            { 
+                videoStreams = await client.GetVideoMediaStreamInfosAsync(id); 
+            }
+            catch (Exception ex2)
+            {
+                Debug.WriteLine("[ex] VideoViewer - GetVideoMediaStreamInfosAsync error: " + ex2.Message);
+                return false; 
+            }
 
             //Store the video urls and info
             Constants.videoInfo = videoStreams;
@@ -327,7 +381,8 @@ namespace YTApp.UserControls
             controller.Load(new Uri(Constants.videoInfo.Video[0].Url), new Uri(audioUrl));
 
             //Start the video at the previous time
-            controller.Start(new TimeSpan(0, 0, Convert.ToInt32(new YoutubeMethods().GetWatchedTime(Constants.activeVideoID))));
+            controller.Start(new TimeSpan(0, 0, 
+                Convert.ToInt32(new YoutubeMethods().GetWatchedTime(Constants.activeVideoID))));
 
             timer.Start();
             storePositionTimer.Start();
@@ -347,7 +402,9 @@ namespace YTApp.UserControls
         private void StorePositionTimer_Tick(object sender, object e)
         {
             //Save the percentage of the video watched
-            Constants.syncedData.history[0].WatchTime = (controller.audioPlayer.PlaybackSession.Position.TotalSeconds / controller.audioPlayer.PlaybackSession.NaturalDuration.TotalSeconds) * 100;
+            Constants.syncedData.history[0].WatchTime = 
+                (controller.audioPlayer.PlaybackSession.Position.TotalSeconds 
+                / controller.audioPlayer.PlaybackSession.NaturalDuration.TotalSeconds) * 100;
         }
     }
 }

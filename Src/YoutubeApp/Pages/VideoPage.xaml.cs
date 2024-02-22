@@ -1,6 +1,4 @@
-﻿using Google.Apis.YouTube.v3;
-using Google.Apis.YouTube.v3.Data;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -26,6 +24,8 @@ using YoutubeExplode;
 using YTApp.Classes;
 using YTApp.Classes.DataTypes;
 using YTApp.UserControls;
+using Google.Apis.YouTube.v3;
+using Google.Apis.YouTube.v3.Data;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -56,9 +56,9 @@ namespace YTApp.Pages
             //Link to the video complete event
             viewer.controller.videoPlayer.MediaEnded += VideoPlayer_MediaEnded;
 
-            //Set autoplay value
-            try { 
-                SwitchAutoplay.IsOn = (bool)localSettings.Values["Autoplay"]; 
+            //Set autoplay value (*true* for fast TEST mode)
+            try {
+                SwitchAutoplay.IsOn = false;//(bool)localSettings.Values["Autoplay"]; 
             } 
             catch (Exception ex)
             {
@@ -172,7 +172,7 @@ namespace YTApp.Pages
                 //getRelatedVideos.RelatedToVideoId = Constants.activeVideoID;
                 getRelatedVideos.Q = Constants.activeVideoID;
 
-                getRelatedVideos.MaxResults = 15;
+                getRelatedVideos.MaxResults = 1;// 15;
                 getRelatedVideos.Type = "video";
                 SearchListResponse relatedVideosResponse = getRelatedVideos.Execute();
 
@@ -215,7 +215,8 @@ namespace YTApp.Pages
                 Frame.Height = 360;
 
                 //Saves the current Media Player height
-                Windows.Storage.ApplicationDataContainer localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
+                Windows.Storage.ApplicationDataContainer localSettings 
+                    = Windows.Storage.ApplicationData.Current.LocalSettings;
                 localSettings.Values["MediaViewerHeight"] = MediaRow.Height.Value;
 
                 MediaRow.Height = new GridLength(360);
@@ -236,11 +237,18 @@ namespace YTApp.Pages
                 Frame.Height = Double.NaN;
 
                 //Set the media viewer to the previous height or to the default if a custom height is not found
-                Windows.Storage.ApplicationDataContainer localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
-                if (localSettings.Values["MediaViewerHeight"] != null && (double)localSettings.Values["MediaViewerHeight"] > 360)
+                Windows.Storage.ApplicationDataContainer localSettings 
+                    = Windows.Storage.ApplicationData.Current.LocalSettings;
+
+                if (localSettings.Values["MediaViewerHeight"] != null
+                    && (double)localSettings.Values["MediaViewerHeight"] > 360)
+                {
                     MediaRow.Height = new GridLength(Convert.ToDouble(localSettings.Values["MediaViewerHeight"]));
+                }
                 else
+                {
                     MediaRow.Height = new GridLength(600);
+                }
 
                 //Enable the taps on the viewer
                 viewer.IsHitTestVisible = true;
@@ -311,7 +319,8 @@ namespace YTApp.Pages
             }
         }
 
-        private async void Description_LinkClicked(object sender, Microsoft.Toolkit.Uwp.UI.Controls.LinkClickedEventArgs e)
+        private async void Description_LinkClicked(object sender, 
+            Microsoft.Toolkit.Uwp.UI.Controls.LinkClickedEventArgs e)
         {
             await Windows.System.Launcher.LaunchUriAsync(new Uri(e.Link));
         }
@@ -461,7 +470,7 @@ namespace YTApp.Pages
             getComments.VideoId = Constants.activeVideoID;
             getComments.Order = option;
             getComments.TextFormat = CommentThreadsResource.ListRequest.TextFormatEnum.PlainText;
-            getComments.MaxResults = 10;
+            getComments.MaxResults = 1;// 10;
             var response = await getComments.ExecuteAsync();
 
             //Save the next page token
@@ -494,7 +503,9 @@ namespace YTApp.Pages
             getComments.Order = option;
             getComments.TextFormat = CommentThreadsResource.ListRequest.TextFormatEnum.PlainText;
             getComments.PageToken = commentNextPageToken;
-            getComments.MaxResults = 15;
+
+            getComments.MaxResults = 1;// 15;
+            
             var response = await getComments.ExecuteAsync();
 
             //Save the next page token

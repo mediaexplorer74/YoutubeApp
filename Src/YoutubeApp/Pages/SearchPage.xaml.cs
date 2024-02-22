@@ -56,7 +56,7 @@ namespace YTApp.Pages
 
             var searchListRequest = youtubeService.Search.List("snippet");
             searchListRequest.Q = Constants.MainPageRef.SearchBox.Text;
-            searchListRequest.MaxResults = 2;// 25;
+            searchListRequest.MaxResults = 1;// 25;
 
             SearchListResponse searchListResponse = new SearchListResponse();
 
@@ -119,7 +119,7 @@ namespace YTApp.Pages
             var searchListRequest = youtubeService.Search.List("snippet");
             searchListRequest.Q = Constants.MainPageRef.SearchBox.Text;
             searchListRequest.PageToken = nextPageToken;
-            searchListRequest.MaxResults = 25;
+            searchListRequest.MaxResults = 1;// 25;
 
             // Call the search.list method to retrieve results matching the specified query term.
             var searchListResponse = await searchListRequest.ExecuteAsync();

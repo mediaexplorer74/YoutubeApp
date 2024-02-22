@@ -1,4 +1,5 @@
-﻿using Google.Apis.YouTube.v3.Data;
+﻿// *CommentThread* User Control
+
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -15,8 +16,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using YTApp.Classes;
-
-// The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
+using Google.Apis.YouTube.v3.Data;
 
 namespace YTApp.UserControls
 {
@@ -24,14 +24,27 @@ namespace YTApp.UserControls
     {
         bool isExpanded = false;
 
-        private ObservableCollection<Classes.DataTypes.CommentDataType> commentReplies = new ObservableCollection<Classes.DataTypes.CommentDataType>();
+        private ObservableCollection<Classes.DataTypes.CommentDataType> commentReplies = 
+            new ObservableCollection<Classes.DataTypes.CommentDataType>();
 
-        private static readonly DependencyProperty SourceProperty = DependencyProperty.Register("Source", typeof(Classes.DataTypes.CommentDataType), typeof(CommentThread), null);
+        private static readonly DependencyProperty SourceProperty = DependencyProperty.Register(
+            "Source", typeof(Classes.DataTypes.CommentDataType), typeof(CommentThread), null);
 
         public Classes.DataTypes.CommentDataType Source
         {
-            get { return (Classes.DataTypes.CommentDataType)GetValue(SourceProperty); }
-            set { SetValue(SourceProperty, value); if (Source.ReplyCount == 0) { Replies.Visibility = Visibility.Collapsed; } }
+            get 
+            { 
+                return (Classes.DataTypes.CommentDataType)GetValue(SourceProperty); 
+            }
+            set
+            { 
+                SetValue(SourceProperty, value); 
+
+                if (Source.ReplyCount == 0) 
+                { 
+                    Replies.Visibility = Visibility.Collapsed;
+                } 
+            }
         }
 
         public CommentThread()
@@ -144,11 +157,19 @@ namespace YTApp.UserControls
             catch(Google.GoogleApiException ex)
             {
                 if (ex.Error.Code == 403)
-                    Constants.MainPageRef.ShowNotifcation("You have not setup a channel with your account. Please do so to post a comment.", 0);
+                {
+                    Constants.MainPageRef.ShowNotifcation(
+                        "You have not setup a channel with your account. Please do so to post a comment.", 0);
+                }
                 else if (ex.Error.Code == 400)
-                    Constants.MainPageRef.ShowNotifcation("Your comment was too long or Youtube failed to handle the request correctly.", 5000);
+                {
+                    Constants.MainPageRef.ShowNotifcation(
+                        "Your comment was too long or Youtube failed to handle the request correctly.", 5000);
+                }
                 else
+                {
                     Constants.MainPageRef.ShowNotifcation("An error occured.");
+                }
             }
         }
     }

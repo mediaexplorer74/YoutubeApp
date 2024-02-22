@@ -6,6 +6,7 @@ The Unofficial Youtube Client is a youtube application built in UWP using the Go
 
 ## Screenshot(s)
 ![](Images/shot01.png)
+![](Images/shot02.png)
 
 ## Features (the info from original readme...)
 - Windows Styling Integration
@@ -15,7 +16,7 @@ The Unofficial Youtube Client is a youtube application built in UWP using the Go
 - Download videos
 
 ## My 2 cents / Status 
-- RnD (15 % complete)
+- RnD (25 % complete)
 - Min. os win sdk : 15063 -> 14393 -> 15063
 - Draft / Proto
 

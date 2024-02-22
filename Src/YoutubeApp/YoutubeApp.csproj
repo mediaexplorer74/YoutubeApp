@@ -352,9 +352,6 @@
     <PackageReference Include="MyToolkit.Extended">
       <Version>2.5.16</Version>
     </PackageReference>
-    <PackageReference Include="YoutubeExplode">
-      <Version>4.1.0</Version>
-    </PackageReference>
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />
@@ -379,6 +376,10 @@
     <ProjectReference Include="..\Google.Apis\Google.Apis.csproj">
       <Project>{7eda0377-99bc-4971-af9f-f83782500d1f}</Project>
       <Name>Google.Apis</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\YoutubeExplode\YoutubeExplode.csproj">
+      <Project>{9744e4c8-1db3-4697-baaa-a8e813217fbc}</Project>
+      <Name>YoutubeExplode</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">

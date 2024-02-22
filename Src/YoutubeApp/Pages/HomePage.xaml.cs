@@ -61,9 +61,9 @@ namespace YTApp.Pages
             Log.Info("Updating the videos on the home page");
 
             PlaylistDataType YTItemsListTemp = new PlaylistDataType() { Title = "Today" };
-            //PlaylistDataType YTItemsListTempYesterday = new PlaylistDataType() { Title = "Yesterday" };
-            //PlaylistDataType YTItemsListTempTwoDays = new PlaylistDataType() { Title = "Two Days Ago" };
-            //PlaylistDataType YTItemsListTempThreeDays = new PlaylistDataType() { Title = "Three Days Ago" };
+            PlaylistDataType YTItemsListTempYesterday = new PlaylistDataType() { Title = "Yesterday" };
+            PlaylistDataType YTItemsListTempTwoDays = new PlaylistDataType() { Title = "Two Days Ago" };
+            PlaylistDataType YTItemsListTempThreeDays = new PlaylistDataType() { Title = "Three Days Ago" };
             //PlaylistDataType YTItemsListTempFourDays = new PlaylistDataType() { Title = "Four Days Ago" };
             //PlaylistDataType YTItemsListTempFiveDays = new PlaylistDataType() { Title = "Five Days Ago" };
 
@@ -81,7 +81,7 @@ namespace YTApp.Pages
                         var tempService = service.Search.List("snippet");
                         tempService.ChannelId = subscription.Id;
                         tempService.Order = SearchResource.ListRequest.OrderEnum.Date;
-                        tempService.MaxResults = 2;//8;
+                        tempService.MaxResults = 1;//8;
                         var response = tempService.Execute();
                         foreach (var video in response.Items)
                         {
@@ -104,7 +104,8 @@ namespace YTApp.Pages
             foreach (var video in orderedSearchResponseList)
             {
                 var methods = new YoutubeMethods();
-                if (video != null && video.Id.Kind == "youtube#video" && video.Id.VideoId != null && video.Snippet.LiveBroadcastContent != "live")
+                if (video != null && video.Id.Kind == "youtube#video" && video.Id.VideoId != null 
+                    && video.Snippet.LiveBroadcastContent != "live")
                 {
                     try
                     {
@@ -116,7 +117,7 @@ namespace YTApp.Pages
                             {
                                 YTItemsListTemp.Items.Add(ytubeItem);
                             }
-                            /*else if (video.Snippet.PublishedAt > now.AddHours(-48))
+                            else if (video.Snippet.PublishedAt > now.AddHours(-48))
                             {
                                 YTItemsListTempYesterday.Items.Add(ytubeItem);
                             }
@@ -128,7 +129,7 @@ namespace YTApp.Pages
                             {
                                 YTItemsListTempThreeDays.Items.Add(ytubeItem);
                             }
-                            else if (video.Snippet.PublishedAt > now.AddHours(-120))
+                            /*else if (video.Snippet.PublishedAt > now.AddHours(-120))
                             {
                                 YTItemsListTempFourDays.Items.Add(ytubeItem);
                             }
@@ -152,9 +153,9 @@ namespace YTApp.Pages
             }
 
             YTItems.Add(YTItemsListTemp);
-            //YTItems.Add(YTItemsListTempYesterday);
-            //YTItems.Add(YTItemsListTempTwoDays);
-            //YTItems.Add(YTItemsListTempThreeDays);
+            YTItems.Add(YTItemsListTempYesterday);
+            YTItems.Add(YTItemsListTempTwoDays);
+            YTItems.Add(YTItemsListTempThreeDays);
             //YTItems.Add(YTItemsListTempFourDays);
             //YTItems.Add(YTItemsListTempFiveDays);
             #endregion

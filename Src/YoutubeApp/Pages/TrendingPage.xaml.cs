@@ -36,7 +36,7 @@ namespace YTApp.Pages
             var recommendations = service.Videos.List("snippet, contentDetails");
             recommendations.Chart = VideosResource.ListRequest.ChartEnum.MostPopular;
             
-            recommendations.MaxResults = 2;//25;
+            recommendations.MaxResults = 1;//25;
 
             Google.Apis.YouTube.v3.Data.VideoListResponse result = default;
 
