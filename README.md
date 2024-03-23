@@ -36,11 +36,11 @@ The Unofficial Youtube Client is a youtube application built in UWP using the Go
 - Client Id
 - Client Secret
 
-2. Modify that items in/at Constants.cs file
+2. Modify that items in/at Constants.cs file.
 
-3. Run the app and explore good auth , but bad get video deals 
+3. Run the app and explore good auth , but bad video control deals ( stop, fast rewind, back to main page, etc.). 
 
-4. Fix the bugs 
+4. Fix the bugs. 
 
 
 ## ..
