@@ -1,4 +1,4 @@
-# YoutubeApp v1.0.3
+# YoutubeApp v1.0.3-alpha
 My fork of Unofficial Youtube Client (UWP app for Desktop)
 
 ## About
@@ -7,6 +7,7 @@ The Unofficial Youtube Client is a youtube application built in UWP using the Go
 ## Screenshot(s)
 ![](Images/shot01.png)
 ![](Images/shot02.png)
+![](Images/shot03.png)
 
 ## Features (the info from original readme...)
 - Windows Styling Integration
@@ -16,8 +17,9 @@ The Unofficial Youtube Client is a youtube application built in UWP using the Go
 - Download videos
 
 ## My 2 cents / Status 
-- RnD (25 % complete)
-- Min. os win sdk : 15063 -> 14393 -> 15063
+- RnD (27 % complete)
+- Min. os win sdk : 15063
+- VLC & VideoLib synthez started :)
 - Draft / Proto
 
 ## Big "crazy bug" what still exists till/from 2017 year
@@ -45,5 +47,5 @@ The Unofficial Youtube Client is a youtube application built in UWP using the Go
 As is. No support. RnD only. DIY
 
 ## .
-[m][e] 2023
+[m][e] 2024
 

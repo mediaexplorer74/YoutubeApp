@@ -13,8 +13,8 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
-using YoutubeExplode;
-using YoutubeExplode.Models.MediaStreams;
+//using YoutubeExplode;
+//using YoutubeExplode.Models.MediaStreams;
 using YTApp.Classes;
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
@@ -98,18 +98,22 @@ namespace YTApp.UserControls
             }
             else if (controller.videoPlayer.CurrentState == MediaElementState.Buffering)
             {
-                await Dispatcher.RunAsync(CoreDispatcherPriority.High, () => 
-                { LoadingRing.IsActive = true; });
+                await Dispatcher.RunAsync( CoreDispatcherPriority.High, () => 
+                { 
+                    LoadingRing.IsActive = true; 
+                }
+                );
             }
             else if (controller.videoPlayer.CurrentState == MediaElementState.Paused)
             {
-                await Dispatcher.RunAsync(CoreDispatcherPriority.High, () => 
+                await Dispatcher.RunAsync( CoreDispatcherPriority.High, () => 
                 { 
                     ButtonPlay.Icon = new SymbolIcon() 
                     { 
-                        Symbol = Symbol.Play }; 
-                        LoadingRing.IsActive = false; 
-                    }
+                        Symbol = Symbol.Play 
+                    }; 
+                    LoadingRing.IsActive = false; 
+                }
                 );
             }
         }
@@ -334,12 +338,16 @@ namespace YTApp.UserControls
         private async Task<bool> GetVideoData()
         {
             YoutubeClient client = new YoutubeClient();
+
             string id = Source;
+
+            string FullSource = "https://www.youtube.com/watch?v=" + Source;
 
             //Convert it to a regular ID if it is a youtube link
             try 
-            { 
-                id = YoutubeClient.ParseVideoId(Source); 
+            {
+                //id = YoutubeClient.ParseVideoId(Source); 
+                id = YoutubeClient.ParseVideoId(FullSource);
             }
             catch (Exception ex)
             {
@@ -372,7 +380,7 @@ namespace YTApp.UserControls
             int highestBitrate = 0;
             foreach(var audioOption in Constants.videoInfo.Audio)
             {
-                if (audioOption.Container != Container.WebM && audioOption.Bitrate > highestBitrate)
+                if (/*audioOption.Container != Container.WebM && */audioOption.Bitrate > highestBitrate)
                 {
                     audioUrl = audioOption.Url;
                 }

@@ -12,7 +12,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Windows.Storage;
 using Windows.UI.Xaml;
-using YoutubeExplode.Models.MediaStreams;
+//using YoutubeExplode.Models.MediaStreams;
 
 namespace YTApp.Classes
 {
@@ -146,7 +146,7 @@ namespace YTApp.Classes
             {
                 foreach (var video in Constants.videoInfo.Muxed)
                 {
-                    if (video.VideoQuality == quality)
+                    if (video.VideoQuality1 == quality)
                         return video.Url;
                 }
             }
@@ -154,7 +154,7 @@ namespace YTApp.Classes
             {
                 foreach (var video in Constants.videoInfo.Video)
                 {
-                    if (video.VideoQuality == quality)
+                    if (video.VideoQuality1 == quality)
                         return video.Url;
                 }
             }

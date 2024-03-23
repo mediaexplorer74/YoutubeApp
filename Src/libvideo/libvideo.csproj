@@ -1,0 +1,43 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<Authors>Bar Arnon,OMANSAK</Authors>
+		<Copyright>Copyright 2018 Bar Arnon | 2022 OMANSAK</Copyright>
+		<Description>libvideo (aka VideoLibrary) is a modern .NET library for downloading YouTube videos. It is very lightweight. GitHub - https://github.com/omansak/libvideo</Description>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<PackageIconUrl></PackageIconUrl>
+		<PackageId>VideoLibrary</PackageId>
+		<PackageLicenseUrl></PackageLicenseUrl>
+		<PackageProjectUrl>https://github.com/omansak/libvideo</PackageProjectUrl>
+		<PackageReleaseNotes>Removed JS Engine</PackageReleaseNotes>
+		<RepositoryType>git</RepositoryType>
+		<RepositoryUrl>https://github.com/omansak/libvideo</RepositoryUrl>
+		<RootNamespace>VideoLibrary</RootNamespace>
+		<Version>3.2.3</Version>
+		<TargetFramework>netstandard1.4</TargetFramework>
+		<Title>libvideo</Title>
+		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+		<AssemblyVersion>3.2.3.0</AssemblyVersion>
+		<FileVersion>3.2.3.0</FileVersion>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+	</ItemGroup>
+
+	<!--ItemGroup>
+		<None Include="..\..\icons\icon_586.png">
+			<Pack>True</Pack>
+			<PackagePath></PackagePath>
+		</None>
+		<None Include="..\..\LICENSE">
+			<Pack>True</Pack>
+			<PackagePath></PackagePath>
+		</None>
+		<None Include="..\..\README.md">
+			<Pack>True</Pack>
+			<PackagePath></PackagePath>
+		</None>
+	</ItemGroup-->
+
+</Project>

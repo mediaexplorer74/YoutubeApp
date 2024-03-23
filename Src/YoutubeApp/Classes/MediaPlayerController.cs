@@ -14,6 +14,7 @@ namespace YTApp.Classes
     public class MediaPlayerController
     {
         public MediaElement videoPlayer;
+
         public MediaPlayer audioPlayer = new MediaPlayer() 
         { 
             AutoPlay = false, 
@@ -38,9 +39,13 @@ namespace YTApp.Classes
         private void VideoPlayer_CurrentStateChanged(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
             if (videoPlayer.CurrentState == MediaElementState.Playing && audioPlayer.PlaybackSession.PlaybackState == MediaPlaybackState.Paused)
+            {
                 audioPlayer.Play();
+            }
             else if (videoPlayer.CurrentState != MediaElementState.Playing)
+            {
                 audioPlayer.Pause();
+            }
         }
 
         private void AudioPlayer_MediaOpened(MediaPlayer sender, object args)
@@ -111,13 +116,16 @@ namespace YTApp.Classes
             {
                 if (audioPlayer.PlaybackSession.Position.TotalSeconds > videoPlayer.Position.TotalSeconds)
                 {
-                    var offsetAmount = audioPlayer.PlaybackSession.Position.TotalSeconds - videoPlayer.Position.TotalSeconds;
+                    var offsetAmount = audioPlayer.PlaybackSession.Position.TotalSeconds 
+                        - videoPlayer.Position.TotalSeconds;
+
                     if(offsetAmount > 0.07)
                         videoPlayer.PlaybackRate = 1 + offsetAmount / 2;
                 }
                 else if (audioPlayer.PlaybackSession.Position.TotalSeconds < videoPlayer.Position.TotalSeconds)
                 {
-                    var offsetAmount = videoPlayer.Position.TotalSeconds - audioPlayer.PlaybackSession.Position.TotalSeconds;
+                    double offsetAmount = videoPlayer.Position.TotalSeconds 
+                        - audioPlayer.PlaybackSession.Position.TotalSeconds;
                     if (offsetAmount > 0.07)
                         videoPlayer.PlaybackRate = 1 - offsetAmount / 2;
                 }

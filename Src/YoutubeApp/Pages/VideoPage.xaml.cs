@@ -1,548 +1,270 @@
-﻿using System;
+﻿// VideoPage
+
+using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.DataTransfer;
-using Windows.Media;
-using Windows.Media.Core;
-using Windows.Media.Editing;
-using Windows.Media.Playback;
-using Windows.Networking.BackgroundTransfer;
+using Windows.Foundation;
+using Windows.Foundation.Collections;
 using Windows.UI.Core;
-using Windows.UI.ViewManagement;
+using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Animation;
-using Windows.UI.Xaml.Media.Imaging;
+using LibVLCSharp.Shared;//using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
-using YoutubeExplode;
-using YTApp.Classes;
-using YTApp.Classes.DataTypes;
-using YTApp.UserControls;
-using Google.Apis.YouTube.v3;
-using Google.Apis.YouTube.v3.Data;
 
-// The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
+using VideoLibrary;
+using Windows.Storage;
+using YTApp.Classes; //using MyToolkit.Multimedia;
+
 
 namespace YTApp.Pages
 {
-    /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
-    /// </summary>
+
     public sealed partial class VideoPage : Page
     {
-        Windows.Storage.ApplicationDataContainer localSettings 
-            = Windows.Storage.ApplicationData.Current.LocalSettings;
+        private LibVLC _libVLC;
 
-        Channel channel;
+        private MediaPlayer _mediaPlayer;
 
-        PlaylistDataType relatedVideos = new PlaylistDataType();
+        //MainPage.Video ytvideo;
 
-        ObservableCollection<CommentContainerDataType> commentCollection 
-            = new ObservableCollection<CommentContainerDataType>();
+        //YouTubeQuality selectedQuality = YouTubeQuality.QualityHigh;//
+        //YouTubeUri mainVideo;
+        DataTransferManager dataTransferManager;
+
+        /// <summary>
+        /// Youtube "entities"
+        /// </summary>
+        /*
+        public string link { get; set; }
+        public string Title { get; set; }
+        public string FileName { get; set; }
+        public string Extension { get; set; }
+        public string Length { get; set; }
+        public string AudioBitrate { get; set; }
+        public string AudioFormats { get; set; }
+        public string VideoFormat { get; set; }
+        public string VideoRes { get; set; }
+        public string FPS { get; set; }
+        public string VideoID { get; set; }
+        public bool IsHDQuality { get; set; }
+        public YouTubeVideo video { get; set; }
+        public YouTubeVideo maxVideo { get; set; }
+        public YouTubeVideo maxBitrate { get; set; }
+        public string ThrownEncodingError { get; set; }
+        public IEnumerable<YouTubeVideo> videoInfos { get; set; }
+        */
+
+        public string ChosenQuality { get; set; }
+        public int ChosenQualityInt { get; set; }
+
 
         public VideoPage()
         {
             this.InitializeComponent();
 
-            //Keep the page in memory so we don't have to reload it everytime
-            NavigationCacheMode = NavigationCacheMode.Enabled;
+            Windows.UI.Core.SystemNavigationManager
+                .GetForCurrentView().AppViewBackButtonVisibility
+                = AppViewBackButtonVisibility.Visible;
 
-            //Link to the video complete event
-            viewer.controller.videoPlayer.MediaEnded += VideoPlayer_MediaEnded;
-
-            //Set autoplay value (*true* for fast TEST mode)
-            try {
-                SwitchAutoplay.IsOn = false;//(bool)localSettings.Values["Autoplay"]; 
-            } 
-            catch (Exception ex)
+            Windows.UI.Core.SystemNavigationManager.GetForCurrentView().BackRequested += (s, a) =>
             {
-                Debug.WriteLine("[ex] SwitchAutoplay ex.: " + ex.Message);
-            }
-
-        }
-
-        protected override void OnNavigatedTo(NavigationEventArgs e)
-        {
-            ConnectedAnimation imageAnimation = 
-                ConnectedAnimationService.GetForCurrentView().GetAnimation("videoThumb");
-
-            if (imageAnimation != null)
-            {
-                imageAnimation.TryStart(MediaElementContainer);
-            }
-
-            Constants.MainPageRef.contentFrame.Navigated += ContentFrame_Navigated;
-            SystemNavigationManager.GetForCurrentView().BackRequested += VideoPage_BackRequested;
-            Constants.MainPageRef.Frame.Navigated += Frame_Navigated;
-
-            //Set the focus to the video viewer
-            viewer.Focus(FocusState.Programmatic);
-
-            //Get the video data and play it
-            StartVideo(Constants.activeVideoID);
-
-            //Update likes/dislikes
-            LikeDislikeControl.UpdateData();
-
-            //Update comments
-            if (CommentsOptionComboBox.SelectedIndex == 0)
-                UpdateComments(CommentThreadsResource.ListRequest.OrderEnum.Relevance);
-            else
-                UpdateComments(CommentThreadsResource.ListRequest.OrderEnum.Time);
-        }
-
-        private void Frame_Navigated(object sender, NavigationEventArgs e)
-        {
-            //If the user logs out, we need to stop the video
-            viewer.StopVideo();
-        }
-
-        private void VideoPage_BackRequested(object sender, BackRequestedEventArgs e)
-        {
-            ChangePlayerSize(false);
-        }
-
-        private void ContentFrame_Navigated(object sender, NavigationEventArgs e)
-        {
-            ChangePlayerSize(false);
-        }
-
-        #region Methods
-        public async void StartVideo(string ID)
-        {
-            //Make the player cover the entire frame
-            ChangePlayerSize(true);
-
-            //Set the ID of our viewer to the new ID
-            viewer.Source = ID;
- 
-
-            var service = await YoutubeMethodsStatic.GetServiceAsync();
-
-            var getVideoInfo = service.Videos.List("snippet, statistics, contentDetails");
-            getVideoInfo.Id = ID;
-            var videoList = await getVideoInfo.ExecuteAsync();
-            Constants.ActiveVideo = videoList.Items[0];
-
-            //Channel Info
-            await Task.Run(() =>
-            {
-                var getChannelInfo = service.Channels.List("snippet");
-                getChannelInfo.Id = Constants.ActiveVideo.Snippet.ChannelId;
-                var channelInfo = getChannelInfo.Execute();
-                channel = channelInfo.Items[0];
-            });
-
-            UpdatePageInfo(service);
-
-            UpdateRelatedVideos(service);
-        }
-
-        public void UpdatePageInfo(YouTubeService service)
-        {
-            var methods = new YoutubeMethods();
-
-            Title.Text = Constants.ActiveVideo.Snippet.Title;
-            Views.Text = string.Format("{0:#,###0.#}", Constants.ActiveVideo.Statistics.ViewCount) + " Views";
-
-            ChannelTitle.Text = channel.Snippet.Title;
-            DatePosted.Text = Constants.ActiveVideo.Snippet.PublishedAt.Value.ToString("MMMM d, yyyy");
-            Description.Text = Constants.ActiveVideo.Snippet.Description;
-            DescriptionShowMore.Visibility = Visibility.Visible;
-            var image = new BitmapImage(new Uri(channel.Snippet.Thumbnails.High.Url));
-            var imageBrush = new ImageBrush { ImageSource = image };
-            ChannelProfileIcon.Fill = imageBrush;
-        }
-
-        public async void UpdateRelatedVideos(YouTubeService service)
-        {
-            System.Collections.ObjectModel.ObservableCollection<YoutubeItemDataType> relatedVideosList 
-                = new System.Collections.ObjectModel.ObservableCollection<YoutubeItemDataType>();
-
-            await Task.Run(() =>
-            {
-                SearchResource.ListRequest getRelatedVideos = service.Search.List("snippet");
-                
-                //getRelatedVideos.RelatedToVideoId = Constants.activeVideoID;
-                getRelatedVideos.Q = Constants.activeVideoID;
-
-                getRelatedVideos.MaxResults = 1;// 15;
-                getRelatedVideos.Type = "video";
-                SearchListResponse relatedVideosResponse = getRelatedVideos.Execute();
-
-                var methods = new YoutubeMethods();
-
-                if (relatedVideosResponse != null)
+                if (Frame.CanGoBack)
                 {
-                    foreach (SearchResult video in relatedVideosResponse.Items)
-                    {
-                        relatedVideosList.Add(methods.VideoToYoutubeItem(video));
-                    }
+                    Frame.GoBack();
+                    a.Handled = true;
                 }
+            };
 
-                methods.FillInViews(relatedVideosList, service);
-            });
+            dataTransferManager = DataTransferManager.GetForCurrentView();
 
-            relatedVideos.Items = relatedVideosList;
+            ChosenQuality = "480p";
+            ChosenQualityInt = 480;           
+           
         }
 
-        private void YoutubeItemsGridView_ItemClick(object sender, ItemClickEventArgs e)
+        private void OnDataRequested(DataTransferManager sender, DataRequestedEventArgs args)
         {
-            var item = (YoutubeItemDataType)e.ClickedItem;
-            Constants.MainPageRef.StartVideo(item.Id);
+            var dataPackage = args.Request.Data;
+            dataPackage.Properties.Title = "WinBeta Videos";
+            dataPackage.Properties.Description = "Sharing Video Link";
+
+            //RnD
+            //dataPackage.SetWebLink(new Uri("https://youtube.com/watch?v=" + YTApp.Pages.VideoPage));
         }
 
-        //AChangePlayerSize takes a bool allowing you to set it to fullscreen (true) or to a small view (false)
-        public void ChangePlayerSize(bool MakeFullScreen)
+        protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
-            if (!MakeFullScreen)
-            {
-                viewer.transportControls.Visibility = Visibility.Collapsed;
+            //ytvideo = (MainPage.Video)e.Parameter;
 
-                Scrollviewer.ChangeView(0, 0, 1, true);
-                Scrollviewer.VerticalScrollMode = ScrollMode.Disabled;
-                Scrollviewer.VerticalScrollBarVisibility = ScrollBarVisibility.Disabled;
+            videosTitle.Text = "ytvideo.Title";
 
-                Frame.HorizontalAlignment = HorizontalAlignment.Right;
-                Frame.VerticalAlignment = VerticalAlignment.Bottom;
-                Frame.Width = 640;
-                Frame.Height = 360;
-
-                //Saves the current Media Player height
-                Windows.Storage.ApplicationDataContainer localSettings 
-                    = Windows.Storage.ApplicationData.Current.LocalSettings;
-                localSettings.Values["MediaViewerHeight"] = MediaRow.Height.Value;
-
-                MediaRow.Height = new GridLength(360);
-
-                //Disable the taps on the viewer
-                viewer.IsHitTestVisible = false;
-            }
-            else
-            {
-                viewer.transportControls.Visibility = Visibility.Visible;
-
-                Scrollviewer.VerticalScrollMode = ScrollMode.Auto;
-                Scrollviewer.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
-
-                Frame.HorizontalAlignment = HorizontalAlignment.Stretch;
-                Frame.VerticalAlignment = VerticalAlignment.Stretch;
-                Frame.Width = Double.NaN;
-                Frame.Height = Double.NaN;
-
-                //Set the media viewer to the previous height or to the default if a custom height is not found
-                Windows.Storage.ApplicationDataContainer localSettings 
-                    = Windows.Storage.ApplicationData.Current.LocalSettings;
-
-                if (localSettings.Values["MediaViewerHeight"] != null
-                    && (double)localSettings.Values["MediaViewerHeight"] > 360)
-                {
-                    MediaRow.Height = new GridLength(Convert.ToDouble(localSettings.Values["MediaViewerHeight"]));
-                }
-                else
-                {
-                    MediaRow.Height = new GridLength(600);
-                }
-
-                //Enable the taps on the viewer
-                viewer.IsHitTestVisible = true;
-            }
-        }
-
-        #endregion
-
-        #region Events
-
-        private void MinimizeMediaElement_Click(object sender, RoutedEventArgs e)
-        {
-            if (MediaRow.Height.Value == 360) { ChangePlayerSize(true); }
-            else { ChangePlayerSize(false); }
-        }
-
-        private void CloseMediaElement_Click(object sender, RoutedEventArgs e)
-        {
-            viewer.StopVideo();
-            Frame.Visibility = Visibility.Collapsed;
-        }
-        #endregion
-
-        #region MediaElementButton Management
-        private void Viewer_PointerEntered(object sender, PointerRoutedEventArgs e)
-        {
-            FadeIn.Begin();
-        }
-
-        private void Viewer_PointerExited(object sender, PointerRoutedEventArgs e)
-        {
-            FadeOut.Begin();
-        }
-        #endregion
-
-        #region Channel Clicked
-
-        private void OpenChannel(object sender, TappedRoutedEventArgs e)
-        {
-            Constants.activeChannelID = channel.Id;
-            Constants.MainPageRef.contentFrame.Navigate(typeof(ChannelPage));
-        }
-
-        private void ChannelProfileIcon_PointerEntered(object sender, PointerRoutedEventArgs e)
-        {
-            Window.Current.CoreWindow.PointerCursor = new CoreCursor(CoreCursorType.Hand, 1);
-        }
-
-        private void ChannelProfileIcon_PointerExited(object sender, PointerRoutedEventArgs e)
-        {
-            Window.Current.CoreWindow.PointerCursor = new CoreCursor(CoreCursorType.Arrow, 2);
-        }
-
-        #endregion
-
-        #region Description
-        private void DescriptionShowMore_Click(object sender, RoutedEventArgs e)
-        {
-            if ((string)DescriptionShowMore.Content == "Show less")
-            {
-                Description.MaxHeight = 200;
-                DescriptionShowMore.Content = "Show more";
-            }
-            else
-            {
-                Description.MaxHeight = 10000;
-                DescriptionShowMore.Content = "Show less";
-            }
-        }
-
-        private async void Description_LinkClicked(object sender, 
-            Microsoft.Toolkit.Uwp.UI.Controls.LinkClickedEventArgs e)
-        {
-            await Windows.System.Launcher.LaunchUriAsync(new Uri(e.Link));
-        }
-        #endregion Description
-
-        #region Fullscreen
-
-        private void viewer_EnteringFullscreen(object sender, EventArgs e)
-        {
-            Constants.MainPageRef.Toolbar.Visibility = Visibility.Collapsed;
-            MediaRow.Height = new GridLength();
-            Scrollviewer.ChangeView(0, 0, 1, true);
-            Scrollviewer.VerticalScrollMode = ScrollMode.Disabled;
-            Scrollviewer.VerticalScrollBarVisibility = ScrollBarVisibility.Disabled;
-
-            //Hide the close and minimize controls
-            MinimizeMediaElement.Visibility = Visibility.Collapsed;
-            CloseMediaElement.Visibility = Visibility.Collapsed;
-        }
-
-        private void viewer_ExitingFullscren(object sender, EventArgs e)
-        {
-            Constants.MainPageRef.Toolbar.Visibility = Visibility.Visible;
-
-            Scrollviewer.VerticalScrollMode = ScrollMode.Enabled;
-            Scrollviewer.VerticalScrollBarVisibility = ScrollBarVisibility.Visible;
-
-            Windows.Storage.ApplicationDataContainer localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
-            if (localSettings.Values["MediaViewerHeight"] != null && (double)localSettings.Values["MediaViewerHeight"] > 360)
-                MediaRow.Height = new GridLength(Convert.ToDouble(localSettings.Values["MediaViewerHeight"]));
-            else
-                MediaRow.Height = new GridLength(600);
-
-            //Show the close and minimize controls
-            MinimizeMediaElement.Visibility = Visibility.Visible;
-            CloseMediaElement.Visibility = Visibility.Visible;
-        }
-
-        #endregion
-
-        #region Autoplay
-        private void SwitchAutoplay_Toggled(object sender, RoutedEventArgs e)
-        {
-            Windows.Storage.ApplicationDataContainer localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
-            localSettings.Values["Autoplay"] = SwitchAutoplay.IsOn;
-        }
-
-        private async void VideoPlayer_MediaEnded(object sender, RoutedEventArgs e)
-        {
-            Windows.Storage.ApplicationDataContainer localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
             try
             {
-                if ((bool)localSettings.Values["Autoplay"])
+                await LoadPage();
+            }
+            catch (Exception ex) // AggregateException
+            {
+                MessageDialog m = new MessageDialog("Could play video: " + ex.Message,
+                    "WinBeta Videos Error");
+                await m.ShowAsync();
+            }
+        }
+
+
+        private async Task LoadPage()
+        {
+            //progressRing.IsActive = true;
+
+            // use YouTubeVideo client
+            using (Client<YouTubeVideo> service = Client.For(YouTube.Default))
+            {
+                // set video id
+                string id = Constants.activeVideoID;//ytvideo.Id;
+
+                // exploring yt video
+
+                YouTubeVideo video = service.GetVideo("https://youtube.com/watch?v=" + id);               
+
+                try
                 {
-                    Constants.activeVideoID = ((YoutubeItemDataType)RelatedVideosGridView.Items[0]).Id;
+                    
 
-                    //Reload the page
-                    await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => {
-                        //Get the video data and play it
-                        StartVideo(Constants.activeVideoID);
+                    Loaded += (s, e) =>
+                    {
+                        _libVLC = new LibVLC(VideoView.SwapChainOptions);
+                        _mediaPlayer = new MediaPlayer(_libVLC);
+                        VideoView.MediaPlayer = _mediaPlayer;
 
-                        //Update likes/dislikes
-                        LikeDislikeControl.UpdateData();
-                    });
+                        _mediaPlayer.Play(new Media(
+                            _libVLC,
+                           video.Uri,//"https://download.blender.org/peach/bigbuckbunny_movies/BigBuckBunny_320x180.mp4",
+                            FromType.FromLocation));
+                    };
+
+
+                    Unloaded += (s, e) =>
+                    {
+                        VideoView.MediaPlayer = null;
+                        _mediaPlayer.Dispose();
+                        _libVLC.Dispose();
+                    };
+
+                    //progressRing.IsActive = false;
+                    
                 }
-            }
-            catch { }
-        }
-        #endregion
+                catch (Exception ex)
+                {
+                    if (ex.HResult == -2146233088)
+                    {
+                        Debug.WriteLine("[ex] Quality Not Supported, try something else");
+                    }
 
-        private async void CustomMediaTransportControls_SwitchedToFullSize(object sender, EventArgs e)
-        {
-            //Make the toolbar visible
-            Constants.MainPageRef.Toolbar.Visibility = Visibility.Visible;
+                    MessageDialog m = new MessageDialog(
+                    "Could play video: " + ex.Message, "WinBeta Videos Error");
 
-            //Stop the PiP media element
-            pipViewer.Visibility = Visibility.Collapsed;
-            pipViewer.Source = null;
+                    await m.ShowAsync();
 
-            //Set the window to be full sized
-            await ApplicationView.GetForCurrentView().TryEnterViewModeAsync(ApplicationViewMode.Default);
-
-            //Reset title to bar to it's normal state
-            var coreTitleBar = Windows.ApplicationModel.Core.CoreApplication.GetCurrentView().TitleBar;
-            coreTitleBar.ExtendViewIntoTitleBar = false;
-
-            //Set the position of this video page's viewer to the position of the compact view's one and the volume
-            viewer.controller.Start(pipViewer.Position);
-        }
-
-        #region PiP
-
-        private async void viewer_EnteringPiP(object sender, EventArgs e)
-        {
-            //Enter compact mode
-            ViewModePreferences compactOptions = ViewModePreferences.CreateDefault(ApplicationViewMode.CompactOverlay);
-            compactOptions.CustomSize = new Windows.Foundation.Size(500, 281);
-            await ApplicationView.GetForCurrentView().TryEnterViewModeAsync(ApplicationViewMode.CompactOverlay, compactOptions);
-
-            //Pause the video
-            viewer.controller.Pause();
-
-            //Make the title bar smaller
-            var coreTitleBar = Windows.ApplicationModel.Core.CoreApplication.GetCurrentView().TitleBar;
-            coreTitleBar.ExtendViewIntoTitleBar = true;
-
-            //Make the toolbar collapsed
-            Constants.MainPageRef.Toolbar.Visibility = Visibility.Collapsed;
-
-            pipViewer.Visibility = Visibility.Visible;
-
-            if (Constants.videoInfo != null)
-            {
-                pipViewer.Source = new Uri(Constants.videoInfo.Muxed[0].Url);
-            }
-            else
-            {
-                pipViewer.Source = new Uri(string.Empty);
-            }
-
-
-            pipViewer.MediaOpened += PipViewer_MediaOpened;
-        }
-
-        private void PipViewer_MediaOpened(object sender, RoutedEventArgs e)
-        {
-            //Sets position to the viewer's position once it loads
-            pipViewer.Position = viewer.controller.audioPlayer.PlaybackSession.Position;
-        }
-
-        #endregion
-
-        #region Comments
-        string commentNextPageToken;
-        bool isAdding = false;
-
-        private async void UpdateComments(CommentThreadsResource.ListRequest.OrderEnum option)
-        {
-            //Clear the current comments
-            commentCollection.Clear();
-
-            var methods = new YoutubeMethods();
-
-            //Get the comments
-            var service = YoutubeMethodsStatic.GetServiceNoAuth();
-            var getComments = service.CommentThreads.List("snippet,replies");
-            getComments.VideoId = Constants.activeVideoID;
-            getComments.Order = option;
-            getComments.TextFormat = CommentThreadsResource.ListRequest.TextFormatEnum.PlainText;
-            getComments.MaxResults = 1;// 10;
-            var response = await getComments.ExecuteAsync();
-
-            //Save the next page token
-            commentNextPageToken = response.NextPageToken;
-
-            //Add them to our collection so that they will be updated on the UI
-            foreach (var commentThread in response.Items)
-            {
-                commentCollection.Add(new CommentContainerDataType(methods.CommentToDataType(commentThread)));
-            }
-        }
-
-        private async void AddComments(CommentThreadsResource.ListRequest.OrderEnum option)
-        {
-            if (isAdding)
-                return;
-
-            isAdding = true;
-
-            //Check if there are more comments
-            if (commentNextPageToken == null || commentNextPageToken == "")
-                return;
-
-            var methods = new YoutubeMethods();
-
-            //Get the comments
-            var service = YoutubeMethodsStatic.GetServiceNoAuth();
-            var getComments = service.CommentThreads.List("snippet,replies");
-            getComments.VideoId = Constants.activeVideoID;
-            getComments.Order = option;
-            getComments.TextFormat = CommentThreadsResource.ListRequest.TextFormatEnum.PlainText;
-            getComments.PageToken = commentNextPageToken;
-
-            getComments.MaxResults = 1;// 15;
+                    // progressRing.IsActive = false;
+                }
+            }//using 
+                                   
+            //progressRing.IsActive = true;          
             
-            var response = await getComments.ExecuteAsync();
+        }//LoadPage
 
-            //Save the next page token
-            commentNextPageToken = response.NextPageToken;
 
-            //Add them to our collection so that they will be updated on the UI
-            foreach (var commentThread in response.Items)
+        // MenuFlyoutItem_Click
+        private async void MenuFlyoutItem_Click(object sender, RoutedEventArgs e)
+        {
+            var s = sender as MenuFlyoutItem;
+
+            switch (s.Text)
             {
-                commentCollection.Add(new CommentContainerDataType(methods.CommentToDataType(commentThread)));
+                case "144p":
+                    //selectedQuality = YouTubeQuality.Quality144P;
+                    ChosenQuality = "144p";
+                    ChosenQualityInt = 144;
+                    break;
+                case "240p":
+                    //selectedQuality = YouTubeQuality.Quality240P;
+                    ChosenQuality = "240p";
+                    ChosenQualityInt = 240;
+                    break;
+                case "270p":
+                    //selectedQuality = YouTubeQuality.Quality270P;
+                    ChosenQuality = "270p";
+                    ChosenQualityInt = 270;
+                    break;
+                case "360p":
+                    //selectedQuality = YouTubeQuality.Quality360P;
+                    ChosenQuality = "360p";
+                    ChosenQualityInt = 360;
+                    break;
+                case "480p":
+                    //selectedQuality = YouTubeQuality.Quality480P;
+                    ChosenQuality = "480p";
+                    ChosenQualityInt = 480;
+                    break;
+                case "520p":
+                    //selectedQuality = YouTubeQuality.Quality520P;
+                    ChosenQuality = "520p";
+                    ChosenQualityInt = 520;
+                    break;
+                case "720p":
+                    //selectedQuality = YouTubeQuality.Quality720P;
+                    ChosenQuality = "720p";
+                    ChosenQualityInt = 720;
+                    break;
+                case "1080p":
+                    //selectedQuality = YouTubeQuality.Quality1080P;
+                    ChosenQuality = "1080p";
+                    ChosenQualityInt = 1080;
+                    break;
+                case "4k":
+                    //selectedQuality = YouTubeQuality.Quality2160P;
+                    ChosenQuality = "2160p";
+                    ChosenQualityInt = 2160;
+                    break;
+                default:
+                    MessageDialog m = new MessageDialog("Ubnknown Quality", "WinBeta Videos Error");
+                    await m.ShowAsync();
+                    break;
             }
 
-            isAdding = false;
-        }
-
-        private void CommentsOptionComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (CommentsOptionComboBox.SelectedIndex == 0)
-                UpdateComments(CommentThreadsResource.ListRequest.OrderEnum.Relevance);
-            else
-                UpdateComments(CommentThreadsResource.ListRequest.OrderEnum.Time);
-        }
-
-        /// <summary>
-        /// Checks if we need to add more comments to the end of the page if the user has scrolled that far
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void Scrollviewer_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
-        {
-            if (Scrollviewer.VerticalOffset > Scrollviewer.ScrollableHeight - 700)
+            try
             {
-                if (CommentsOptionComboBox.SelectedIndex == 0)
-                    AddComments(CommentThreadsResource.ListRequest.OrderEnum.Relevance);
-                else
-                    AddComments(CommentThreadsResource.ListRequest.OrderEnum.Time);
+                await LoadPage();
             }
+            catch (AggregateException ex)
+            {
+                MessageDialog m = new MessageDialog("Could play video: " + ex.Message, "WinBeta Videos Error");
+                await m.ShowAsync();
+            }
+
+        }//MenuFlyoutItem_Click
+
+
+        // shareButton_Tapped
+        private void shareButton_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            dataTransferManager.DataRequested -= OnDataRequested;
+            dataTransferManager.DataRequested += OnDataRequested;
+
+            DataTransferManager.ShowShareUI();
+        }//shareButton_Tapped
+
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        {
+           // 
         }
-        #endregion
     }
 }

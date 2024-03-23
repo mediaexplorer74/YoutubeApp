@@ -339,8 +339,16 @@ namespace YTApp.Classes
                 }
             }
 
+            string r = default;
+
+            try
+            {
+                r = split[0] + ":" + split[1];
+            }
+            catch { }
+
             //Combines the minutes value and seconds value together and returns them
-            return split[0] + ":" + split[1];
+            return r;
         }
     }
 }

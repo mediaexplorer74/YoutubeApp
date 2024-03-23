@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.Storage;
-using YoutubeExplode.Models.MediaStreams;
+//using YoutubeExplode.Models.MediaStreams;
 
 namespace YTApp.Classes
 {
@@ -63,7 +63,12 @@ namespace YTApp.Classes
 
         static public MediaStreamInfoSet videoInfo;
 
-        static public DataTypes.SyncedApplicationDataType syncedData = new DataTypes.SyncedApplicationDataType() { DarkTheme = true, history = new List<DataTypes.YoutubeItemDataType>() };
+        static public DataTypes.SyncedApplicationDataType syncedData 
+        = new DataTypes.SyncedApplicationDataType() 
+        { 
+            DarkTheme = true, 
+            history = new List<DataTypes.YoutubeItemDataType>() 
+        };
 
         static async public void StoreAppData()
         {
