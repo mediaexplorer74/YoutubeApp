@@ -1,67 +1,189 @@
-﻿<Project Sdk="MSBuild.Sdk.Extras">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
-    <Title>LibVLCSharp</Title>
-    <Summary>The official .NET wrapper around LibVLC.</Summary>
-    <Description>LibVLCSharp is a cross-platform audio and video API for .NET platform.</Description>
-    <TargetFrameworks>netstandard1.4</TargetFrameworks>
-    <TargetFrameworks Condition="!$([MSBuild]::IsOsPlatform('Linux'))">$(TargetFrameworks)</TargetFrameworks>
-    <TargetFrameworks Condition="$([MSBuild]::IsOsPlatform('Windows'))">$(TargetFrameworks);uap10.0.15063</TargetFrameworks>
-    <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);IncludeAWindow</TargetsForTfmSpecificBuildOutput>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{E7A78B56-21F4-4E06-B1BF-AA3C77C96B6E}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>LibVLCSharp</RootNamespace>
-    <NeutralLanguage>en</NeutralLanguage>
+    <AssemblyName>LibVLCSharp</AssemblyName>
+    <DefaultLanguage>ru-RU</DefaultLanguage>
+    <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
+    <TargetPlatformVersion Condition=" '$(TargetPlatformVersion)' == '' ">10.0.19041.0</TargetPlatformVersion>
+    <TargetPlatformMinVersion>10.0.14393.0</TargetPlatformMinVersion>
+    <MinimumVisualStudioVersion>14</MinimumVisualStudioVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{A5A43C5B-DE2A-4C0C-9213-0A381AF9435A};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <LangVersion>latest</LangVersion>
-    <PackageId>LibVLCSharp</PackageId>
-    <Authors>VideoLAN</Authors>
-    <Owners>VideoLAN</Owners>
-    <GeneratePackageOnBuild Condition=" '$(Configuration)' == 'Release' ">true</GeneratePackageOnBuild>
-    <GenerateDocumentationFile Condition=" '$(Configuration)' == 'Release' ">true</GenerateDocumentationFile>
-    <UseFullSemVerForNuGet>false</UseFullSemVerForNuGet>
-    <PackageLicenseExpression>LGPL-2.1-or-later</PackageLicenseExpression>
-    <RepositoryType>git</RepositoryType>
-    <RepositoryUrl>https://code.videolan.org/videolan/LibVLCSharp/tree/master/LibVLCSharp</RepositoryUrl>
-    <PackageIconUrl>https://code.videolan.org/videolan/LibVLCSharp/raw/master/Assets/icon.png</PackageIconUrl>
-    <PackageReleaseNotes>https://code.videolan.org/videolan/LibVLCSharp/blob/master/NEWS</PackageReleaseNotes>
-    <PackageTags>libvlc;vlc;videolan;native;c/c++;video;audio;player;media;mediaplayer;codec;ffmpeg;xamarin;graphics;ios;android;linux;windows;macos;cross-platform</PackageTags>
   </PropertyGroup>
-  <PropertyGroup Condition="$(UNITY_ANDROID)=='true'">
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <DefineConstants>$(DefineConstants);UNITY_ANDROID</DefineConstants>
+  
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <LangVersion>7.1</LangVersion>
   </PropertyGroup>
-  <PropertyGroup Condition="$(NETSTANDARD_ONLY)=='true'">
-    <TargetFrameworks>netstandard2.0;netstandard1.1</TargetFrameworks>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <LangVersion>7.1</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>full</DebugType>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <PlatformTarget>x86</PlatformTarget>
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <Optimize>true</Optimize>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM'">
+    <PlatformTarget>ARM</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\ARM\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>full</DebugType>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|ARM'">
+    <PlatformTarget>ARM</PlatformTarget>
+    <OutputPath>bin\ARM\Release\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <Optimize>true</Optimize>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM64'">
+    <PlatformTarget>ARM64</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\ARM64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>full</DebugType>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|ARM64'">
+    <PlatformTarget>ARM64</PlatformTarget>
+    <OutputPath>bin\ARM64\Release\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <Optimize>true</Optimize>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <PlatformTarget>x64</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>full</DebugType>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <PlatformTarget>x64</PlatformTarget>
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <Optimize>true</Optimize>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup>
+    <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Remove="Platforms\**\*.cs" />
-    <None Include="Platforms\**\*.cs" />
-  </ItemGroup>
-  <ItemGroup Condition="$(TargetFramework.StartsWith('MonoAndroid'))">
-    <Compile Include="Platforms\Android\**\*.cs" />
-    <ProjectReference Include="..\LibVLCSharp.Android.AWindow\LibVLCSharp.Android.AWindow.csproj" PrivateAssets="All" />
-  </ItemGroup>
-  <ItemGroup Condition="$(TargetFramework.StartsWith('Xamarin.iOS'))">
-    <Compile Include="Platforms\iOS\**\*.cs" />
-  </ItemGroup>
-  <ItemGroup Condition="$(TargetFramework.StartsWith('Xamarin.Mac'))">
-    <Compile Include="Platforms\Mac\**\*.cs" />
-  </ItemGroup>
-  <ItemGroup Condition="$(TargetFramework.StartsWith('Xamarin.TVOS'))">
-    <Compile Include="Platforms\tvOS\**\*.cs" />
-  </ItemGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net40' ">
-    <PackageReference Include="System.ValueTuple" Version="4.5.0" />
-    <PackageReference Include="Microsoft.Bcl.Async" Version="1.0.168" />
-  </ItemGroup>
-  <ItemGroup Condition="$(TargetFramework.StartsWith('uap'))">
-    <Compile Include="Platforms\UWP\**\*.cs" />
-    <PackageReference Include="System.ValueTuple" Version="4.5.0" />
-    <PackageReference Include="SharpDX.Direct3D11" Version="4.2.0" />
+    <Compile Include="VideoView.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Core.cs" />
+    <Compile Include="Dialog.cs" />
+    <Compile Include="Equalizer.cs" />
+    <Compile Include="Events\EventManager.cs" />
+    <Compile Include="Events\MediaDiscovererEventManager.cs" />
+    <Compile Include="Events\MediaEventManager.cs" />
+    <Compile Include="Events\MediaListEventManager.cs" />
+    <Compile Include="Events\MediaPlayerChangedEventArgs.cs" />
+    <Compile Include="Events\MediaPlayerChangingEventArgs.cs" />
+    <Compile Include="Events\MediaPlayerEventManager.cs" />
+    <Compile Include="Events\RendererDiscovererEventManager.cs" />
+    <Compile Include="Helpers\MarshalExtensions.cs" />
+    <Compile Include="Helpers\MarshalUtils.cs" />
+    <Compile Include="Helpers\PlatformHelper.cs" />
+    <Compile Include="Internal.cs" />
+    <Compile Include="IVideoView.cs" />
+    <Compile Include="LibVLC.cs" />
+    <Compile Include="LibVLCEvents.cs" />
+    <Compile Include="Media.cs" />
+    <Compile Include="MediaConfiguration.cs" />
+    <Compile Include="MediaDiscoverer.cs" />
+    <Compile Include="MediaList.cs" />
+    <Compile Include="MediaPlayer.cs" />
+    <Compile Include="RendererDiscoverer.cs" />
+    <Compile Include="Structures\AudioOutputDescription.cs" />
+    <Compile Include="Structures\AudioOutputDevice.cs" />
+    <Compile Include="Structures\MediaDiscovererDescription.cs" />
+    <Compile Include="Structures\MediaSlave.cs" />
+    <Compile Include="Structures\MediaStats.cs" />
+    <Compile Include="Structures\MediaTrack.cs" />
+    <Compile Include="Structures\MediaTrackData.cs" />
+    <Compile Include="Structures\ModuleDescription.cs" />
+    <Compile Include="Structures\RendererDescription.cs" />
+    <Compile Include="Structures\TrackDescription.cs" />
+    <Compile Include="Structures\VideoViewpoint.cs" />
+    <Compile Include="VLCException.cs" />
+    <EmbeddedResource Include="Properties\LibVLCSharp.rd.xml" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="Newtonsoft.Json">
+      <Version>13.0.3</Version>
+    </PackageReference>
+    <PackageReference Include="SharpDX.Direct3D11">
+      <Version>4.2.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.ValueTuple">
+      <Version>4.5.0</Version>
+    </PackageReference>
   </ItemGroup>
-  <Target Name="IncludeAWindow" Condition="$(TargetFramework.StartsWith('MonoAndroid'))">
-    <ItemGroup>
-      <BuildOutputInPackage Include="$(OutputPath)LibVLCSharp.Android.AWindow.dll" />
-    </ItemGroup>
+  <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
+    <VisualStudioVersion>14.0</VisualStudioVersion>
+  </PropertyGroup>
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\WindowsXaml\v$(VisualStudioVersion)\Microsoft.Windows.UI.Xaml.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
   </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
 </Project>

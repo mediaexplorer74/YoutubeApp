@@ -401,7 +401,7 @@
       <Name>libvideo</Name>
     </ProjectReference>
     <ProjectReference Include="..\LibVLCSharp\LibVLCSharp.csproj">
-      <Project>{b2bbba7f-e385-45f9-8913-e82e260573c7}</Project>
+      <Project>{e7a78b56-21f4-4e06-b1bf-aa3c77c96b6e}</Project>
       <Name>LibVLCSharp</Name>
     </ProjectReference>
   </ItemGroup>
