@@ -1,12 +1,11 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: Google.Apis.Auth.OAuth2.AuthorizationCodeInstalledApp
+﻿// Type: Google.Apis.Auth.OAuth2.AuthorizationCodeInstalledApp
 // Assembly: Google.Apis.Auth, Version=1.30.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab
-// MVID: A0E91A90-D8FA-470E-9253-CAE205F78A22
-// Assembly location: C:\Users\Admin\Desktop\re\YoutubeApp\Google.Apis.Auth.dll
 
 using Google.Apis.Auth.OAuth2.Flows;
 using Google.Apis.Auth.OAuth2.Responses;
 using Google.Apis.Logging;
+using System;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -42,16 +41,34 @@ namespace Google.Apis.Auth.OAuth2
         AuthorizationCodeResponseUrl authorizationCode = 
              await this.CodeReceiver.ReceiveCodeAsync(floww, taskCancellationToken).ConfigureAwait(false);
 
-        if (string.IsNullOrEmpty(authorizationCode.Code))
-        {
-          TokenErrorResponse error = new TokenErrorResponse(authorizationCode);
-          AuthorizationCodeInstalledApp.Logger.Info("Received an error. The response is: {0}", (object) error);
-          throw new TokenResponseException(error);
-        }
-        AuthorizationCodeInstalledApp.Logger.Debug("Received \"{0}\" code", (object) authorizationCode.Code);
-        token = await this.Flow.ExchangeCodeForTokenAsync(userId, authorizationCode.Code, redirectUri, taskCancellationToken).ConfigureAwait(false);
+                //Dirty hack
+                authorizationCode.code = authorizationCode.approvalCode;
+
+                if (string.IsNullOrEmpty(authorizationCode.code))
+                {
+                    TokenErrorResponse error = new TokenErrorResponse(authorizationCode);
+                    AuthorizationCodeInstalledApp.Logger.Info("Received an error. The response is: {0}", 
+                        (object)error);
+                    throw new TokenResponseException(error);
+                }
+                else
+                {
+                    authorizationCode.code = Uri.UnescapeDataString(authorizationCode.code);
+
+                    Debug.WriteLine("[i] Code=" + authorizationCode.code);
+                    
+                    //authorizationCode.code = authorizationCode.code.Substring(3);
+                }
+
+        //AuthorizationCodeInstalledApp.Logger.Debug("Received \"{0}\" code", authorizationCode.Code);
+        //Debug.WriteLine("Received \"{0}\" code", authorizationCode.Code);
+
+        token = await this.Flow.ExchangeCodeForTokenAsync(userId, authorizationCode.code, 
+            redirectUri, taskCancellationToken).ConfigureAwait(false);
+
         redirectUri = (string) null;
       }
+
       return new UserCredential(this.flow, userId, token);
     }
 

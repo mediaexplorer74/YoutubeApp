@@ -1,4 +1,4 @@
-# YoutubeApp v1.0.3-alpha
+# YoutubeApp v1.0.37-alpha
 My fork of Unofficial Youtube Client (UWP app for Desktop)
 
 ## About
@@ -17,13 +17,15 @@ The Unofficial Youtube Client is a youtube application built in UWP using the Go
 - Download videos
 
 ## My 2 cents / Status 
-- RnD (27 % complete)
+- RnD (37 % complete)
 - Min. os win sdk : 15063
 - VLC & VideoLib synthez started :)
-- Draft / Proto
+- GoogleAuth-on-W10M fixed (I hope!)
+- Draft / Proto (UI damaged very hard - no video comments, no mediacontrols, etc.!)
 
-## Big "crazy bug" what still exists till/from 2017 year
-- Google auth failed ONLY ON Windows 10 Mobile OS. Not on desktop Windows 10. So strange. IMHO, this is echo of Google-MS "mobile wars". 
+## Big bugs
+- Sometimes the app don't want to start normally (halts/terminates/crashes on W10M) 
+- No sound on some videos (?)
 
 ## Credits / References
 - MIT
@@ -36,11 +38,11 @@ The Unofficial Youtube Client is a youtube application built in UWP using the Go
 - Client Id
 - Client Secret
 
-2. Modify that items in/at Constants.cs file.
+2. Modify that items in/at Constants.cs file
 
-3. Run the app and explore good auth , but bad video control deals ( stop, fast rewind, back to main page, etc.). 
+3. Run the app and explore good auth , but bad get video deals 
 
-4. Fix the bugs. 
+4. Fix the bugs 
 
 
 ## ..

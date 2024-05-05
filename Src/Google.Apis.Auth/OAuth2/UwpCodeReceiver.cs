@@ -1,8 +1,5 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: Google.Apis.Auth.OAuth2.UwpCodeReceiver
+﻿// Type: Google.Apis.Auth.OAuth2.UwpCodeReceiver
 // Assembly: Google.Apis.Auth, Version=1.30.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab
-// MVID: A0E91A90-D8FA-470E-9253-CAE205F78A22
-// Assembly location: C:\Users\Admin\Desktop\re\YoutubeApp\Google.Apis.Auth.dll
 
 using Google.Apis.Auth.OAuth2.Requests;
 using Google.Apis.Auth.OAuth2.Responses;
@@ -38,8 +35,8 @@ namespace Google.Apis.Auth.OAuth2
             {
                 //RnD
                 authenticationResult = await WebAuthenticationBroker.AuthenticateAsync(
-                    WebAuthenticationOptions.UseTitle,
-                    //(WebAuthenticationOptions)2,
+                    WebAuthenticationOptions.None, // for W10M ?
+                    //WebAuthenticationOptions.UseTitle, // for Win10/11 desktop only ?
                     url.Build(), 
                     uri);
             }
@@ -66,13 +63,21 @@ namespace Google.Apis.Auth.OAuth2
 
        //throw new UwpCodeReceiver.AuthenticateException
         Debug.WriteLine(
-          string.Format("WebAuthenticationBroker.AuthenticateAsync() error: {0}", 
+          string.Format("WebAuthenticationBroker.AuthenticateAsync() status: {0}", 
           (object) authenticationResult.ResponseStatus));
 
-       //RnD    
-       return new AuthorizationCodeResponseUrl(
-            authenticationResult.ResponseData.ToLowerInvariant().StartsWith("success ")
-            ? authenticationResult.ResponseData.Substring(8) : authenticationResult.ResponseData);
+        string s = default;
+
+        if (authenticationResult.ResponseData.ToLowerInvariant().StartsWith("success "))
+        {
+            s = authenticationResult.ResponseData.Substring(8);
+        }
+        else
+        {
+            s = authenticationResult.ResponseData;
+        }
+  
+        return new AuthorizationCodeResponseUrl(s);
     }
 
     public sealed class AuthenticateException : Exception

@@ -11,17 +11,36 @@ namespace Google.Apis.Auth.OAuth2.Responses
 {
   public class AuthorizationCodeResponseUrl
   {
-    public string Code { get; set; }
+       /* 
+        public string Code { get; set; }
 
-    public string State { get; set; }
+        public string State { get; set; }
 
-    public string Error { get; set; }
+        public string Error { get; set; }
 
-    public string ErrorDescription { get; set; }
+        public string ErrorDescription { get; set; }
 
-    public string ErrorUri { get; set; }
+        public string ErrorUri { get; set; }
+        */
+        
 
-    public AuthorizationCodeResponseUrl(IDictionary<string, string> queryString) => this.InitFromDictionary(queryString);
+        
+        public string code { get; set; }
+
+        public string scope { get; set; }
+
+        public string app { get; set; }
+
+        public string hl { get; set; }
+
+        public string approvalCode { get; set; }
+        
+
+
+        public AuthorizationCodeResponseUrl(IDictionary<string, string> queryString)
+    {
+        this.InitFromDictionary(queryString);
+    }
 
     public AuthorizationCodeResponseUrl(string query)
     {
@@ -38,13 +57,26 @@ namespace Google.Apis.Auth.OAuth2.Responses
 
     private void InitFromDictionary(IDictionary<string, string> queryString)
     {
-      IDictionary<string, Action<string>> dictionary = (IDictionary<string, Action<string>>) new Dictionary<string, Action<string>>();
-      dictionary["code"] = (Action<string>) (v => this.Code = v);
-      dictionary["state"] = (Action<string>) (v => this.State = v);
-      dictionary["error"] = (Action<string>) (v => this.Error = v);
-      dictionary["error_description"] = (Action<string>) (v => this.ErrorDescription = v);
-      dictionary["error_uri"] = (Action<string>) (v => this.ErrorUri = v);
-      foreach (KeyValuePair<string, string> keyValuePair in (IEnumerable<KeyValuePair<string, string>>) queryString)
+      IDictionary<string, Action<string>> dictionary = (IDictionary<string, Action<string>>) 
+                new Dictionary<string, Action<string>>();
+
+            /*
+            dictionary["code"] = (Action<string>) (v => this.Code = v);
+            dictionary["state"] = (Action<string>) (v => this.State = v);
+            dictionary["error"] = (Action<string>) (v => this.Error = v);
+            dictionary["error_description"] = (Action<string>) (v => this.ErrorDescription = v);
+            dictionary["error_uri"] = (Action<string>) (v => this.ErrorUri = v);
+            */
+            dictionary["approvalCode"] = (Action<string>)(v => this.approvalCode = v);
+            dictionary["app"] = (Action<string>)(v => this.app = v);
+            dictionary["code"] = (Action<string>)(v => this.code = v);
+            dictionary["hl"] = (Action<string>)(v => this.hl = v);
+            dictionary["scope"] = (Action<string>)(v => this.scope = v);
+
+
+
+            foreach (KeyValuePair<string, string> keyValuePair 
+                in (IEnumerable<KeyValuePair<string, string>>) queryString)
       {
         Action<string> action;
         if (dictionary.TryGetValue(keyValuePair.Key, out action))

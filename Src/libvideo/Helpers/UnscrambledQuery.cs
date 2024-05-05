@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace VideoLibrary.Helpers
 {
-    internal readonly struct UnscrambledQuery
+    internal struct UnscrambledQuery
     {
         public UnscrambledQuery(string uri, bool encrypted)
         {

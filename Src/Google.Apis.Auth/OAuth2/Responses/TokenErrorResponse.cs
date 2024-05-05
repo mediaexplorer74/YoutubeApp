@@ -27,9 +27,9 @@ namespace Google.Apis.Auth.OAuth2.Responses
 
     public TokenErrorResponse(AuthorizationCodeResponseUrl authorizationCode)
     {
-      this.Error = authorizationCode.Error;
-      this.ErrorDescription = authorizationCode.ErrorDescription;
-      this.ErrorUri = authorizationCode.ErrorUri;
+       this.Error = "auth error";//authorizationCode.Error;
+       this.ErrorDescription = "auth: error!";//authorizationCode.ErrorDescription;
+       this.ErrorUri = "ErrorUri";//authorizationCode.ErrorUri;
     }
   }
 }

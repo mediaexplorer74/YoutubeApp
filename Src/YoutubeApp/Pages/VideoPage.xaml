@@ -20,17 +20,27 @@
         </MenuFlyout>
     </Page.Resources>
 
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-        <Grid Background="#FFE6E6E6" Height="50" VerticalAlignment="Top" HorizontalAlignment="Stretch" BorderThickness="0,0,0,1" BorderBrush="#FFC5C5C5">
-            <AppBarButton x:Name="settingsButton" Icon="Setting" Foreground="#FF0078D7" HorizontalAlignment="Right" Flyout="{StaticResource settingsFlyout}"/>
-            <AppBarButton x:Name="shareButton" Icon="ReShare" Foreground="#FF0078D7" Tapped="shareButton_Tapped"/>
-            <TextBlock x:Name="videosTitle" Text="Video"  HorizontalAlignment="Center" TextAlignment="Center" FontWeight="SemiBold" FontSize="20" Foreground="#FF4F4F4F" 
-                       VerticalAlignment="Center"></TextBlock>
-        </Grid>
+    <Grid>
+        <ScrollViewer x:Name="Scrollviewer" ViewChanged="Scrollviewer_ViewChanged">
 
+            <Grid><!--Background="#FFE6E6E6" Height="50" VerticalAlignment="Top" HorizontalAlignment="Stretch" BorderThickness="0,0,0,1" BorderBrush="#FFC5C5C5"-->
+                <Grid.RowDefinitions>
+                    <RowDefinition x:Name="MediaRow" Height="600"/>
+                    <RowDefinition Height="11"/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                
+                <AppBarButton x:Name="settingsButton" Icon="Setting" Foreground="#FF0078D7" HorizontalAlignment="Right" Flyout="{StaticResource settingsFlyout}"/>
+                <AppBarButton x:Name="shareButton" Icon="ReShare" Foreground="#FF0078D7" Tapped="shareButton_Tapped"/>
+                <TextBlock x:Name="videosTitle" Text="Video"  HorizontalAlignment="Center" TextAlignment="Center" FontWeight="SemiBold" FontSize="20" Foreground="#FF4F4F4F" 
+                           VerticalAlignment="Center"></TextBlock>
+            </Grid>
+        </ScrollViewer>
+        
         <!--MediaElement AreTransportControlsEnabled="True" x:Name="mediaPlayer" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,50,0,0"></MediaElement-->
         <lvs:VideoView x:Name="VideoView"></lvs:VideoView>
 
         <ProgressRing x:Name="progressRing" HorizontalAlignment="Center" VerticalAlignment="Center" Width="64" Height="64"/>
+        
     </Grid>
 </Page>

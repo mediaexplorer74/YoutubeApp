@@ -36,6 +36,7 @@ namespace YTApp.Pages
                 btnContinue.Visibility = Visibility.Visible;
             }
         }
+
         private void Continue_Tapped(object sender, TappedRoutedEventArgs e)
         {
             Frame.Navigate(typeof(MainPage));

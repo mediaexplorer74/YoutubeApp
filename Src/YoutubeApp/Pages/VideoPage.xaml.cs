@@ -22,7 +22,8 @@ using Windows.UI.Xaml.Navigation;
 
 using VideoLibrary;
 using Windows.Storage;
-using YTApp.Classes; //using MyToolkit.Multimedia;
+using YTApp.Classes;
+using Windows.Foundation.Metadata; //using MyToolkit.Multimedia;
 
 
 namespace YTApp.Pages
@@ -84,6 +85,20 @@ namespace YTApp.Pages
                 }
             };
 
+            if (ApiInformation.IsApiContractPresent("Windows.Phone.PhoneContract", 1, 0))
+            {
+                Windows.Phone.UI.Input.HardwareButtons.BackPressed += (s, a) =>
+                {
+                    //Debug.WriteLine("Hardware Back button Requested");
+                    if (Frame.CanGoBack)
+                    {
+                        Frame.GoBack();
+                        a.Handled = true;
+                    }
+                    a.Handled = true;
+                };
+            }
+
             dataTransferManager = DataTransferManager.GetForCurrentView();
 
             ChosenQuality = "480p";
@@ -104,8 +119,15 @@ namespace YTApp.Pages
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             //ytvideo = (MainPage.Video)e.Parameter;
+            VideoView.Visibility = Visibility.Visible;
 
-            videosTitle.Text = "ytvideo.Title";
+            // Experimental -----------------
+            Constants.MainPageRef.contentFrame.Navigated += ContentFrame_Navigated;
+            SystemNavigationManager.GetForCurrentView().BackRequested += VideoPage_BackRequested;
+            Constants.MainPageRef.Frame.Navigated += Frame_Navigated;
+            // ------------------------------
+
+            videosTitle.Text = ".";// ytvideo.Title";
 
             try
             {
@@ -119,6 +141,122 @@ namespace YTApp.Pages
             }
         }
 
+        private void Frame_Navigated(object sender, NavigationEventArgs e)
+        {
+            //If the user logs out, we need to stop the video
+            //viewer.StopVideo();
+            _mediaPlayer.Stop();
+
+        }
+
+        private void ContentFrame_Navigated(object sender, NavigationEventArgs e)
+        {
+            //ChangePlayerSize(false);
+        }
+
+
+        private void VideoPage_BackRequested(object sender, BackRequestedEventArgs e)
+        {
+            try
+            {
+                VideoView.MediaPlayer = null;
+            }
+            catch { }
+
+            try
+            {
+                if (_mediaPlayer != null)
+                _mediaPlayer.Dispose();
+            }
+            catch { }
+
+            try
+            {
+                if (_libVLC != null)
+                    _libVLC.Dispose();
+            }
+            catch { }
+
+            //ChangePlayerSize(false);
+            Frame.Visibility = Visibility.Collapsed;
+        }
+
+        //AChangePlayerSize takes a bool allowing you to set it to fullscreen (true) or to a small view (false)
+        public void ChangePlayerSize(bool MakeFullScreen)
+        {
+            if (!MakeFullScreen)
+            {
+                //viewer.transportControls.Visibility = Visibility.Collapsed;
+
+                Scrollviewer.ChangeView(0, 0, 1, true);
+                Scrollviewer.VerticalScrollMode = ScrollMode.Disabled;
+                Scrollviewer.VerticalScrollBarVisibility = ScrollBarVisibility.Disabled;
+
+                Frame.HorizontalAlignment = HorizontalAlignment.Right;
+                Frame.VerticalAlignment = VerticalAlignment.Bottom;
+                Frame.Width = 640;
+                Frame.Height = 360;
+
+                //Saves the current Media Player height
+                Windows.Storage.ApplicationDataContainer localSettings
+                    = Windows.Storage.ApplicationData.Current.LocalSettings;
+                localSettings.Values["MediaViewerHeight"] = MediaRow.Height.Value;
+
+                MediaRow.Height = new GridLength(360);
+
+                //Disable the taps on the viewer
+                //TODO
+                //viewer.IsHitTestVisible = false;
+            }
+            else
+            {
+                //TODO
+                //viewer.transportControls.Visibility = Visibility.Visible;
+
+                Scrollviewer.VerticalScrollMode = ScrollMode.Auto;
+                Scrollviewer.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
+
+                Frame.HorizontalAlignment = HorizontalAlignment.Stretch;
+                Frame.VerticalAlignment = VerticalAlignment.Stretch;
+                Frame.Width = Double.NaN;
+                Frame.Height = Double.NaN;
+
+                //Set the media viewer to the previous height or to the default if a custom height is not found
+                Windows.Storage.ApplicationDataContainer localSettings
+                    = Windows.Storage.ApplicationData.Current.LocalSettings;
+
+                if (localSettings.Values["MediaViewerHeight"] != null
+                    && (double)localSettings.Values["MediaViewerHeight"] > 360)
+                {
+                    MediaRow.Height = new GridLength(Convert.ToDouble(localSettings.Values["MediaViewerHeight"]));
+                }
+                else
+                {
+                    MediaRow.Height = new GridLength(600);
+                }
+
+                //Enable the taps on the viewer
+                //TODO
+                //viewer.IsHitTestVisible = true;
+            }
+        }
+
+
+        private void Scrollviewer_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
+        {
+            if (Scrollviewer.VerticalOffset > Scrollviewer.ScrollableHeight - 700)
+            {
+                //TODO
+                //if (CommentsOptionComboBox.SelectedIndex == 0)
+                //{
+                //    AddComments(CommentThreadsResource.ListRequest.OrderEnum.Relevance);
+                //}
+                //else
+                //{
+                //    AddComments(CommentThreadsResource.ListRequest.OrderEnum.Time);
+                //}
+            }
+        }
 
         private async Task LoadPage()
         {
@@ -135,9 +273,7 @@ namespace YTApp.Pages
                 YouTubeVideo video = service.GetVideo("https://youtube.com/watch?v=" + id);               
 
                 try
-                {
-                    
-
+                {   
                     Loaded += (s, e) =>
                     {
                         _libVLC = new LibVLC(VideoView.SwapChainOptions);
@@ -146,16 +282,32 @@ namespace YTApp.Pages
 
                         _mediaPlayer.Play(new Media(
                             _libVLC,
-                           video.Uri,//"https://download.blender.org/peach/bigbuckbunny_movies/BigBuckBunny_320x180.mp4",
+                           video.Uri,
                             FromType.FromLocation));
                     };
 
 
                     Unloaded += (s, e) =>
                     {
-                        VideoView.MediaPlayer = null;
-                        _mediaPlayer.Dispose();
-                        _libVLC.Dispose();
+                        try
+                        {
+                            VideoView.MediaPlayer = null;
+                        }
+                        catch { }
+
+                        try
+                        {
+                            if (_mediaPlayer != null)
+                                _mediaPlayer.Dispose();
+                        }
+                        catch { }
+
+                        try
+                        {
+                            if (_libVLC != null)
+                                _libVLC.Dispose();
+                        }
+                        catch { }
                     };
 
                     //progressRing.IsActive = false;
