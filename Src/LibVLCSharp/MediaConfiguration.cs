@@ -58,10 +58,6 @@ namespace LibVLCSharp.Shared
             }
         }
 
-#if ANDROID
-        const string ENABLE_HW_ANDROID = ":codec=mediacodec_ndk";
-        const string DISABLE_HW_ANDROID = "";
-#endif
         const string ENABLE_HW_APPLE = ":videotoolbox";
         const string ENABLE_HW_WINDOWS = ":avcodec-hw=d3d11va";
 
@@ -72,39 +68,29 @@ namespace LibVLCSharp.Shared
         {
             if(enable)
             {
-#if ANDROID
-                return ENABLE_HW_ANDROID;
-#elif APPLE
-                return ENABLE_HW_APPLE;
-#else
                 if (PlatformHelper.IsWindows)
                     return ENABLE_HW_WINDOWS;
                 if (PlatformHelper.IsMac)
                     return ENABLE_HW_APPLE;
                 return string.Empty;
-#endif
             }
             else
             {
-#if ANDROID
-                return DISABLE_HW_ANDROID;
-#elif APPLE
-                return DISABLE_HW_APPLE;
-#else
                 if (PlatformHelper.IsWindows)
                     return DISABLE_HW_WINDOWS;
                 if (PlatformHelper.IsMac)
                     return DISABLE_HW_APPLE;
                 return string.Empty;
-#endif
             }
-
         }
 
         /// <summary>
         /// Builds the current MediaConfiguration for consumption by libvlc (or storage)
         /// </summary>
         /// <returns>Configured libvlc options as strings</returns>
-        public string[] Build() => _options.Values.Where(option => !string.IsNullOrEmpty(option)).ToArray();
+        public string[] Build()
+        {
+            return _options.Values.Where(option => !string.IsNullOrEmpty(option)).ToArray();
+        }
     }
 }

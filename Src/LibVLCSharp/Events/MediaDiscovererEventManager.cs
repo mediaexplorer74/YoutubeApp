@@ -6,13 +6,9 @@ namespace LibVLCSharp.Shared
     internal class MediaDiscovererEventManager : EventManager
     {
         readonly object _lock = new object();
-#if IOS
-        static EventHandler<EventArgs> _mediaDiscovererStarted;
-        static EventHandler<EventArgs> _mediaDiscovererStopped;
-#else
+
         EventHandler<EventArgs> _mediaDiscovererStarted;
         EventHandler<EventArgs> _mediaDiscovererStopped;
-#endif
 
         int _discovererStartedRegistrationCount;
         int _discovererStoppedRegistrationCount;
@@ -74,19 +70,6 @@ namespace LibVLCSharp.Shared
             }
         }
 
-#if IOS
-        [MonoPInvokeCallback(typeof(EventCallback))]
-        static void OnStarted(IntPtr ptr)
-        {
-            _mediaDiscovererStarted?.Invoke(null, EventArgs.Empty);
-        }
-
-        [MonoPInvokeCallback(typeof(EventCallback))]
-        static void OnStopped(IntPtr ptr)
-        {
-            _mediaDiscovererStopped?.Invoke(null, EventArgs.Empty);
-        }
-#else
         void OnStarted(IntPtr ptr)
         {
             _mediaDiscovererStarted?.Invoke(this, EventArgs.Empty);
@@ -96,6 +79,5 @@ namespace LibVLCSharp.Shared
         {
             _mediaDiscovererStopped?.Invoke(this, EventArgs.Empty);
         }
-#endif
     }
 }

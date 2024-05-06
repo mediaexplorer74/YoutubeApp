@@ -6,38 +6,7 @@ namespace LibVLCSharp.Shared
     internal class MediaPlayerEventManager : EventManager
     {
         readonly object _lock = new object();
-#if IOS
-        static EventHandler<MediaPlayerMediaChangedEventArgs> _mediaPlayerMediaChanged;
-        static EventHandler<EventArgs> _mediaPlayerNothingSpecial;
-        static EventHandler<EventArgs> _mediaPlayerOpening;
-        static EventHandler<MediaPlayerBufferingEventArgs> _mediaPlayerBuffering;
-        static EventHandler<EventArgs> _mediaPlayerPlaying;
-        static EventHandler<EventArgs> _mediaPlayerPaused;
-        static EventHandler<EventArgs> _mediaPlayerStopped;
-        static EventHandler<EventArgs> _mediaPlayerForward;
-        static EventHandler<EventArgs> _mediaPlayerBackward;
-        static EventHandler<EventArgs> _mediaPlayerEndReached;
-        static EventHandler<EventArgs> _mediaPlayerEncounteredError;
-        static EventHandler<MediaPlayerTimeChangedEventArgs> _mediaPlayerTimeChanged;
-        static EventHandler<MediaPlayerPositionChangedEventArgs> _mediaPlayerPositionChanged;
-        static EventHandler<MediaPlayerSeekableChangedEventArgs> _mediaPlayerSeekableChanged;
-        static EventHandler<MediaPlayerPausableChangedEventArgs> _mediaPlayerPausableChanged;
-        static EventHandler<MediaPlayerTitleChangedEventArgs> _mediaPlayerTitleChanged;
-        static EventHandler<MediaPlayerChapterChangedEventArgs> _mediaPlayerChapterChanged; //vlc 3
-        static EventHandler<MediaPlayerSnapshotTakenEventArgs> _mediaPlayerSnapshotTaken;
-        static EventHandler<MediaPlayerLengthChangedEventArgs> _mediaPlayerLengthChanged;
-        static EventHandler<MediaPlayerVoutEventArgs> _mediaPlayerVout;
-        static EventHandler<MediaPlayerScrambledChangedEventArgs> _mediaPlayerScrambledChanged;
-        static EventHandler<MediaPlayerESAddedEventArgs> _mediaPlayerESAdded; // vlc 3
-        static EventHandler<MediaPlayerESDeletedEventArgs> _mediaPlayerESDeleted; // vlc 3
-        static EventHandler<MediaPlayerESSelectedEventArgs> _mediaPlayerESSelected; // vlc 3
-        static EventHandler<MediaPlayerAudioDeviceEventArgs> _mediaPlayerAudioDevice; // vlc 3
-        static EventHandler<EventArgs> _mediaPlayerCorked; // vlc 2.2
-        static EventHandler<EventArgs> _mediaPlayerUncorked; // vlc 2.2
-        static EventHandler<EventArgs> _mediaPlayerMuted; // vlc 2.2
-        static EventHandler<EventArgs> _mediaPlayerUnmuted; // vlc 2.2
-        static EventHandler<MediaPlayerVolumeChangedEventArgs> _mediaPlayerVolumeChanged; // vlc 2.2
-#else
+
         EventHandler<MediaPlayerPositionChangedEventArgs> _mediaPlayerPositionChanged;
         EventHandler<MediaPlayerMediaChangedEventArgs> _mediaPlayerMediaChanged;
         EventHandler<EventArgs> _mediaPlayerNothingSpecial;
@@ -68,7 +37,7 @@ namespace LibVLCSharp.Shared
         EventHandler<EventArgs> _mediaPlayerMuted; // vlc 2.2
         EventHandler<EventArgs> _mediaPlayerUnmuted; // vlc 2.2
         EventHandler<MediaPlayerVolumeChangedEventArgs> _mediaPlayerVolumeChanged; // vlc 2.2
-#endif
+
         public MediaPlayerEventManager(IntPtr ptr) : base(ptr)
         {
         }
@@ -521,206 +490,6 @@ namespace LibVLCSharp.Shared
             }
         }
 
-#if IOS
-        [MonoPInvokeCallback(typeof(EventCallback))]
-        static void OnMediaChanged(IntPtr ptr)
-        {
-            _mediaPlayerMediaChanged?.Invoke(null, 
-                new MediaPlayerMediaChangedEventArgs(RetrieveEvent(ptr).Union.MediaPlayerMediaChanged.NewMedia));
-        }
-
-        [MonoPInvokeCallback(typeof(EventCallback))]
-        static void OnNothingSpecial(IntPtr ptr)
-        {
-            _mediaPlayerNothingSpecial?.Invoke(null, EventArgs.Empty);
-        }
-
-        [MonoPInvokeCallback(typeof(EventCallback))]
-        static void OnOpening(IntPtr ptr)
-        {
-            _mediaPlayerOpening?.Invoke(null, EventArgs.Empty);
-        }
-
-        [MonoPInvokeCallback(typeof(EventCallback))]
-        static void OnBuffering(IntPtr ptr)
-        {
-            _mediaPlayerBuffering?.Invoke(null,
-                new MediaPlayerBufferingEventArgs(RetrieveEvent(ptr).Union.MediaPlayerBuffering.NewCache));
-        }
-
-        [MonoPInvokeCallback(typeof(EventCallback))]
-        static void OnPlaying(IntPtr ptr)
-        {
-            _mediaPlayerPlaying?.Invoke(null, EventArgs.Empty);
-        }
-
-        [MonoPInvokeCallback(typeof(EventCallback))]
-        static void OnPaused(IntPtr ptr)
-        {
-            _mediaPlayerPaused?.Invoke(null, EventArgs.Empty);
-        }
-
-        [MonoPInvokeCallback(typeof(EventCallback))]
-        static void OnStopped(IntPtr ptr)
-        {
-            _mediaPlayerStopped?.Invoke(null, EventArgs.Empty);
-        }
-
-        [MonoPInvokeCallback(typeof(EventCallback))]
-        static void OnForward(IntPtr ptr)
-        {
-            _mediaPlayerForward?.Invoke(null, EventArgs.Empty);
-        }
-
-        [MonoPInvokeCallback(typeof(EventCallback))]
-        static void OnBackward(IntPtr ptr)
-        {
-            _mediaPlayerBackward?.Invoke(null, EventArgs.Empty);
-        }
-
-        [MonoPInvokeCallback(typeof(EventCallback))]
-        static void OnEndReached(IntPtr ptr)
-        {
-            _mediaPlayerEndReached?.Invoke(null, EventArgs.Empty);
-        }
-
-        [MonoPInvokeCallback(typeof(EventCallback))]
-        static void OnEncounteredError(IntPtr ptr)
-        {
-            _mediaPlayerEncounteredError?.Invoke(null, EventArgs.Empty);
-        }
-
-        [MonoPInvokeCallback(typeof(EventCallback))]
-        static void OnTimeChanged(IntPtr ptr)
-        {
-            _mediaPlayerTimeChanged?.Invoke(null,
-                new MediaPlayerTimeChangedEventArgs(RetrieveEvent(ptr).Union.MediaPlayerTimeChanged.NewTime));
-        }
-
-        [MonoPInvokeCallback(typeof(EventCallback))]
-        static void OnPositionChanged(IntPtr ptr)
-        {
-            _mediaPlayerPositionChanged?.Invoke(null,
-                new MediaPlayerPositionChangedEventArgs(RetrieveEvent(ptr).Union.MediaPlayerPositionChanged.NewPosition));
-        }
-
-        [MonoPInvokeCallback(typeof(EventCallback))]
-        static void OnSeekableChanged(IntPtr ptr)
-        {
-            _mediaPlayerSeekableChanged?.Invoke(null,
-                new MediaPlayerSeekableChangedEventArgs(RetrieveEvent(ptr).Union.MediaPlayerSeekableChanged.NewSeekable));
-        }
-
-        [MonoPInvokeCallback(typeof(EventCallback))]
-        static void OnPausableChanged(IntPtr ptr)
-        {
-            _mediaPlayerPausableChanged?.Invoke(null, 
-                new MediaPlayerPausableChangedEventArgs(RetrieveEvent(ptr).Union.MediaPlayerPausableChanged.NewPausable));
-        }
-
-        [MonoPInvokeCallback(typeof(EventCallback))]
-        static void OnTitleChanged(IntPtr ptr)
-        {
-            _mediaPlayerTitleChanged?.Invoke(null,
-                new MediaPlayerTitleChangedEventArgs(RetrieveEvent(ptr).Union.MediaPlayerTitleChanged.NewTitle));
-        }
-
-        [MonoPInvokeCallback(typeof(EventCallback))]
-        static void OnChapterChanged(IntPtr ptr)
-        {
-            _mediaPlayerChapterChanged?.Invoke(null,
-                new MediaPlayerChapterChangedEventArgs(RetrieveEvent(ptr).Union.MediaPlayerChapterChanged.NewChapter));
-        }
-
-        [MonoPInvokeCallback(typeof(EventCallback))]
-        static void OnSnapshotTaken(IntPtr ptr)
-        {
-            var filenamePtr = RetrieveEvent(ptr).Union.MediaPlayerSnapshotTaken.Filename;
-            var filename = filenamePtr.FromUtf8();
-            _mediaPlayerSnapshotTaken?.Invoke(null, new MediaPlayerSnapshotTakenEventArgs(filename));
-        }
-
-        [MonoPInvokeCallback(typeof(EventCallback))]
-        static void OnLengthChanged(IntPtr ptr)
-        {
-            _mediaPlayerLengthChanged?.Invoke(null, 
-                new MediaPlayerLengthChangedEventArgs(RetrieveEvent(ptr).Union.MediaPlayerLengthChanged.NewLength));
-        }
-
-        [MonoPInvokeCallback(typeof(EventCallback))]
-        static void OnVout(IntPtr ptr)
-        {
-            _mediaPlayerVout?.Invoke(null, 
-                new MediaPlayerVoutEventArgs(RetrieveEvent(ptr).Union.MediaPlayerVoutChanged.NewCount));
-        }
-
-        [MonoPInvokeCallback(typeof(EventCallback))]
-        static void OnScrambledChanged(IntPtr ptr)
-        {
-            _mediaPlayerScrambledChanged?.Invoke(null,
-                new MediaPlayerScrambledChangedEventArgs(RetrieveEvent(ptr).Union.MediaPlayerScrambledChanged.NewScrambled));
-        }
-
-        [MonoPInvokeCallback(typeof(EventCallback))]
-        static void OnESAdded(IntPtr ptr)
-        {
-            _mediaPlayerESAdded?.Invoke(null,
-                new MediaPlayerESAddedEventArgs(RetrieveEvent(ptr).Union.EsChanged.Id));
-        }
-
-        [MonoPInvokeCallback(typeof(EventCallback))]
-        static void OnESDeleted(IntPtr ptr)
-        {
-            _mediaPlayerESDeleted?.Invoke(null,
-                new MediaPlayerESDeletedEventArgs(RetrieveEvent(ptr).Union.EsChanged.Id));
-        }
-
-        [MonoPInvokeCallback(typeof(EventCallback))]
-        static void OnESSelected(IntPtr ptr)
-        {
-            _mediaPlayerESSelected?.Invoke(null,
-                new MediaPlayerESSelectedEventArgs(RetrieveEvent(ptr).Union.EsChanged.Id));
-        }
-
-        [MonoPInvokeCallback(typeof(EventCallback))]
-        static void OnAudioDevice(IntPtr ptr)
-        {
-            var deviceNamePtr = RetrieveEvent(ptr).Union.AudioDeviceChanged.Device;
-            var deviceName = deviceNamePtr.FromUtf8();
-            _mediaPlayerAudioDevice?.Invoke(null, new MediaPlayerAudioDeviceEventArgs(deviceName));
-        }
-
-        [MonoPInvokeCallback(typeof(EventCallback))]
-        static void OnCorked(IntPtr ptr)
-        {
-            _mediaPlayerCorked?.Invoke(null, EventArgs.Empty);
-        }
-
-        [MonoPInvokeCallback(typeof(EventCallback))]
-        static void OnUncorked(IntPtr ptr)
-        {
-            _mediaPlayerUncorked?.Invoke(null, EventArgs.Empty);
-        }
-
-        [MonoPInvokeCallback(typeof(EventCallback))]
-        static void OnMuted(IntPtr ptr)
-        {
-            _mediaPlayerMuted?.Invoke(null, EventArgs.Empty);
-        }
-
-        [MonoPInvokeCallback(typeof(EventCallback))]
-        static void OnUnmuted(IntPtr ptr)
-        {
-            _mediaPlayerUnmuted?.Invoke(null, EventArgs.Empty);
-        }
-
-        [MonoPInvokeCallback(typeof(EventCallback))]
-        static void OnVolumeChanged(IntPtr ptr)
-        {
-            _mediaPlayerVolumeChanged?.Invoke(null, 
-                new MediaPlayerVolumeChangedEventArgs(RetrieveEvent(ptr).Union.MediaPlayerVolumeChanged.Volume));
-        }
-#else
         void OnMediaChanged(IntPtr ptr)
         {
             _mediaPlayerMediaChanged?.Invoke(this,
@@ -889,7 +658,6 @@ namespace LibVLCSharp.Shared
             _mediaPlayerVolumeChanged?.Invoke(this,
                 new MediaPlayerVolumeChangedEventArgs(RetrieveEvent(ptr).Union.MediaPlayerVolumeChanged.Volume));
         }
-#endif
 
     }
 }

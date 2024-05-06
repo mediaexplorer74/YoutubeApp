@@ -36,9 +36,6 @@ namespace LibVLCSharp.Shared
         /// </summary>
         static EventHandler<LogEventArgs> _log;
 
-#if NET || NETSTANDARD
-        IntPtr _logFileHandle;
-#endif
         public override int GetHashCode()
         {
             return NativeReference.GetHashCode();
@@ -55,11 +52,7 @@ namespace LibVLCSharp.Shared
                 EntryPoint = "libvlc_release")]
             internal static extern void LibVLCRelease(IntPtr libVLC);
 
-#if NET || NETSTANDARD
-            [DllImport(Constants.LibraryName, CallingConvention = CallingConvention.Cdecl,
-                EntryPoint = "libvlc_add_intf")]
-            internal static extern int LibVLCAddInterface(IntPtr libVLC, IntPtr name);
-#endif
+
             [DllImport(Constants.LibraryName, CallingConvention = CallingConvention.Cdecl,
                 EntryPoint = "libvlc_set_exit_handler")]
             internal static extern void LibVLCSetExitHandler(IntPtr libVLC, IntPtr cb, IntPtr opaque);
@@ -159,12 +152,6 @@ namespace LibVLCSharp.Shared
             [DllImport(Constants.LibraryName, CallingConvention = CallingConvention.Cdecl,
                 EntryPoint = "libvlc_get_compiler")]
             internal static extern IntPtr LibVLCGetCompiler();
-
-#if ANDROID
-            [DllImport(Constants.LibraryName, CallingConvention = CallingConvention.Cdecl,
-                EntryPoint = "libvlc_media_player_set_android_context")]
-            internal static extern void LibVLCMediaPlayerSetAndroidContext(IntPtr mediaPlayer, IntPtr aWindow);
-#endif
         }
 
         /// <summary>
@@ -218,11 +205,7 @@ namespace LibVLCSharp.Shared
         /// <returns>The patched options</returns>
         static string[] PatchOptions(string[] options)
         {
-#if UWP
             return options.Concat(new[] {"--aout=winstore"}).ToArray();
-#else
-            return options;
-#endif
         }
 
         protected override void Dispose(bool disposing)
@@ -248,18 +231,7 @@ namespace LibVLCSharp.Shared
             return obj1?.NativeReference != obj2?.NativeReference;
         }
 
-#if NET || NETSTANDARD
-        /// <summary>
-        /// Try to start a user interface for the libvlc instance.
-        /// </summary>
-        /// <param name="name">interface name, or empty string for default</param>
-        /// <returns>True if successful, false otherwise</returns>
-        public bool AddInterface(string name)
-        {
-            var namePtr = name.ToUtf8();
-            return MarshalUtils.PerformInteropAndFree(() => Native.LibVLCAddInterface(NativeReference, namePtr) == 0, namePtr);
-        }
-#endif
+
         /// <summary>
         /// <para>Registers a callback for the LibVLC exit event. This is mostly useful if</para>
         /// <para>the VLC playlist and/or at least one interface are started with</para>
@@ -296,7 +268,10 @@ namespace LibVLCSharp.Shared
             var nameUtf8 = name.ToUtf8();
             var httpUtf8 = http.ToUtf8();
 
-            MarshalUtils.PerformInteropAndFree(() => Native.LibVLCSetUserAgent(NativeReference, nameUtf8, httpUtf8), nameUtf8, httpUtf8);
+            MarshalUtils.PerformInteropAndFree(() =>
+            {
+                Native.LibVLCSetUserAgent(NativeReference, nameUtf8, httpUtf8);
+            }, nameUtf8, httpUtf8);
         }
 
         /// <summary>
@@ -313,47 +288,14 @@ namespace LibVLCSharp.Shared
             var versionUtf8 = version.ToUtf8();
             var iconUtf8 = icon.ToUtf8();
 
-            MarshalUtils.PerformInteropAndFree(() => Native.LibVLCSetAppId(NativeReference, idUtf8, versionUtf8, iconUtf8),
+            MarshalUtils.PerformInteropAndFree(  
+                () =>
+                {
+                    Native.LibVLCSetAppId(NativeReference, idUtf8, versionUtf8, iconUtf8);
+                },
                 idUtf8, versionUtf8, iconUtf8);
         }
 
-#if NET || NETSTANDARD
-        /// <summary>
-        /// Close log file handle
-        /// </summary>
-        /// <returns>true if no file to close or close operation successful, false otherwise</returns>
-        public bool CloseLogFile()
-        {
-            if (_logFileHandle == IntPtr.Zero) return true;
-
-            return MarshalUtils.Close(_logFileHandle);
-        }
-
-        /// <summary>Sets up logging to a file.
-        /// Watch out: Overwrite contents if file exists!
-        /// Potentially throws a VLCException if FILE * cannot be obtained
-        /// </summary>
-        /// <para>FILE pointer opened for writing</para>
-        /// <para>(the FILE pointer must remain valid until libvlc_log_unset())</para>
-        /// <param name="filename">open/create file with Write access. If existing, resets content.</param>
-        /// <remarks>LibVLC 2.1.0 or later</remarks>
-        public void SetLogFile(string filename)
-        {
-            if (string.IsNullOrEmpty(filename)) throw new NullReferenceException(nameof(filename));
-
-            _logFileHandle = NativeFilePtr(filename);
-
-            Native.LibVLCLogSetFile(NativeReference, _logFileHandle);
-        }
-
-        IntPtr NativeFilePtr(string filename)
-        {
-            var result = MarshalUtils.Open(filename, out var filePtr);
-            if (!result)
-                throw new VLCException("Could not get FILE * for log_set_file");
-            return filePtr;
-        }
-#endif
 
         void SetLog(LogCallback cb)
         {
@@ -634,11 +576,8 @@ namespace LibVLCSharp.Shared
                 {
                     var message = buffer.FromUtf8();
                     GetLogContext(ctx, out var module, out var file, out var line);
-#if NET40
-                    Task.Factory.StartNew(() => _log?.Invoke(null, new LogEventArgs(level, message, module, file, line)));
-#else
+
                     Task.Run(() => _log?.Invoke(null, new LogEventArgs(level, message, module, file, line)));
-#endif
                 }
             }
             finally

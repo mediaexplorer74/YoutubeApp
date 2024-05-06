@@ -64,32 +64,6 @@ namespace LibVLCSharp.Shared
                 EntryPoint = "libvlc_media_player_stop")]
             internal static extern void LibVLCMediaPlayerStop(IntPtr mediaPlayer);
 
-#if APPLE || NET || NETSTANDARD
-            [DllImport(Constants.LibraryName, CallingConvention = CallingConvention.Cdecl,
-                EntryPoint = "libvlc_media_player_set_nsobject")]
-            internal static extern void LibVLCMediaPlayerSetNsobject(IntPtr mediaPlayer, IntPtr drawable);
-
-            [DllImport(Constants.LibraryName, CallingConvention = CallingConvention.Cdecl,
-                EntryPoint = "libvlc_media_player_get_nsobject")]
-            internal static extern IntPtr LibVLCMediaPlayerGetNsobject(IntPtr mediaPlayer);
-#endif
-#if NET || NETSTANDARD
-            [DllImport(Constants.LibraryName, CallingConvention = CallingConvention.Cdecl,
-                EntryPoint = "libvlc_media_player_set_xwindow")]
-            internal static extern void LibVLCMediaPlayerSetXwindow(IntPtr mediaPlayer, uint drawable);
-
-            [DllImport(Constants.LibraryName, CallingConvention = CallingConvention.Cdecl,
-                EntryPoint = "libvlc_media_player_get_xwindow")]
-            internal static extern uint LibVLCMediaPlayerGetXwindow(IntPtr mediaPlayer);
-
-            [DllImport(Constants.LibraryName, CallingConvention = CallingConvention.Cdecl,
-                EntryPoint = "libvlc_media_player_set_hwnd")]
-            internal static extern void LibVLCMediaPlayerSetHwnd(IntPtr mediaPlayer, IntPtr drawable);
-
-            [DllImport(Constants.LibraryName, CallingConvention = CallingConvention.Cdecl,
-                EntryPoint = "libvlc_media_player_get_hwnd")]
-            internal static extern IntPtr LibVLCMediaPlayerGetHwnd(IntPtr mediaPlayer);
-#endif
             [DllImport(Constants.LibraryName, CallingConvention = CallingConvention.Cdecl,
                 EntryPoint = "libvlc_media_player_get_length")]
             internal static extern long LibVLCMediaPlayerGetLength(IntPtr mediaPlayer);
@@ -588,20 +562,6 @@ namespace LibVLCSharp.Shared
             [DllImport(Constants.LibraryName, CallingConvention = CallingConvention.Cdecl,
                 EntryPoint = "libvlc_media_player_retain")]
             internal static extern void LibVLCMediaPlayerRetain(IntPtr mediaplayer);
-#if ANDROID
-
-            [DllImport(Constants.LibraryName, CallingConvention = CallingConvention.Cdecl,
-                EntryPoint = "libvlc_media_player_set_android_context")]
-            internal static extern void LibVLCMediaPlayerSetAndroidContext(IntPtr mediaPlayer, IntPtr aWindow);
-#endif
-
-#if UNITY_ANDROID
-            [DllImport(Constants.UnityPlugin)]
-            internal static extern IntPtr CreateAndInitMediaPlayer(IntPtr libvlc);
-
-            [DllImport(Constants.UnityPlugin, EntryPoint = "getVideoFrameVLC")]
-            internal static extern IntPtr GetFrame(IntPtr mediaPlayer, out bool updated);
-#endif
         }
 
         MediaPlayerEventManager _eventManager;
@@ -613,20 +573,15 @@ namespace LibVLCSharp.Shared
         /// </param>
         /// <returns>a new media player object, or NULL on error.</returns>
         public MediaPlayer(LibVLC libVLC)
-            : base(() =>
-#if UNITY_ANDROID
-            /// This is a helper method to ease creating and configuring a MediaPlayer on Unity.Android.
-            /// By just passing it a LibVLC object, it handles JNI_OnLoad, AWindow creation for off screen HW and setting the 
-            /// Android Context. The C# JNI bindings from Xamarin.Android (Java.Interop) differ from the Unity.Android way.
-            Native.CreateAndInitMediaPlayer(libVLC.NativeReference),
-#else
-            Native.LibVLCMediaPlayerNew(libVLC.NativeReference),
-#endif
-            Native.LibVLCMediaPlayerRelease)
+            : base(
+                  () => 
+                  {
+                     return Native.LibVLCMediaPlayerNew(libVLC.NativeReference);
+                  }, 
+            Native.LibVLCMediaPlayerRelease )
         {
         }
 
-#if !UNITY_ANDROID
         /// <summary>Create a Media Player object from a Media</summary>
         /// <param name="media">
         /// <para>the media. Afterwards the p_md can be safely</para>
@@ -637,7 +592,7 @@ namespace LibVLCSharp.Shared
             : base(() => Native.LibVLCMediaPlayerNewFromMedia(media.NativeReference), Native.LibVLCMediaPlayerRelease)
         {
         }
-#endif
+
         /// <summary>
         /// Get the media used by the media_player.
         /// Set the media that will be used by the media_player. 
@@ -701,66 +656,7 @@ namespace LibVLCSharp.Shared
         /// </summary>
         public void Stop() => Native.LibVLCMediaPlayerStop(NativeReference);
 
-#if APPLE || NET || NETSTANDARD
-        /// <summary>
-        /// Get the NSView handler previously set
-        /// return the NSView handler or 0 if none where set
-        /// <para></para>
-        /// <para></para>
-        /// Set the NSView handler where the media player should render its video output.
-        /// Use the vout called "macosx".
-        /// <para></para>
-        /// The drawable is an NSObject that follow the
-        /// VLCOpenGLVideoViewEmbedding protocol: VLCOpenGLVideoViewEmbedding NSObject
-        /// Or it can be an NSView object.
-        /// If you want to use it along with Qt4 see the QMacCocoaViewContainer.
-        /// Then the following code should work:  { NSView *video = [[NSView
-        /// alloc] init]; QMacCocoaViewContainer *container = new
-        /// QMacCocoaViewContainer(video, parent);
-        /// libvlc_media_player_set_nsobject(mp, video); [video release]; }
-        /// You can find a live example in VLCVideoView in VLCKit.framework.
-        /// </summary>
-        public IntPtr NsObject
-        {
-            get => Native.LibVLCMediaPlayerGetNsobject(NativeReference);
-            set => Native.LibVLCMediaPlayerSetNsobject(NativeReference, value);
-        }
-#endif
 
-#if NET || NETSTANDARD
-        /// <summary>
-        /// Set an X Window System drawable where the media player should render its video output. 
-        /// The call takes effect when the playback starts. If it is already started, it might need to be stopped before changes apply. 
-        /// If LibVLC was built without X11 output support, then this function has no effects.
-        /// By default, LibVLC will capture input events on the video rendering area. 
-        /// Use libvlc_video_set_mouse_input() and libvlc_video_set_key_input() to disable that and deliver events to the parent window / to the application instead. 
-        /// By design, the X11 protocol delivers input events to only one recipient.
-        /// <para></para>
-        /// Warning:
-        /// The application must call the XInitThreads() function from Xlib before libvlc_new(), and before any call to XOpenDisplay() directly
-        /// or via any other library.Failure to call XInitThreads() will seriously impede LibVLC performance. 
-        /// Calling XOpenDisplay() before XInitThreads() will eventually crash the process. That is a limitation of Xlib.
-        /// uint: X11 window ID
-        /// </summary>
-        public uint XWindow
-        {
-            get => Native.LibVLCMediaPlayerGetXwindow(NativeReference);
-            set => Native.LibVLCMediaPlayerSetXwindow(NativeReference, value);
-        }
-
-        /// <summary>
-        /// Set a Win32/Win64 API window handle (HWND) where the media player
-        /// should render its video output. If LibVLC was built without
-        /// Win32/Win64 API output support, then this has no effects.
-        /// <para></para>
-        /// Get the Windows API window handle (HWND) previously set
-        /// </summary>
-        public IntPtr Hwnd
-        {
-            get => Native.LibVLCMediaPlayerGetHwnd(NativeReference);
-            set => Native.LibVLCMediaPlayerSetHwnd(NativeReference, value);
-        }
-#endif
         /// <summary>
         /// The movie length (in ms), or -1 if there is no media.
         /// </summary>
@@ -817,7 +713,10 @@ namespace LibVLCSharp.Shared
         /// </summary>
         /// <param name="title"></param>
         /// <returns></returns>
-        public int ChapterCountForTitle(int title) => Native.LibVLCMediaPlayerGetChapterCountForTitle(NativeReference, title);
+        public int ChapterCountForTitle(int title)
+        {
+            return Native.LibVLCMediaPlayerGetChapterCountForTitle(NativeReference, title);
+        }
 
         /// <summary>
         /// Set movie title number to play
@@ -1592,13 +1491,6 @@ namespace LibVLCSharp.Shared
         /// <param name="value">adjust option value</param>
         public void SetAdjustFloat(VideoAdjustOption option, float value) => Native.LibVLCVideoSetAdjustFloat(NativeReference, option, value);
 
-#if ANDROID
-        /// <summary>
-        /// Set the android context.
-        /// </summary>
-        /// <param name="aWindow">See LibVLCSharp.Android</param>
-        public void SetAndroidContext(IntPtr aWindow) => Native.LibVLCMediaPlayerSetAndroidContext(NativeReference, aWindow);
-#endif
 
         /// <summary>
         /// Add a slave to the current media player.
@@ -1700,19 +1592,6 @@ namespace LibVLCSharp.Shared
 
         MediaConfiguration Configuration = new MediaConfiguration();
 
-#if UNITY_ANDROID
-        /// <summary>
-        /// Retrieve a video frame from the Unity plugin.
-        /// </summary>
-        /// <param name="updated">True if the video frame has been updated</param>
-        /// <returns>A decoded texture</returns>
-        public IntPtr GetFrame(out bool updated)
-        {
-            var frame = Native.GetFrame(NativeReference, out bool isUpdated);
-            updated = isUpdated;
-            return frame;
-        }
-#endif
 
         #region Callbacks
 

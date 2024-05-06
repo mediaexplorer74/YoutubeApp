@@ -6,15 +6,7 @@ namespace LibVLCSharp.Shared
     internal class MediaEventManager : EventManager
     {
         readonly object _lock = new object();
-#if IOS
-        static EventHandler<MediaMetaChangedEventArgs> _mediaMetaChanged;
-        static EventHandler<MediaParsedChangedEventArgs> _mediaParsedChanged;
-        static EventHandler<MediaSubItemAddedEventArgs> _mediaSubItemAdded;
-        static EventHandler<MediaDurationChangedEventArgs> _mediaDurationChanged;
-        static EventHandler<MediaFreedEventArgs> _mediaFreed;
-        static EventHandler<MediaStateChangedEventArgs> _mediaStateChanged;
-        static EventHandler<MediaSubItemTreeAddedEventArgs> _mediaSubItemTreeAdded;
-#else
+
         EventHandler<MediaMetaChangedEventArgs> _mediaMetaChanged;
         EventHandler<MediaParsedChangedEventArgs> _mediaParsedChanged;
         EventHandler<MediaSubItemAddedEventArgs> _mediaSubItemAdded;
@@ -22,7 +14,6 @@ namespace LibVLCSharp.Shared
         EventHandler<MediaFreedEventArgs> _mediaFreed;
         EventHandler<MediaStateChangedEventArgs> _mediaStateChanged;
         EventHandler<MediaSubItemTreeAddedEventArgs> _mediaSubItemTreeAdded;
-#endif
 
         int _mediaMetaChangedRegistrationCount;
         int _mediaParsedChangedRegistrationCount;
@@ -154,55 +145,6 @@ namespace LibVLCSharp.Shared
             }
         }
 
-#if IOS
-        [MonoPInvokeCallback(typeof(EventCallback))]
-        static void OnSubItemTreeAdded(IntPtr ptr)
-        {
-            _mediaSubItemTreeAdded?.Invoke(null,
-                new MediaSubItemTreeAddedEventArgs(RetrieveEvent(ptr).Union.MediaSubItemTreeAdded.MediaInstance));
-        }
-
-        [MonoPInvokeCallback(typeof(EventCallback))]
-        static void OnMediaStateChanged(IntPtr ptr)
-        {
-            _mediaStateChanged?.Invoke(null,
-                new MediaStateChangedEventArgs(RetrieveEvent(ptr).Union.MediaStateChanged.NewState));    
-        }
-        
-        [MonoPInvokeCallback(typeof(EventCallback))]
-        static void OnMediaFreed(IntPtr ptr)
-        {
-            _mediaFreed?.Invoke(null, new MediaFreedEventArgs(RetrieveEvent(ptr).Union.MediaFreed.MediaInstance));    
-        }
-
-        [MonoPInvokeCallback(typeof(EventCallback))]
-        static void OnDurationChanged(IntPtr ptr)
-        {
-            _mediaDurationChanged?.Invoke(null, 
-                new MediaDurationChangedEventArgs(RetrieveEvent(ptr).Union.MediaDurationChanged.NewDuration));    
-        }
-
-        [MonoPInvokeCallback(typeof(EventCallback))]
-        static void OnSubItemAdded(IntPtr ptr)
-        {
-            _mediaSubItemAdded?.Invoke(null, 
-                new MediaSubItemAddedEventArgs(RetrieveEvent(ptr).Union.MediaSubItemAdded.NewChild));
-        }
-
-        [MonoPInvokeCallback(typeof(EventCallback))]
-        static void OnParsedChanged(IntPtr ptr)
-        {
-            _mediaParsedChanged?.Invoke(null,
-                new MediaParsedChangedEventArgs(RetrieveEvent(ptr).Union.MediaParsedChanged.NewStatus));
-        }
-
-        [MonoPInvokeCallback(typeof(EventCallback))]
-        static void OnMetaChanged(IntPtr ptr)
-        {
-            _mediaMetaChanged?.Invoke(null,
-                new MediaMetaChangedEventArgs(RetrieveEvent(ptr).Union.MediaMetaChanged.MetaType));
-        }
-#else
         void OnSubItemTreeAdded(IntPtr ptr)
         {
             _mediaSubItemTreeAdded?.Invoke(this,
@@ -243,6 +185,5 @@ namespace LibVLCSharp.Shared
             _mediaMetaChanged?.Invoke(this,
                 new MediaMetaChangedEventArgs(RetrieveEvent(ptr).Union.MediaMetaChanged.MetaType));
         }
-#endif
     }
 }

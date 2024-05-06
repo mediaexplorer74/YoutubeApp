@@ -6,13 +6,9 @@ namespace LibVLCSharp.Shared
     internal class RendererDiscovererEventManager : EventManager
     {
         readonly object _lock = new object();
-#if IOS
-        static EventHandler<RendererDiscovererItemAddedEventArgs> _itemAdded;
-        static EventHandler<RendererDiscovererItemDeletedEventArgs> _itemDeleted;
-#else
+
         EventHandler<RendererDiscovererItemAddedEventArgs> _itemAdded;
         EventHandler<RendererDiscovererItemDeletedEventArgs> _itemDeleted;
-#endif
 
         int _itemAddedRegistrationCount;
         int _itemDeletedRegistrationCount;
@@ -74,21 +70,7 @@ namespace LibVLCSharp.Shared
             }
         }
 
-#if IOS
-        [MonoPInvokeCallback(typeof(EventCallback))]
-        static void OnItemDeleted(IntPtr args)
-        {
-            var rendererItem = RetrieveEvent(args).Union.RendererDiscovererItemDeleted;
-            _itemDeleted?.Invoke(null, new RendererDiscovererItemDeletedEventArgs(new RendererItem(rendererItem.item)));
-        }
 
-        [MonoPInvokeCallback(typeof(EventCallback))]
-        static void OnItemAdded(IntPtr args)
-        {
-            var rendererItem = RetrieveEvent(args).Union.RendererDiscovererItemAdded;           
-            _itemAdded?.Invoke(null, new RendererDiscovererItemAddedEventArgs(new RendererItem(rendererItem.item)));
-        }
-#else
         void OnItemDeleted(IntPtr args)
         {
             var rendererItem = RetrieveEvent(args).Union.RendererDiscovererItemDeleted;
@@ -100,6 +82,5 @@ namespace LibVLCSharp.Shared
             var rendererItem = RetrieveEvent(args).Union.RendererDiscovererItemAdded;           
             _itemAdded?.Invoke(this, new RendererDiscovererItemAddedEventArgs(new RendererItem(rendererItem.item)));
         }
-#endif
     }
 }

@@ -232,11 +232,11 @@ namespace LibVLCSharp.Shared
         }
 
         /// <summary>
-        /// Create a media from a .NET Stream
+        /// Create a media from a Stream
         /// requires libvlc 3.0 or higher
         /// </summary>
         /// <param name="libVLC">the libvlc instance</param>
-        /// <param name="stream">the .NET Stream to be used by libvlc. LibVLCSharp will NOT dispose or close it.</param>
+        /// <param name="stream">the Stream to be used by libvlc. LibVLCSharp will NOT dispose or close it.</param>
         /// <param name="options">the libvlc options</param>
         public Media(LibVLC libVLC, Stream stream, params string[] options)
             : base(() => CtorFromCallbacks(libVLC, stream), Native.LibVLCMediaRelease)

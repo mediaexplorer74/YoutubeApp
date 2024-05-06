@@ -1,4 +1,4 @@
-# YoutubeApp v1.0.38-alpha
+# YoutubeApp v1.0.39-alpha
 My fork of Unofficial Youtube Client (UWP app for Desktop)
 
 ## About
@@ -25,9 +25,6 @@ The Unofficial Youtube Client is a youtube application built in UWP using the Go
 - Experimental "VLCLibSharp uwp edition" library (for VS 2017 compatibility and best on-device debugging)
 - Draft / Proto (UI damaged very hard - no video comments, no mediacontrols, etc.!)
 
-## Big bugs
-- Sometimes the app don't want to start normally (halts/terminates/crashes) 
-- No sound (experimental VLCLib uwp edition used)
 
 ## Credits / References
 - MIT
@@ -42,9 +39,9 @@ The Unofficial Youtube Client is a youtube application built in UWP using the Go
 
 2. Modify that items in/at Constants.cs file
 
-3. Run the app and explore good auth , but bad get video deals 
+3. Run the app and explore good auth, but strang video/audio deals... 
 
-4. Fix the bugs 
+4. Fix the bugs / improve UI
 
 
 ## ..

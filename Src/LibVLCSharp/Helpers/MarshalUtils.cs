@@ -9,37 +9,7 @@ namespace LibVLCSharp.Shared.Helpers
     {
         internal struct Native
         {
-#if NET || NETSTANDARD
-            #region Windows
 
-            [DllImport(Constants.Msvcrt, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Unicode, SetLastError = true)]
-            public static extern int _wfopen_s(out IntPtr pFile, string filename, string mode = Write);
-
-            [DllImport(Constants.Msvcrt, CallingConvention = CallingConvention.Cdecl, EntryPoint = "fclose", SetLastError = true)]
-            public static extern int fcloseWindows(IntPtr stream);
-
-            #endregion
-
-            #region Linux
-
-            [DllImport(Constants.Libc, CallingConvention = CallingConvention.Cdecl, EntryPoint = "fopen", CharSet = CharSet.Ansi, SetLastError = true)]
-            public static extern IntPtr fopenLinux(string filename, string mode = Write);
-
-            [DllImport(Constants.Libc, CallingConvention = CallingConvention.Cdecl, EntryPoint = "fclose", CharSet = CharSet.Ansi, SetLastError = true)]
-            public static extern int fcloseLinux(IntPtr file);
-
-            #endregion
-
-            #region Mac
-
-            [DllImport(Constants.libSystem, CallingConvention = CallingConvention.Cdecl, EntryPoint = "fopen", SetLastError = true)]
-            public static extern IntPtr fopenMac(string path, string mode = Write);
-
-            [DllImport(Constants.libSystem, CallingConvention = CallingConvention.Cdecl, EntryPoint = "fclose", SetLastError = true)]
-            public static extern int fcloseMac(IntPtr file);
-
-            #endregion
-#endif
             [DllImport(Constants.LibraryName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "libvlc_free", SetLastError = true)]
             public static extern void LibVLCFree(IntPtr ptr);
 
@@ -57,11 +27,6 @@ namespace LibVLCSharp.Shared.Helpers
 
         internal static int vsprintf(IntPtr buffer, IntPtr format, IntPtr args)
         {
-#if ANDROID
-            return Native.vsprintf_linux(buffer, format, args);
-#elif APPLE
-            return Native.vsprintf_apple(buffer, format, args);
-#else
             if (PlatformHelper.IsWindows)
                 return Native.vsprintf_windows(buffer, format, args);
             else if (PlatformHelper.IsMac)
@@ -69,7 +34,6 @@ namespace LibVLCSharp.Shared.Helpers
             else if (PlatformHelper.IsLinux)
                 return Native.vsprintf_linux(buffer, format, args);
             return -1;
-#endif
         }
 
         /// <summary>
@@ -121,11 +85,7 @@ namespace LibVLCSharp.Shared.Helpers
                 nativeRef = getRef();
                 if (nativeRef == IntPtr.Zero)
                 {
-#if NETSTANDARD1_4 || NET40
-                    return new TU[0];
-#else
                     return Array.Empty<TU>();
-#endif
                 }
 
                 var resultList = new List<TU>();
@@ -177,11 +137,7 @@ namespace LibVLCSharp.Shared.Helpers
                 count = getRef(nativeRef, out arrayPtr);
                 if(count == 0)
                 {
-#if NETSTANDARD1_4 || NET40
-                    return new TU[0];
-#else
                     return Array.Empty<TU>();
-#endif
                 }
 
                 var resultList = new List<TU>();
@@ -234,11 +190,7 @@ namespace LibVLCSharp.Shared.Helpers
 
                 if (count == 0)
                 {
-#if NETSTANDARD1_4 || NET40
-                    return new TU[0];
-#else
                     return Array.Empty<TU>();
-#endif
                 }
 
                 var resultList = new List<TU>();
@@ -293,11 +245,7 @@ namespace LibVLCSharp.Shared.Helpers
                 var count = (int)countLong;
                 if (count == 0)
                 {
-#if NETSTANDARD1_4 || NET40
-                    return new TU[0];
-#else
                     return Array.Empty<TU>();
-#endif
                 }
 
                 var resultList = new List<TU>();
@@ -354,84 +302,10 @@ namespace LibVLCSharp.Shared.Helpers
         /// <returns></returns>
         internal static T PtrToStructure<T>(IntPtr ptr)
         {
-#if NETSTANDARD1_4 || NET40
-            return (T)Marshal.PtrToStructure(ptr, typeof(T));
-#else
             return Marshal.PtrToStructure<T>(ptr);
-#endif
         }
 
-#if NET || NETSTANDARD
-        /// <summary>
-        /// Crossplatform dlopen
-        /// </summary>
-        /// <returns>true if successful</returns>
-        internal static bool Open(string filename, out IntPtr fileHandle)
-        {
-            fileHandle = IntPtr.Zero;
-#if NET40
-            switch (Environment.OSVersion.Platform)
-            {
-                case PlatformID.MacOSX:
-                    fileHandle = Native.fopenMac(filename);
-                    return fileHandle != IntPtr.Zero;
-                case PlatformID.Unix:
-                    fileHandle = Native.fopenLinux(filename);
-                    return fileHandle != IntPtr.Zero;
-                default:
-                    return Native._wfopen_s(out fileHandle, filename) == 0;
-            }
-#else
-            if (PlatformHelper.IsWindows)
-            {
-                if(Native._wfopen_s(out fileHandle, filename) != 0) return false;
-            }
-            else if (PlatformHelper.IsLinux)
-            {
-                fileHandle = Native.fopenLinux(filename);
-            }
-            else if (PlatformHelper.IsMac)
-            {
-                fileHandle = Native.fopenMac(filename);
-            }
-            return fileHandle != IntPtr.Zero;
-#endif
-        }
 
-        /// <summary>
-        /// Crossplatform fclose
-        /// </summary>
-        /// <param name="file handle"></param>
-        /// <returns>true if successful</returns>
-        internal static bool Close(IntPtr fileHandle)
-        {
-#if NET40
-            switch (Environment.OSVersion.Platform)
-            {
-                case PlatformID.MacOSX:
-                    return Native.fcloseMac(fileHandle) == 0;
-                case PlatformID.Unix:
-                    return Native.fcloseLinux(fileHandle) == 0;
-                default:
-                    return Native.fcloseWindows(fileHandle) == 0;
-            }
-#else
-            if (PlatformHelper.IsMac)
-            {
-                return Native.fcloseMac(fileHandle) == 0;
-            }
-            else if (PlatformHelper.IsLinux)
-            {
-                return Native.fcloseLinux(fileHandle) == 0;
-            }
-            else
-            {
-                return Native.fcloseWindows(fileHandle) == 0;
-            }
-#endif
-        }
-
-#endif
         /// <summary>
         /// Frees an heap allocation returned by a LibVLC function.
         /// If you know you're using the same underlying C run-time as the LibVLC
@@ -485,11 +359,7 @@ namespace LibVLCSharp.Shared.Helpers
 
         internal static int SizeOf<T>(T structure)
         {
-//#if NETSTANDARD1_4 || NET40
-//            return Marshal.SizeOf(typeof(T));
-//#else
             return Marshal.SizeOf<T>(structure);
-//#endif
         }
 
         private static void Free(params IntPtr[] ptrs)
