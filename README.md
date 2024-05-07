@@ -4,12 +4,15 @@ My fork of Unofficial Youtube Client (UWP app for Desktop)
 ## About
 The Unofficial Youtube Client is a youtube application built in UWP using the Google Dotnet API libraries with a goal of improving upon the ad infested and under-featured apps found on the windows store. The project strives to provide a coherent and simplistic UI while providing responsive and battery considerate performance across the board. Due to the limitations of the Google API, work arounds are being found for home page recommendations and viewing history.
 
-## Screenshot(s)
+## Screenshots
 ![Win11Tiny](Images/shot01.png)
 ![Win11Tiny](Images/shot02.png)
 ![Win11Tiny](Images/shot03.png)
 ![Win11Tiny](Images/shot04.png)
 ![W10M](Images/shot05.png)
+
+## 1-min Video (Youtube)
+https://youtu.be/LSn6dLq6zEY
 
 ## Features (the info from original readme...)
 - Windows Styling Integration
