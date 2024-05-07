@@ -7,14 +7,57 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <StackPanel Margin="20">
+    <ScrollViewer>
+      <StackPanel Margin="20">
         <TextBlock Style="{StaticResource HeaderTextBlockStyle}" Text="Settings"/>
         <MenuFlyoutSeparator Margin="-15,10"/>
-        <StackPanel Orientation="Horizontal">
-            <TextBlock Text="Theme:" Margin="0,0,10,0" VerticalAlignment="Center"/>
-            <ToggleSwitch x:Name="ThemeToggleSwitch" Margin="10" OnContent="Dark" OffContent="Light" VerticalAlignment="Center"/>
-            <TextBlock x:Name="ThemeToggleSwitchRestartMessage" Visibility="Collapsed" Text="An application restart is required" Foreground="{StaticResource SystemControlHighlightAccentBrush}" VerticalAlignment="Center"/>
-        </StackPanel>
-        
+
+        <!-- Light/Dark Mode switch -->
+            <StackPanel><!--Orientation="Horizontal"-->
+            <TextBlock Text="Theme:" Margin="0,0,10,0" VerticalAlignment="Center"/>            
+            <ToggleSwitch x:Name="ThemeToggleSwitch" Margin="10" OnContent="Dark" 
+                          OffContent="Light" VerticalAlignment="Center"/>
+            
+            <TextBlock x:Name="ThemeToggleSwitchRestartMessage" Visibility="Collapsed" 
+                       Text="An application restart is required" 
+                       Foreground="{StaticResource SystemControlHighlightAccentBrush}" 
+                       VerticalAlignment="Center"/>
+
+            <!-- Google Youtube API Credentials -->
+
+            <TextBlock Text="Api Key:" Margin="0,0,10,0" VerticalAlignment="Center"/>
+            <TextBox x:Name="ApiKeyTextBox" Height="32" TextChanged="ApiKeyTextBox_TextChanged" />
+
+            <TextBlock Text="Client ID:" Margin="0,0,10,0" VerticalAlignment="Center"/>
+            <TextBox x:Name="ClientIDTextBox" Height="32" TextChanged="ClientIDTextBox_TextChanged" />
+
+            <TextBlock Text="Client Secret:" Margin="0,0,10,0" VerticalAlignment="Center"/>
+            <TextBox x:Name="ClientSecretTextBox" Height="32" TextChanged="ClientSecretTextBox_TextChanged" />
+
+            <!-- Limits -->
+            <TextBlock Text="Playlist Videos Max Results:" Margin="0,0,10,0" VerticalAlignment="Center"/>
+            <TextBox x:Name="PlaylistVideosMaxResultsTextBox" Height="32" TextChanged="PlaylistVideosMaxResultsTextBox_TextChanged" />
+
+            <TextBlock Text="Subscriptions Max Results:" Margin="0,0,10,0" VerticalAlignment="Center"/>
+            <TextBox x:Name="SubscriptionsMaxResultsTextBox" Height="32" TextChanged="SubscriptionsMaxResultsTextBox_TextChanged" />
+
+            <TextBlock Text="Related Videos Max Results:" Margin="0,0,10,0" VerticalAlignment="Center"/>
+            <TextBox x:Name="RelatedVideosMaxResultsTextBox" Height="32" TextChanged="RelatedVideosMaxResultsTextBox_TextChanged" />
+
+
+            <TextBlock Text="SearchList Request Max Results:" Margin="0,0,10,0" VerticalAlignment="Center"/>
+            <TextBox x:Name="SearchListRequestMaxResultsTextBox" Height="32" TextChanged="SearchListRequestMaxResultsTextBox_TextChanged" />
+
+            <TextBlock Text="Channel Videos Popular Max Results:" Margin="0,0,10,0" VerticalAlignment="Center"/>
+            <TextBox x:Name="ChannelVideosPopularMaxResultsTextBox" Height="32" TextChanged="ChannelVideosPopularMaxResultsTextBox_TextChanged" />
+
+            <!--TextBlock Text="Comments Max Results:" Margin="0,0,10,0" VerticalAlignment="Center"/>
+            <TextBox x:Name="CommentsMaxResultsTextBox" Height="32" TextChanged="CommentsMaxResultsTextBox_TextChanged" /-->
+
+            <TextBlock Text="Temp Service Max Results:" Margin="0,0,10,0" VerticalAlignment="Center"/>
+            <TextBox x:Name="TempServiceMaxResultsTextBox" Height="32" TextChanged="TempServiceMaxResultsTextBox_TextChanged" />
+
+        </StackPanel>        
     </StackPanel>
+   </ScrollViewer>
 </Page>

@@ -158,7 +158,7 @@ namespace YTApp.Pages
             GetChannelVideosPopular.ChannelId = Constants.activeChannelID;
             GetChannelVideosPopular.Order = SearchResource.ListRequest.OrderEnum.ViewCount;
             GetChannelVideosPopular.Type = "video";
-            GetChannelVideosPopular.MaxResults = 1;// 10;
+            GetChannelVideosPopular.MaxResults = App.ChannelVideosPopularMaxResults;// 10;
             var ChannelVideosResultPopular = GetChannelVideosPopular.Execute();
 
             if (ChannelVideosResultPopular.Items.Count == 0)
@@ -239,7 +239,7 @@ namespace YTApp.Pages
 
                     GetPlaylistVideos.PlaylistId = playlist.Id;//playlist.ContentDetails.Playlists[0];
 
-                    GetPlaylistVideos.MaxResults = 1;// 10;
+                    GetPlaylistVideos.MaxResults = App.PlaylistVideosMaxResults;// 10;
                     
                     var PlaylistVideosResult = GetPlaylistVideos.Execute();
                     
@@ -332,8 +332,8 @@ namespace YTApp.Pages
                 ( 
                     new ClientSecrets
                     {
-                        ClientId = Constants.ClientID,
-                        ClientSecret = Constants.ClientSecret
+                        ClientId = App.ClientID,
+                        ClientSecret = App.ClientSecret
                     }, 
                     new[] 
                     { 
@@ -433,8 +433,8 @@ namespace YTApp.Pages
 
                 YouTubeService youtubeService = new YouTubeService(new BaseClientService.Initializer()
                 {
-                    ApiKey = Constants.ApiKey,
-                    ApplicationName = Constants.ApplicationName,//this.GetType().ToString()
+                    ApiKey = App.ApiKey,
+                    ApplicationName = Constants.ApplicationName,
                 });
 
                 var searchListRequest = youtubeService.Search.List("snippet");
@@ -442,7 +442,7 @@ namespace YTApp.Pages
                 searchListRequest.Type = "video";
                 searchListRequest.Order = SearchResource.ListRequest.OrderEnum.Date;
 
-                searchListRequest.MaxResults = 1;// 25;
+                searchListRequest.MaxResults = App.SearchListRequestMaxResults;// 25;
 
                 // Call the search.list method to retrieve results matching the specified query term.
                 var searchListResponse = await searchListRequest.ExecuteAsync();
@@ -463,7 +463,8 @@ namespace YTApp.Pages
             }
             catch (Exception ex)
             {
-                Log.Error(String.Format("An error occured while updating videos for the channel with the ID {0}", channel.Id));
+                Log.Error(String.Format("An error occured while updating videos for the channel with the ID {0}",
+                    channel.Id));
                 Log.Error(ex.Message);
             }
         }
@@ -484,7 +485,7 @@ namespace YTApp.Pages
 
                 YouTubeService youtubeService = new YouTubeService(new BaseClientService.Initializer()
                 {
-                    ApiKey = Constants.ApiKey,
+                    ApiKey = App.ApiKey,
                     ApplicationName = Constants.ApplicationName,//this.GetType().ToString()
                 });
 
@@ -493,7 +494,7 @@ namespace YTApp.Pages
                 searchListRequest.Type = "video";
                 searchListRequest.Order = SearchResource.ListRequest.OrderEnum.Date;
                 searchListRequest.PageToken = nextPageToken;
-                searchListRequest.MaxResults = 1;//50;
+                searchListRequest.MaxResults = App.SearchListRequestMaxResults;//50;
 
                 // Call the search.list method to retrieve results matching the specified query term.
                 var searchListResponse = await searchListRequest.ExecuteAsync();

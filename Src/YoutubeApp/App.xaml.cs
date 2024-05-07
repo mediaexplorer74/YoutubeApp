@@ -1,5 +1,6 @@
 ﻿using MetroLog;
 using Newtonsoft.Json;
+using SharpDX;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -30,7 +31,17 @@ namespace YTApp
     /// </summary>
     sealed partial class App : Application
     {
+        public static string ApiKey = "";
+        public static string ClientID = "";
+        public static string ClientSecret = "";
 
+        public static int PlaylistVideosMaxResults = 1;
+        public static int SubscriptionsMaxResults = 1;
+        public static int RelatedVideosMaxResults = 1;
+        public static int SearchListRequestMaxResults = 1;
+        public static int ChannelVideosPopularMaxResults = 1;
+        public static int CommentsMaxResults = 1;
+        public static int TempServiceMaxResults = 1;
 
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
@@ -38,10 +49,137 @@ namespace YTApp
         /// </summary>
         public App()
         {
+            // "load" app settings *********************************************************************
+
+            // Theme Switch -----------------------------------
             if ((string)ApplicationData.Current.LocalSettings.Values["Theme"] == "Light")
                 RequestedTheme = ApplicationTheme.Light;
             else
                 RequestedTheme = ApplicationTheme.Dark;
+
+            // API Credentials ---------------------------------
+            ApiKey = "";
+            if (Windows.Storage.ApplicationData.Current.LocalSettings.Values["ApiKey"] != null)
+            {
+                ApiKey =
+                    (string)Windows.Storage.ApplicationData.Current.LocalSettings.Values["ApiKey"];
+            }
+
+            ClientID = "";
+            if (Windows.Storage.ApplicationData.Current.LocalSettings.Values["ClientID"] != null)
+            {
+                ClientID =
+                    (string)Windows.Storage.ApplicationData.Current.LocalSettings.Values["ClientID"];
+            }
+
+
+            ClientSecret = "";
+            if (Windows.Storage.ApplicationData.Current.LocalSettings.Values["ClientSecret"] != null)
+            {
+                ClientSecret =
+                    (string)Windows.Storage.ApplicationData.Current.LocalSettings.Values["ClientSecret"];
+            }
+
+            int result = 1;
+
+            // Video limits -----------------------
+            PlaylistVideosMaxResults = 1;
+            
+            if (Windows.Storage.ApplicationData.Current.LocalSettings.Values["PlaylistVideosMaxResults"] != null)
+            {
+                try
+                {
+                    result = Int32.Parse((string)Windows.Storage.ApplicationData.Current.LocalSettings.Values["PlaylistVideosMaxResults"]);
+                    if (result < 0)
+                        result = 1;
+                }
+                catch (FormatException)
+                {
+                }
+                PlaylistVideosMaxResults = result;
+            }
+
+            SubscriptionsMaxResults = 1;
+
+            if (Windows.Storage.ApplicationData.Current.LocalSettings.Values["SubscriptionsMaxResults"] != null)
+            {
+                try
+                {
+                    result = Int32.Parse((string)Windows.Storage.ApplicationData.Current.LocalSettings.Values["SubscriptionsMaxResults"]);
+                    if (result < 0)
+                        result = 1;
+                }
+                catch (FormatException)
+                {
+                }
+                SubscriptionsMaxResults = result;
+            }
+
+            RelatedVideosMaxResults = 1;
+
+            if (Windows.Storage.ApplicationData.Current.LocalSettings.Values["RelatedVideosMaxResults"] != null)
+            {
+                try
+                {
+                    result = Int32.Parse((string)Windows.Storage.ApplicationData.Current.LocalSettings.Values["RelatedVideosMaxResults"]);
+                    if (result < 0)
+                        result = 1;
+                }
+                catch (FormatException)
+                {
+                }
+                RelatedVideosMaxResults = result;
+            }
+
+            SearchListRequestMaxResults = 1;
+
+            if (Windows.Storage.ApplicationData.Current.LocalSettings.Values["SearchListRequestMaxResults"] != null)
+            {
+                try
+                {
+                    result = Int32.Parse((string)Windows.Storage.ApplicationData.Current.LocalSettings.Values["SearchListRequestMaxResults"]);
+                    if (result < 0)
+                        result = 1;
+                }
+                catch (FormatException)
+                {
+                }
+                SearchListRequestMaxResults = result;
+            }
+
+            ChannelVideosPopularMaxResults = 1;
+
+            if (Windows.Storage.ApplicationData.Current.LocalSettings.Values["ChannelVideosPopularMaxResults"] != null)
+            {
+                try
+                {
+                    result = Int32.Parse((string)Windows.Storage.ApplicationData.Current.LocalSettings.Values["ChannelVideosPopularMaxResults"]);
+                    if (result < 0)
+                        result = 1;
+                }
+                catch (FormatException)
+                {
+                }
+                ChannelVideosPopularMaxResults = result;
+            }
+
+            TempServiceMaxResults = 1;
+
+            if (Windows.Storage.ApplicationData.Current.LocalSettings.Values["TempServiceMaxResults"] != null)
+            {
+                try
+                {
+                    result = Int32.Parse((string)Windows.Storage.ApplicationData.Current.LocalSettings.Values["TempServiceMaxResults"]);
+                    if (result < 0)
+                        result = 1;
+                }
+                catch (FormatException)
+                {
+                }
+                TempServiceMaxResults = result;
+            }
+
+            // *****************************************************************************************
 
             this.InitializeComponent();
             this.Suspending += OnSuspending;

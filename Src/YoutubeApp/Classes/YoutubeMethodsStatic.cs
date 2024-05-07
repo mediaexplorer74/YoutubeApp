@@ -30,14 +30,13 @@ namespace YTApp.Classes
                 credential = await GoogleWebAuthorizationBroker.AuthorizeAsync(
                     new ClientSecrets
                     {
-                        ClientId = Constants.ClientID,
-                        ClientSecret = Constants.ClientSecret
+                        ClientId = App.ClientID,
+                        ClientSecret = App.ClientSecret
                     },
                 new[]
                 {
                     Google.Apis.Oauth2.v2.Oauth2Service.Scope.UserinfoProfile,
-                    YouTubeService.Scope.YoutubeForceSsl
-                    //YouTubeService.Scope.Youtube
+                    YouTubeService.Scope.YoutubeForceSsl //YouTubeService.Scope.Youtube
                 },
                 "user", 
                 CancellationToken.None,
@@ -51,7 +50,7 @@ namespace YTApp.Classes
             // Create the service.
             return new YouTubeService(new BaseClientService.Initializer()
             {
-                ApiKey = Constants.ApiKey, //RnD
+                ApiKey = App.ApiKey, 
                 HttpClientInitializer = credential,
                 ApplicationName = Constants.ApplicationName,//"Unofficial Youtube Client",
             });
@@ -63,7 +62,7 @@ namespace YTApp.Classes
         {
             return new YouTubeService(new BaseClientService.Initializer()
             {
-                ApiKey = Constants.ApiKey,
+                ApiKey = App.ApiKey,
                 ApplicationName = Constants.ApplicationName,//"Unofficial Youtube Client"
             });
         }//GetServiceNoAuth
@@ -76,8 +75,8 @@ namespace YTApp.Classes
 
             ClientSecrets secrets = new ClientSecrets
             {
-                ClientId = Constants.ClientID,
-                ClientSecret = Constants.ClientSecret
+                ClientId = App.ClientID,
+                ClientSecret = App.ClientSecret
                 
             };
             initializer.ClientSecrets = secrets;

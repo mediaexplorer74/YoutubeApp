@@ -173,7 +173,7 @@ namespace YTApp.Pages
                 //getRelatedVideos.RelatedToVideoId = Constants.activeVideoID;
                 getRelatedVideos.Q = Constants.activeVideoID;
 
-                getRelatedVideos.MaxResults = 1;// 15;
+                getRelatedVideos.MaxResults = App.RelatedVideosMaxResults;// 15;
                 getRelatedVideos.Type = "video";
                 SearchListResponse relatedVideosResponse = getRelatedVideos.Execute();
 
@@ -489,7 +489,7 @@ namespace YTApp.Pages
             getComments.VideoId = Constants.activeVideoID;
             getComments.Order = option;
             getComments.TextFormat = CommentThreadsResource.ListRequest.TextFormatEnum.PlainText;
-            getComments.MaxResults = 1;// 10;
+            getComments.MaxResults = App.CommentsMaxResults;// 10;
             var response = await getComments.ExecuteAsync();
 
             //Save the next page token
@@ -523,7 +523,7 @@ namespace YTApp.Pages
             getComments.TextFormat = CommentThreadsResource.ListRequest.TextFormatEnum.PlainText;
             getComments.PageToken = commentNextPageToken;
 
-            getComments.MaxResults = 1;// 15;
+            getComments.MaxResults = App.CommentsMaxResults;// 15;
             
             var response = await getComments.ExecuteAsync();
 

@@ -25,7 +25,6 @@ using YTApp.Classes.DataTypes;
 using Windows.Storage;
 using System.Threading.Tasks;
 using System.Diagnostics;
-// using YoutubeExplode;
 
 
 namespace YTApp
@@ -265,7 +264,7 @@ namespace YTApp
             {
                 subscriptions.PageToken = NextPageToken;
                 subscriptions.Mine = true;
-                subscriptions.MaxResults = 1;//50;
+                subscriptions.MaxResults = App.SubscriptionsMaxResults;//50;
                 subscriptions.Order = SubscriptionsResource.ListRequest.OrderEnum.Alphabetical;
 
                 return subscriptions.Execute();
@@ -300,8 +299,8 @@ namespace YTApp
                 credential = await GoogleWebAuthorizationBroker.AuthorizeAsync(
                     new ClientSecrets
                 {
-                    ClientId = Constants.ClientID,
-                    ClientSecret = Constants.ClientSecret
+                    ClientId = App.ClientID,
+                    ClientSecret = App.ClientSecret
                 },
                 new[]
                 {
@@ -436,8 +435,8 @@ namespace YTApp
                 credential = await GoogleWebAuthorizationBroker.AuthorizeAsync(
                     new ClientSecrets
                     {
-                        ClientId = Constants.ClientID,
-                        ClientSecret = Constants.ClientSecret
+                        ClientId = App.ClientID,
+                        ClientSecret = App.ClientSecret
                     }, new[]
                 {
                 YouTubeService.Scope.Youtube,

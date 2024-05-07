@@ -13,17 +13,7 @@ namespace YTApp.Classes
 {
     static class Constants
     {
-        static public readonly string ApplicationName =
-            "YT Client 1";
-
-        static public readonly string ApiKey =
-           "";
-       
-        static public readonly string ClientID =
-           "";
-
-        static public readonly string ClientSecret =
-           "";
+        static public readonly string ApplicationName = "WinBeta Videos"; // Masking YoutubeApp name :)
 
         static public Google.Apis.Auth.OAuth2.Responses.TokenResponse Token;
 

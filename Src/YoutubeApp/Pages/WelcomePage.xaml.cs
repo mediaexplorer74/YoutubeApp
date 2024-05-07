@@ -34,12 +34,20 @@ namespace YTApp.Pages
             {
                 btnLogin.Visibility = Visibility.Collapsed;
                 btnContinue.Visibility = Visibility.Visible;
+
+                //Experimental
+                Frame.Navigate(typeof(MainPage));
             }
         }
 
         private void Continue_Tapped(object sender, TappedRoutedEventArgs e)
         {
             Frame.Navigate(typeof(MainPage));
+        }
+
+        private void Settings_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            Frame.Navigate(typeof(SettingsPage));
         }
     }
 }

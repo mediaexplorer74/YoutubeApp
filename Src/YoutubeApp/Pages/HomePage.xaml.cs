@@ -81,7 +81,7 @@ namespace YTApp.Pages
                         var tempService = service.Search.List("snippet");
                         tempService.ChannelId = subscription.Id;
                         tempService.Order = SearchResource.ListRequest.OrderEnum.Date;
-                        tempService.MaxResults = 1;//8;
+                        tempService.MaxResults = App.TempServiceMaxResults;//8;
                         var response = tempService.Execute();
                         foreach (var video in response.Items)
                         {

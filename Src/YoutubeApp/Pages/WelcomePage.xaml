@@ -21,15 +21,29 @@
     </Page.Resources>
 
     <Grid Background="#222">
+        
         <Grid.RowDefinitions>
             <RowDefinition/>
             <RowDefinition/>
         </Grid.RowDefinitions>
-        <Image x:Name="MainImage" Source="../Assets/Images/Welcome_Smile.png" Margin="20" Width="250" VerticalAlignment="Bottom"/>
+        
+        <Image x:Name="MainImage" Source="../Assets/Images/Welcome_Smile.png" 
+               Margin="20" Width="250" 
+               VerticalAlignment="Bottom"/>
+        
         <StackPanel x:Name="MainStackPanel" Grid.Row="1" HorizontalAlignment="Center">
-            <TextBlock x:Name="Header1" Text="Welcome!" FontFamily="Segoe UI" FontSize="30" TextAlignment="Center"/>
-            <TextBlock x:Name="Header2" Text="Let's get logged in." FontFamily="Segoe UI" FontSize="18" TextAlignment="Center" Margin="15"/>
-            <Button x:Name="btnLogin" Content="Log In to Youtube" HorizontalAlignment="Center" Padding="20,10" Style="{StaticResource TransparentButtonStyle}" Tapped="Button_Tapped">
+            <TextBlock x:Name="Header1" Text="Welcome!" 
+                       FontFamily="Segoe UI" FontSize="30" TextAlignment="Center"/>
+            
+            <TextBlock x:Name="Header2" Text="Let's get logged in." 
+                       FontFamily="Segoe UI" FontSize="18" TextAlignment="Center" Margin="15"/>
+            
+            <Button x:Name="btnLogin" Content="Log In to Youtube" 
+                    HorizontalAlignment="Center" 
+                    Padding="20,10" 
+                    Margin="10,10,10,10"
+                    Style="{StaticResource TransparentButtonStyle}" 
+                    Tapped="Button_Tapped">
                 <Button.Background>
                     <LinearGradientBrush EndPoint="0,0.5" StartPoint="1,0.5">
                         <GradientStop Color="#ff6417" Offset="0"/>
@@ -37,7 +51,14 @@
                     </LinearGradientBrush>
                 </Button.Background>
             </Button>
-            <Button x:Name="btnContinue" Content="Continue" HorizontalAlignment="Center" Padding="20,10" Style="{StaticResource TransparentButtonStyle}" Tapped="Continue_Tapped" Visibility="Collapsed">
+            
+            <Button x:Name="btnContinue" Content="Continue" 
+                    HorizontalAlignment="Center" 
+                    Padding="20,10" 
+                    Margin="10,10,10,10"
+                    Style="{StaticResource TransparentButtonStyle}" 
+                    Tapped="Continue_Tapped" 
+                    Visibility="Collapsed">
                 <Button.Background>
                     <LinearGradientBrush EndPoint="0,0.5" StartPoint="1,0.5">
                         <GradientStop Color="#ff6417" Offset="0"/>
@@ -45,6 +66,22 @@
                     </LinearGradientBrush>
                 </Button.Background>
             </Button>
+
+            <Button x:Name="btnSettings" Content="Settings" 
+                HorizontalAlignment="Center" 
+                Padding="20,10"
+                Margin="10,10,10,10"
+                Style="{StaticResource TransparentButtonStyle}" 
+                Tapped="Settings_Tapped" 
+                Visibility="Visible">
+                <Button.Background>
+                    <LinearGradientBrush EndPoint="0,0.5" StartPoint="1,0.5">
+                        <GradientStop Color="#ff6417" Offset="0"/>
+                        <GradientStop Color="#802929" Offset="1"/>
+                    </LinearGradientBrush>
+                </Button.Background>
+            </Button>
+
         </StackPanel>
     </Grid>
 </Page>
