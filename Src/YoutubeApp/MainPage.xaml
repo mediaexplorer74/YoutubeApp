@@ -113,7 +113,8 @@
             <ProgressBar x:Name="DownloadProgress" VerticalAlignment="Bottom" Visibility="Collapsed" Maximum="1000"/>
         </Grid>
 
-        <SplitView Grid.Row="1" x:Name="SideBarSplitView" DisplayMode="Overlay">
+        <!--DisplayMode="Overlay"-->
+            <SplitView Grid.Row="1" x:Name="SideBarSplitView" DisplayMode="Inline">
             <SplitView.Pane>
                 <ScrollViewer Background="{StaticResource AppBackground}" VerticalScrollBarVisibility="Hidden" HorizontalScrollMode="Disabled">
                     <StackPanel>

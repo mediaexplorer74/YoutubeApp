@@ -259,7 +259,8 @@ namespace YTApp
         private SubscriptionListResponse GetSubscriptions(string NextPageToken, 
             YouTubeService service)
         {
-            SubscriptionsResource.ListRequest subscriptions = service.Subscriptions.List("snippet, contentDetails");
+            SubscriptionsResource.ListRequest subscriptions 
+                = service.Subscriptions.List("snippet, contentDetails");
             try
             {
                 subscriptions.PageToken = NextPageToken;
@@ -282,6 +283,9 @@ namespace YTApp
             var temp = (SubscriptionDataType)e.ClickedItem;
             Constants.activeChannelID = temp.Id;
             contentFrame.Navigate(typeof(ChannelPage));
+
+            // RnD
+            SideBarSplitView.IsPaneOpen = false;
         }
 
         // endregion Subscriptions -------------------------------------------
@@ -355,6 +359,9 @@ namespace YTApp
             var item = (SplitViewItemDataType)e.ClickedItem;
             if (item.Text == "Home" && Constants.Token != null)
                 contentFrame.Navigate(typeof(HomePage));
+
+            // RnD
+            SideBarSplitView.IsPaneOpen = false;
         }
 
         private void PlaylistOptions_ItemClick(object sender, ItemClickEventArgs e)
@@ -367,6 +374,9 @@ namespace YTApp
                 else if (item.Text == "History")
                     contentFrame.Navigate(typeof(HistoryPage));
             }
+
+            // RnD
+            SideBarSplitView.IsPaneOpen = false;
         }
 
         private void HamburgerButton_Click(object sender, RoutedEventArgs e)
@@ -382,6 +392,9 @@ namespace YTApp
         private void Search_Click(object sender, RoutedEventArgs e)
         {
             contentFrame.Navigate(typeof(SearchPage));
+
+            // RnD
+            SideBarSplitView.IsPaneOpen = false;
         }
 
         private void SearchBox_KeyDown(object sender, KeyRoutedEventArgs e)
@@ -456,6 +469,9 @@ namespace YTApp
             SubscriptionsList.ItemsSource = null;
 
             Frame.Navigate(typeof(WelcomePage));
+
+            // RnD
+            SideBarSplitView.IsPaneOpen = false;
         }
 
         private void BtnLoginFlyout_Tapped(object sender, TappedRoutedEventArgs e)
@@ -472,12 +488,19 @@ namespace YTApp
             var result = await getMyChannel.ExecuteAsync();
 
             Constants.activeChannelID = result.Items[0].Id;
+
             contentFrame.Navigate(typeof(ChannelPage));
+
+            // RnD
+            SideBarSplitView.IsPaneOpen = false;
         }
 
         private void btnSettings_Click(object sender, RoutedEventArgs e)
         {
             contentFrame.Navigate(typeof(SettingsPage));
+
+            // RnD
+            SideBarSplitView.IsPaneOpen = false;
         }
 
         #endregion User Info Region

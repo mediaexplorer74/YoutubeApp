@@ -89,7 +89,10 @@ namespace YTApp.Pages
             {
                 Windows.Phone.UI.Input.HardwareButtons.BackPressed += (s, a) =>
                 {
-                    //Debug.WriteLine("Hardware Back button Requested");
+                    Debug.WriteLine("[i] Hardware Back button Requested");
+
+                    VideoPage_BackRequested(default, default);
+
                     if (Frame.CanGoBack)
                     {
                         Frame.GoBack();
