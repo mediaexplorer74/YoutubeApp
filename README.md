@@ -1,4 +1,4 @@
-# YoutubeApp v1.0.41-alpha
+# YoutubeApp v1.0.42-alpha
 My fork of Unofficial Youtube Client (UWP app for Desktop)
 
 ## About
@@ -7,23 +7,14 @@ The Unofficial Youtube Client is a youtube application built in UWP using the Go
 ## Screenshots
 ![Win11Tiny](Images/shot01.png)
 ![Win11Tiny](Images/shot02.png)
-![Win11Tiny](Images/shot03.png)
-![Win11Tiny](Images/shot04.png)
-![W10M](Images/shot05.png)
+![W10M](Images/shot03.png)
 
 ## 1-min Video (Youtube)
 https://youtu.be/LSn6dLq6zEY
 
-## Features (the info from original readme...)
-- Windows Styling Integration
-- Hardware Video Decoding
-- Exceptional Performance (for reasons listed above)
-- Picture in Picture mode
-- Download videos
-
 ## My 2 cents / Status 
-- RnD (41 % complete)
-- Min. os win sdk : 15063
+- RnD (42 % complete)
+- Min. os win sdk : 14393
 - VLC & VideoLib synthez 
 - GoogleAuth-on-W10M fixed
 - Experimental "VLCLibSharp uwp edition" library (for VS 2017 compatibility and best on-device debugging)
@@ -38,16 +29,22 @@ https://youtu.be/LSn6dLq6zEY
 - https://github.com/Saghen/UWP-Youtube-Client  Liam Dyer's original Unofficial Youtube Client
 
 ## How to try it / fix it
-1. Use [Google developers console](https://console.developers.google.com/) to register your own Google Youtube API v3 items (Google Youtube API Credentials):
+
+### Use [Google developers console](https://console.developers.google.com/) to register your own Google Youtube API v3 items (Google Youtube API Credentials):
 - Api key
 - Client Id
 - Client Secret
 
-2. Enter that items (Google Youtube API Credentials) at Settings page
+### Enter that items (Google Youtube API Credentials) at Settings page
 
-3. Run the app, explore video/audio deals...  
+###  Run the app, explore video/audio deals...  
 
-4. Fix the bugs / improve UI... =)
+### Fix the bugs / improve uncomplete(d) features:
+- Windows10Mobile Styling
+- Hardware Video Decoding / Video Caching
+- Better Performance 
+- Picture in Picture mode
+- Download Videos and something else that I forget.. =)
 
 
 ## ..
