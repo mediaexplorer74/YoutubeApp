@@ -1,5 +1,34 @@
 ﻿// VideoPage
 
+/*
+using Windows.UI.Xaml.Controls;
+
+namespace YTApp
+{
+    /// <summary>
+    /// Main page.
+    /// </summary>
+    public sealed partial class VideoPage : Page
+    {
+        /// <summary>
+        /// Initializes a new instance of MainPage2 class.
+        /// </summary>
+        public VideoPage()
+        {
+            InitializeComponent();
+        }
+
+        /// <summary>
+        /// Gets the main viewmodel.
+        /// </summary>
+        public MainViewModel Vm => DataContext as MainViewModel;
+    }
+}
+*/
+
+
+
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -17,7 +46,7 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
-using LibVLCSharp.Shared;//using Windows.UI.Xaml.Media;
+using libVLCX;//using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
 using VideoLibrary;
@@ -31,9 +60,9 @@ namespace YTApp.Pages
 
     public sealed partial class VideoPage : Page
     {
-        private LibVLC _libVLC;
+        private VLC.MediaElement _libVLC;
 
-        private MediaPlayer _mediaPlayer;
+        //private MediaPlayer _mediaPlayer;
 
         //MainPage.Video ytvideo;
 
@@ -44,25 +73,7 @@ namespace YTApp.Pages
         /// <summary>
         /// Youtube "entities"
         /// </summary>
-        /*
-        public string link { get; set; }
-        public string Title { get; set; }
-        public string FileName { get; set; }
-        public string Extension { get; set; }
-        public string Length { get; set; }
-        public string AudioBitrate { get; set; }
-        public string AudioFormats { get; set; }
-        public string VideoFormat { get; set; }
-        public string VideoRes { get; set; }
-        public string FPS { get; set; }
-        public string VideoID { get; set; }
-        public bool IsHDQuality { get; set; }
-        public YouTubeVideo video { get; set; }
-        public YouTubeVideo maxVideo { get; set; }
-        public YouTubeVideo maxBitrate { get; set; }
-        public string ThrownEncodingError { get; set; }
-        public IEnumerable<YouTubeVideo> videoInfos { get; set; }
-        */
+     
 
         public string ChosenQuality { get; set; }
         public int ChosenQualityInt { get; set; }
@@ -122,7 +133,7 @@ namespace YTApp.Pages
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             //ytvideo = (MainPage.Video)e.Parameter;
-            VideoView.Visibility = Visibility.Visible;
+            //VideoView.Visibility = Visibility.Visible;
 
             // Experimental -----------------
             Constants.MainPageRef.contentFrame.Navigated += ContentFrame_Navigated;
@@ -130,7 +141,7 @@ namespace YTApp.Pages
             Constants.MainPageRef.Frame.Navigated += Frame_Navigated;
             // ------------------------------
 
-            videosTitle.Text = ".";// ytvideo.Title";
+            //videosTitle.Text = ".";// ytvideo.Title";
 
             try
             {
@@ -148,7 +159,9 @@ namespace YTApp.Pages
         {
             //If the user logs out, we need to stop the video
             //viewer.StopVideo();
-            _mediaPlayer.Stop();
+            //RnD
+            //_mediaPlayer.Stop();
+            mediaElement.Stop();
 
         }
 
@@ -162,23 +175,39 @@ namespace YTApp.Pages
         {
             try
             {
-                VideoView.MediaPlayer = null;
+                //VideoView.MediaPlayer = null;
+                //mediaElement.Source = null;
+                if (mediaElement != null)
+                  mediaElement.MediaSource = null;
             }
-            catch { }
+            catch (Exception ex1_1)
+            {
+                Debug.WriteLine("[ex1_1] " + ex1_1.Message);
+            }
 
             try
             {
-                if (_mediaPlayer != null)
-                _mediaPlayer.Dispose();
+                //if (_mediaPlayer != null)
+                //{
+                    //RnD
+                    //_mediaPlayer.Dispose();
+                //}
             }
             catch { }
 
             try
             {
                 if (_libVLC != null)
-                    _libVLC.Dispose();
+                {
+                    //RnD
+                    //_libVLC.Dispose();
+                    _libVLC = null;
+                }
             }
-            catch { }
+            catch (Exception ex4) 
+            { 
+                Debug.WriteLine("[ex4] " + ex4.Message); 
+            }
 
             //ChangePlayerSize(false);
             Frame.Visibility = Visibility.Collapsed;
@@ -191,9 +220,9 @@ namespace YTApp.Pages
             {
                 //viewer.transportControls.Visibility = Visibility.Collapsed;
 
-                Scrollviewer.ChangeView(0, 0, 1, true);
-                Scrollviewer.VerticalScrollMode = ScrollMode.Disabled;
-                Scrollviewer.VerticalScrollBarVisibility = ScrollBarVisibility.Disabled;
+                //Scrollviewer.ChangeView(0, 0, 1, true);
+                //Scrollviewer.VerticalScrollMode = ScrollMode.Disabled;
+                //Scrollviewer.VerticalScrollBarVisibility = ScrollBarVisibility.Disabled;
 
                 Frame.HorizontalAlignment = HorizontalAlignment.Right;
                 Frame.VerticalAlignment = VerticalAlignment.Bottom;
@@ -203,9 +232,9 @@ namespace YTApp.Pages
                 //Saves the current Media Player height
                 Windows.Storage.ApplicationDataContainer localSettings
                     = Windows.Storage.ApplicationData.Current.LocalSettings;
-                localSettings.Values["MediaViewerHeight"] = MediaRow.Height.Value;
+                //localSettings.Values["MediaViewerHeight"] = MediaRow.Height.Value;
 
-                MediaRow.Height = new GridLength(360);
+                //MediaRow.Height = new GridLength(360);
 
                 //Disable the taps on the viewer
                 //TODO
@@ -216,8 +245,8 @@ namespace YTApp.Pages
                 //TODO
                 //viewer.transportControls.Visibility = Visibility.Visible;
 
-                Scrollviewer.VerticalScrollMode = ScrollMode.Auto;
-                Scrollviewer.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
+                //Scrollviewer.VerticalScrollMode = ScrollMode.Auto;
+                //Scrollviewer.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
 
                 Frame.HorizontalAlignment = HorizontalAlignment.Stretch;
                 Frame.VerticalAlignment = VerticalAlignment.Stretch;
@@ -228,6 +257,7 @@ namespace YTApp.Pages
                 Windows.Storage.ApplicationDataContainer localSettings
                     = Windows.Storage.ApplicationData.Current.LocalSettings;
 
+                /*
                 if (localSettings.Values["MediaViewerHeight"] != null
                     && (double)localSettings.Values["MediaViewerHeight"] > 360)
                 {
@@ -237,6 +267,7 @@ namespace YTApp.Pages
                 {
                     MediaRow.Height = new GridLength(600);
                 }
+                */
 
                 //Enable the taps on the viewer
                 //TODO
@@ -247,8 +278,8 @@ namespace YTApp.Pages
 
         private void Scrollviewer_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
         {
-            if (Scrollviewer.VerticalOffset > Scrollviewer.ScrollableHeight - 700)
-            {
+            //if (Scrollviewer.VerticalOffset > Scrollviewer.ScrollableHeight - 700)
+            //{
                 //TODO
                 //if (CommentsOptionComboBox.SelectedIndex == 0)
                 //{
@@ -258,7 +289,7 @@ namespace YTApp.Pages
                 //{
                 //    AddComments(CommentThreadsResource.ListRequest.OrderEnum.Time);
                 //}
-            }
+            //}
         }
 
         private async Task LoadPage()
@@ -279,14 +310,9 @@ namespace YTApp.Pages
                 {   
                     Loaded += (s, e) =>
                     {
-                        _libVLC = new LibVLC(VideoView.SwapChainOptions);
-                        _mediaPlayer = new MediaPlayer(_libVLC);
-                        VideoView.MediaPlayer = _mediaPlayer;
+                       //Experimental
+                       mediaElement.MediaSource = VLC.MediaSource.CreateFromUri(video.Uri);
 
-                        _mediaPlayer.Play(new Media(
-                            _libVLC,
-                           video.Uri,
-                            FromType.FromLocation));
                     };
 
 
@@ -294,23 +320,42 @@ namespace YTApp.Pages
                     {
                         try
                         {
-                            VideoView.MediaPlayer = null;
+                            //mediaElement.Source = null;
+                            mediaElement.MediaSource = null;
+                            //mediaElement = null;
+                            //VLC.MediaElement = null;
+                            //VideoView.MediaPlayer = null;
+                            
                         }
-                        catch { }
+                        catch (Exception ex1)
+                        {
+                            Debug.WriteLine("[ex1] " + ex1.Message);
+                        }
 
                         try
                         {
-                            if (_mediaPlayer != null)
-                                _mediaPlayer.Dispose();
+                            //if (_mediaPlayer != null)
+                            //{
+                               // _mediaPlayer.Dispose();
+                            //}
                         }
-                        catch { }
+                        catch (Exception ex2)
+                        {
+                            Debug.WriteLine("[ex2] " + ex2.Message);
+                        }
 
                         try
                         {
                             if (_libVLC != null)
-                                _libVLC.Dispose();
+                            {
+                                _libVLC.Stop();//.Dispose();
+                                //_libVLC = null;
+                            }
                         }
-                        catch { }
+                        catch (Exception ex3)
+                        {
+                            Debug.WriteLine("[ex3] " + ex3.Message);
+                        }
                     };
 
                     //progressRing.IsActive = false;
@@ -423,3 +468,4 @@ namespace YTApp.Pages
         }
     }
 }
+

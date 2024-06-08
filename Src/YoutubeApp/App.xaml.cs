@@ -1,6 +1,5 @@
 ﻿using MetroLog;
 using Newtonsoft.Json;
-using SharpDX;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -254,6 +253,7 @@ namespace YTApp
                     // configuring the new page by passing required information as a navigation
                     // parameter
 
+                    
                     if (await Classes.YoutubeMethodsStatic.IsUserAuthenticated())
                     {
                         rootFrame.Navigate(typeof(MainPage), e.Arguments);
@@ -261,7 +261,8 @@ namespace YTApp
                     else
                     {
                         rootFrame.Navigate(typeof(Pages.WelcomePage), e.Arguments);
-                    }
+                    }                   
+                   
 
                 }
                 // Ensure the current window is active

@@ -5,6 +5,8 @@
     xmlns:local="using:YTApp">
 
     <Application.Resources>
+        <local:ViewModelLocator x:Key="ViewModelLocator" />      
+
         <Style TargetType="ListView">
             <Setter Property="ScrollViewer.VerticalScrollMode" Value="Disabled"/>
         </Style>

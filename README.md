@@ -1,4 +1,4 @@
-# YoutubeApp v1.0.42-alpha
+# YoutubeApp v1.0.43-alpha
 My fork of Unofficial Youtube Client (UWP app for Desktop)
 
 ## About
@@ -13,14 +13,15 @@ The Unofficial Youtube Client is a youtube application built in UWP using the Go
 https://youtu.be/LSn6dLq6zEY
 
 ## My 2 cents / Status 
-- RnD (42 % complete)
+- RnD (43 % complete)
 - Min. os win sdk : 14393
 - VLC & VideoLib synthez 
 - GoogleAuth-on-W10M fixed
-- Experimental "VLCLibSharp uwp edition" library (for VS 2017 compatibility and best on-device debugging)
+- VLCMediaElement "injected" (!)
+- Experimental "VLCX uwp edition" library (for VS 2017 compatibility and best on-device debugging)
 - Hardware button back-to-main-page fixed
 - Flyout menu auto-hiding added 
-- Draft / Proto (UI damaged very hard - no video comments, no mediacontrols, etc.!)
+- Draft / Proto (first UI experimentation such as simplest mediacontrols!)
 
 
 ## Credits / References
