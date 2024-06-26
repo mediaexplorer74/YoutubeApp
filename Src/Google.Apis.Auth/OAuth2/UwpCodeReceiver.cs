@@ -45,13 +45,21 @@ namespace Google.Apis.Auth.OAuth2
                 Debug.WriteLine("[ex] WebAuthenticationBroker.AuthenticateAsync bug: " + ex.Message);
             }
 
-      WebAuthenticationStatus responseStatus = authenticationResult.ResponseStatus;
+        WebAuthenticationStatus responseStatus = default;
+        if (authenticationResult != null)
+        {
+            try
+            {
+                responseStatus = authenticationResult.ResponseStatus;
+            }
+            catch { }
+        }
 
         if (responseStatus == null)
         {
-        return new AuthorizationCodeResponseUrl(
-            authenticationResult.ResponseData.ToLowerInvariant().StartsWith("success ") 
-            ? authenticationResult.ResponseData.Substring(8) : authenticationResult.ResponseData);
+            return new AuthorizationCodeResponseUrl(
+              authenticationResult.ResponseData.ToLowerInvariant().StartsWith("success ") 
+              ? authenticationResult.ResponseData.Substring(8) : authenticationResult.ResponseData);
         }
 
         if (responseStatus == (WebAuthenticationStatus)2)

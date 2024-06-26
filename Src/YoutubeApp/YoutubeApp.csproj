@@ -145,9 +145,6 @@
     <Compile Include="Pages\TrendingPage.xaml.cs">
       <DependentUpon>TrendingPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\VideoPage1.xaml.cs">
-      <DependentUpon>VideoPage1.xaml</DependentUpon>
-    </Compile>
     <Compile Include="UserControls\ChannelPlaylistGridView.xaml.cs">
       <DependentUpon>ChannelPlaylistGridView.xaml</DependentUpon>
     </Compile>
@@ -284,10 +281,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\TrendingPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Pages\VideoPage1.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
