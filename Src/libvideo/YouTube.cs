@@ -5,12 +5,14 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading;
-using System.Threading.Tasks;
+//using System.Text.Json;
+//using System.Text.Json.Nodes;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Threading.Tasks;
 using VideoLibrary.Exceptions;
 using VideoLibrary.Helpers;
+using System.IO;
 
 
 namespace VideoLibrary
@@ -27,9 +29,39 @@ namespace VideoLibrary
             if (!TryNormalize(videoUri, out videoUri))
                 throw new ArgumentException("URL is not a valid YouTube URL!");
 
+            // TODO Remove
             string source = await sourceFactory(videoUri).ConfigureAwait(false);
 
-            return ParseVideos(source);
+            // TODO Remove
+            string jsPlayer = ParseJsPlayer(source);
+
+            if (jsPlayer == null)
+            {
+                throw new UnavailableStreamException($"JS Player is not found");
+            }
+
+            //var playerResponseJson = JsonDocument.Parse(Json.Extract(ParsePlayerJson(source))).RootElement;
+            JToken playerResponseJson = JToken.Parse(Json.Extract(ParsePlayerJson(source))).Root;
+
+
+            // PlayerJson from IOS content
+            //var data = await GetPlayerResponseIOSAsync(
+            //    playerResponseJson.GetProperty("videoDetails").GetNullableProperty("videoId")?.GetString())
+            //    .ConfigureAwait(false);
+            var data = GetPlayerResponseIOSAsync(
+                   playerResponseJson.SelectToken("videoDetails.videoId")?.Value<string>())
+               .ConfigureAwait(false)
+               .GetAwaiter()
+               .GetResult();
+
+
+            if (data != null)
+            {
+                //playerResponseJson = JsonDocument.Parse(data).RootElement;
+                playerResponseJson = JToken.Parse(data);
+            }
+
+            return ParseVideos(source, jsPlayer, playerResponseJson);
         }
         public static string GetSignatureKey()
         {
@@ -63,41 +95,40 @@ namespace VideoLibrary
             return true;
         }
 
-        private IEnumerable<YouTubeVideo> ParseVideos(string source)
+        private IEnumerable<YouTubeVideo> ParseVideos(string source, string jsPlayer, 
+            /*JsonElement*/JToken playerResponseJson)
         {
             IEnumerable<UnscrambledQuery> queries;
-            string jsPlayer = ParseJsPlayer(source);
-            if (jsPlayer == null)
-            {
-                yield break;
-            }
 
-            var playerResponseJson = JToken.Parse(Json.Extract(ParsePlayerJson(source)));
+            string playabilityStatus = //playerResponseJson.GetProperty("playabilityStatus")
+                                       //.GetNullableProperty("status")?.GetString();
+                 playerResponseJson.SelectToken("playabilityStatus.status")?.Value<string>();
 
-            // PlayerJson from android content
-            var data = GetPlayerResponseAndroidAsync(playerResponseJson.SelectToken("videoDetails.videoId")?.Value<string>())
-                .ConfigureAwait(false)
-                .GetAwaiter()
-                .GetResult();
 
-            if (data != null)
-            {
-                playerResponseJson = JToken.Parse(data);
-            }
-
-            if (string.Equals(playerResponseJson.SelectToken("playabilityStatus.status")?.Value<string>(), "error", StringComparison.OrdinalIgnoreCase))
+            if (string.Equals(playabilityStatus, "error", StringComparison.OrdinalIgnoreCase))
             {
                 throw new UnavailableStreamException($"Video has unavailable stream.");
             }
 
-            var errorReason = playerResponseJson.SelectToken("playabilityStatus.reason")?.Value<string>();
+            var errorReason = //playerResponseJson.GetProperty("playabilityStatus")
+                              //.GetNullableProperty("reason")?.GetString();
+                playerResponseJson.SelectToken("playabilityStatus.reason")?.Value<string>();
             if (string.IsNullOrWhiteSpace(errorReason))
             {
-                var isLiveStream = playerResponseJson.SelectToken("videoDetails.isLive")?.Value<bool>() == true;
-                var videoInfo = new VideoInfo(
-                    playerResponseJson.SelectToken("videoDetails.title")?.Value<string>(),
-                    playerResponseJson.SelectToken("videoDetails.lengthSeconds")?.Value<int>(),
-                    playerResponseJson.SelectToken("videoDetails.author")?.Value<string>());
+                var isLiveStream = /*playerResponseJson.GetProperty("videoDetails")
+                    .GetNullableProperty("isLive")?.GetBoolean()*/
+                    playerResponseJson.SelectToken("videoDetails.isLive")?.Value<bool>()  == true;
+                var title =
+                    //playerResponseJson.GetProperty("videoDetails").GetNullableProperty("title")?.GetString();
+                    playerResponseJson.SelectToken("videoDetails.title")?.Value<string>();
+                var lengthSeconds = //playerResponseJson.GetProperty("videoDetails")
+                                    //.GetNullableProperty("lengthSeconds")?.GetString()
+                    playerResponseJson.SelectToken("videoDetails.lengthSeconds")?.Value<string>()  ?? "0";
+                var author = //playerResponseJson.GetProperty("videoDetails")
+                             //.GetNullableProperty("author")?.GetString();
+                    playerResponseJson.SelectToken("videoDetails.author")?.Value<string>();
+
+                var videoInfo = new VideoInfo(title, int.Parse(lengthSeconds), author);
 
                 if (isLiveStream)
                 {
@@ -113,32 +144,52 @@ namespace VideoLibrary
                 }
                 else // player_response
                 {
+                    //List<JsonElement> streamObjects = new List<JsonElement>();
                     List<JToken> streamObjects = new List<JToken>();
 
-                    // Extract Muxed streams
-                    var streamFormat = playerResponseJson.SelectToken("streamingData.formats");
+                    // Extract Muxed streams /
+                    JToken[] streamFormat =
+                        //playerResponseJson.GetNullableProperty("streamingData")?
+                        //.GetNullableProperty("formats");
+                        playerResponseJson.SelectToken("streamingData.formats")?.ToArray();
                     if (streamFormat != null)
                     {
-                        streamObjects.AddRange(streamFormat.ToArray());
+                        //streamObjects.AddRange(streamFormat?.EnumerateArray());
+                        streamObjects.AddRange(streamFormat);
                     }
 
                     // Extract AdaptiveFormat streams
-                    var streamAdaptiveFormats = playerResponseJson.SelectToken("streamingData.adaptiveFormats");
+                    JToken[] streamAdaptiveFormats =
+                        //playerResponseJson.GetNullableProperty("streamingData")?
+                        //.GetNullableProperty("adaptiveFormats");
+                        playerResponseJson.SelectToken("streamingData.adaptiveFormats")?.ToArray();
+
                     if (streamAdaptiveFormats != null)
                     {
-                        streamObjects.AddRange(streamAdaptiveFormats.ToArray());
+                        //streamObjects.AddRange(streamAdaptiveFormats?.EnumerateArray());
+                        streamObjects.AddRange(streamAdaptiveFormats);
                     }
 
                     foreach (var item in streamObjects)
                     {
-                        var urlValue = item.SelectToken("url")?.Value<string>();
+                        var urlValue = //item.GetNullableProperty("url")?.GetString();
+                             item.SelectToken("url")?.Value<string>();
+
                         if (!string.IsNullOrEmpty(urlValue))
                         {
                             var query = new UnscrambledQuery(urlValue, false);
                             yield return new YouTubeVideo(videoInfo, query, jsPlayer);
                             continue;
                         }
-                        var cipherValue = ((item.SelectToken("cipher") ?? item.SelectToken("signatureCipher")) ?? string.Empty).Value<string>();
+
+                        var asd = item.ToString();
+
+                        string cipherValue =
+                             //(item.GetNullableProperty("cipher") 
+                             //?? item.GetNullableProperty("signatureCipher"))?.GetString();
+                             item.SelectToken("cipher")?.Value<string>() ??
+                              item.SelectToken("signatureCipher")?.Value<string>();
+
                         if (!string.IsNullOrEmpty(cipherValue))
                         {
                             yield return new YouTubeVideo(videoInfo, Unscramble(cipherValue), jsPlayer);
@@ -320,37 +371,43 @@ namespace VideoLibrary
             return new UnscrambledQuery(builder.ToString(), false);
         }
 
-        private async Task<string> GetPlayerResponseAndroidAsync(string id)
+        private async Task<string> GetPlayerResponseIOSAsync(string id)
         {
-            var androidClient = new HttpClient();
+            var httpClient = new HttpClient();
             var request = new HttpRequestMessage(HttpMethod.Post, "https://www.youtube.com/youtubei/v1/player");
 
             var content = new
             {
                 videoId = id,
+                contentCheckOk = true,
                 context = new
                 {
                     client = new
                     {
-                        clientName = "ANDROID_TESTSUITE",
-                        clientVersion = "1.9",
-                        androidSdkVersion = 30,
+                        clientName = "IOS",
+                        clientVersion = "20.03.02",
+                        deviceMake = "Apple",
+                        deviceModel = "iPhone16,2",
+                        platform = "MOBILE",
+                        osName = "IOS",
+                        osVersion = "18.2.1.22C161",
                         hl = "en",
                         gl = "US",
-                        utcOffsetMinutes = 0
+                        utcOffsetMinutes = 0,
+                        visitorData = await VisitorDataTokenGenerator.GetVisitorDataFromYouTube(httpClient),
                     }
                 }
             };
 
-            request.Content = new StringContent(JsonConvert.SerializeObject(content));
-            request.Headers.Add("User-Agent", "com.google.android.youtube/17.36.4 (Linux; U; Android 12; GB) gzip");
-            var response = await androidClient.SendAsync(request);
+            request.Content = new StringContent(/*JsonSerializer.Serialize*/JsonConvert.SerializeObject(content));
+            request.Headers.Add("User-Agent", "com.google.ios.youtube/20.03.02 (iPhone16,2; U; CPU iOS 18_2_1 like Mac OS X; US)");
+            var response = await httpClient.SendAsync(request);
 
             if (response.IsSuccessStatusCode)
             {
 
                 var responseContent = await response.Content.ReadAsStringAsync();
-                androidClient.Dispose();
+                httpClient.Dispose();
                 request.Dispose();
                 request.Dispose();
 

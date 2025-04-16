@@ -256,7 +256,8 @@ namespace YTApp
                     
                     if (await Classes.YoutubeMethodsStatic.IsUserAuthenticated())
                     {
-                        rootFrame.Navigate(typeof(MainPage), e.Arguments);
+                        rootFrame.Navigate(typeof(MainPage), e.Arguments); // REAL MODE
+                        //rootFrame.Navigate(typeof(MainPage2), e.Arguments); // TEST ONLY
                     }
                     else
                     {
